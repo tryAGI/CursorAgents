@@ -14,21 +14,13 @@ namespace CursorAgents
         Converters = new global::System.Type[]
         {
             typeof(global::CursorAgents.JsonConverters.CreateAgentResponseStatusJsonConverter),
-
             typeof(global::CursorAgents.JsonConverters.CreateAgentResponseStatusNullableJsonConverter),
-
             typeof(global::CursorAgents.JsonConverters.ListAgentsResponseAgentStatusJsonConverter),
-
             typeof(global::CursorAgents.JsonConverters.ListAgentsResponseAgentStatusNullableJsonConverter),
-
             typeof(global::CursorAgents.JsonConverters.GetAgentResponseStatusJsonConverter),
-
             typeof(global::CursorAgents.JsonConverters.GetAgentResponseStatusNullableJsonConverter),
-
             typeof(global::CursorAgents.JsonConverters.GetAgentConversationResponseMessageTypeJsonConverter),
-
             typeof(global::CursorAgents.JsonConverters.GetAgentConversationResponseMessageTypeNullableJsonConverter),
-
             typeof(global::CursorAgents.JsonConverters.UnixTimestampJsonConverter),
         })]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.JsonSerializerContextTypes))]

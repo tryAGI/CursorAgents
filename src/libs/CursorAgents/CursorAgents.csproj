@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Nuget">
+    <Description>C# SDK for the Cursor Cloud Agents API -- programmatically create, manage, and monitor AI-powered coding agents</Description>
+    <PackageTags>cursor;cloud-agents;ai-agents;csharp;dotnet;sdk;ai;autosdk;openapi</PackageTags>
+  </PropertyGroup>
+
+</Project>

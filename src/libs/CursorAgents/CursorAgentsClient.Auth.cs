@@ -4,6 +4,7 @@ namespace CursorAgents;
 
 public partial class CursorAgentsClient
 {
+#pragma warning disable CA1822 // Mark members as static
     partial void PrepareRequest(
         global::System.Net.Http.HttpClient client,
         global::System.Net.Http.HttpRequestMessage request)
@@ -18,4 +19,5 @@ public partial class CursorAgentsClient
             request.Headers.Authorization = new AuthenticationHeaderValue("Basic", basicValue);
         }
     }
+#pragma warning restore CA1822 // Mark members as static
 }

@@ -66,13 +66,13 @@ namespace CursorAgents
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateAgentResponseTarget" /> class.
         /// </summary>
-        /// <param name="branchName">
-        /// The Git branch name where the agent is working<br/>
-        /// Example: cursor/add-readme-1234
-        /// </param>
         /// <param name="url">
         /// URL to view the agent in Cursor Web<br/>
         /// Example: https://cursor.com/agents?id=bc_abc123
+        /// </param>
+        /// <param name="branchName">
+        /// The Git branch name where the agent is working<br/>
+        /// Example: cursor/add-readme-1234
         /// </param>
         /// <param name="prUrl">
         /// URL of the pull request, if agent was created from a PR<br/>
@@ -101,8 +101,8 @@ namespace CursorAgents
             bool? openAsCursorGithubApp,
             bool? skipReviewerRequest)
         {
-            this.Url = url ?? throw new global::System.ArgumentNullException(nameof(url));
             this.BranchName = branchName;
+            this.Url = url ?? throw new global::System.ArgumentNullException(nameof(url));
             this.PrUrl = prUrl;
             this.AutoCreatePr = autoCreatePr;
             this.OpenAsCursorGithubApp = openAsCursorGithubApp;

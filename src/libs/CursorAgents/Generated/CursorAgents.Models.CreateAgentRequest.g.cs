@@ -52,11 +52,11 @@ namespace CursorAgents
         /// Initializes a new instance of the <see cref="CreateAgentRequest" /> class.
         /// </summary>
         /// <param name="prompt"></param>
+        /// <param name="source"></param>
         /// <param name="model">
         /// Set to an explicit model ID for launch requests, or use "default" to use the configured default model. When omitted, Cursor resolves your user default model, then your team default model, then a system default.<br/>
         /// Example: claude-4-sonnet
         /// </param>
-        /// <param name="source"></param>
         /// <param name="target"></param>
         /// <param name="webhook"></param>
 #if NET7_0_OR_GREATER
@@ -70,8 +70,8 @@ namespace CursorAgents
             global::CursorAgents.CreateAgentRequestWebhook? webhook)
         {
             this.Prompt = prompt ?? throw new global::System.ArgumentNullException(nameof(prompt));
-            this.Source = source ?? throw new global::System.ArgumentNullException(nameof(source));
             this.Model = model;
+            this.Source = source ?? throw new global::System.ArgumentNullException(nameof(source));
             this.Target = target;
             this.Webhook = webhook;
         }

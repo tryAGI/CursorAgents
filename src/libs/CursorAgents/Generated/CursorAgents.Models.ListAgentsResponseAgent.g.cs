@@ -90,13 +90,13 @@ namespace CursorAgents
         /// </param>
         /// <param name="source"></param>
         /// <param name="target"></param>
-        /// <param name="summary">
-        /// Summary of the agent's work<br/>
-        /// Example: Added README.md with installation instructions and usage examples
-        /// </param>
         /// <param name="createdAt">
         /// When the agent was created<br/>
         /// Example: 2024-01-15T10:30:00Z
+        /// </param>
+        /// <param name="summary">
+        /// Summary of the agent's work<br/>
+        /// Example: Added README.md with installation instructions and usage examples
         /// </param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
@@ -115,8 +115,8 @@ namespace CursorAgents
             this.Status = status;
             this.Source = source ?? throw new global::System.ArgumentNullException(nameof(source));
             this.Target = target ?? throw new global::System.ArgumentNullException(nameof(target));
-            this.CreatedAt = createdAt;
             this.Summary = summary;
+            this.CreatedAt = createdAt;
         }
 
         /// <summary>

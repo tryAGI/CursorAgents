@@ -75,15 +75,15 @@ namespace CursorAgents
         /// Name for the agent<br/>
         /// Example: Add README Documentation
         /// </param>
-        /// <param name="status">
-        /// Initial status of the newly created agent<br/>
-        /// Example: CREATING
-        /// </param>
         /// <param name="source"></param>
         /// <param name="target"></param>
         /// <param name="createdAt">
         /// When the agent was created<br/>
         /// Example: 2024-01-15T10:30:00Z
+        /// </param>
+        /// <param name="status">
+        /// Initial status of the newly created agent<br/>
+        /// Example: CREATING
         /// </param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
@@ -98,10 +98,10 @@ namespace CursorAgents
         {
             this.Id = id ?? throw new global::System.ArgumentNullException(nameof(id));
             this.Name = name ?? throw new global::System.ArgumentNullException(nameof(name));
+            this.Status = status;
             this.Source = source ?? throw new global::System.ArgumentNullException(nameof(source));
             this.Target = target ?? throw new global::System.ArgumentNullException(nameof(target));
             this.CreatedAt = createdAt;
-            this.Status = status;
         }
 
         /// <summary>

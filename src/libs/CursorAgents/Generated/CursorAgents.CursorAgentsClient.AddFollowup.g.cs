@@ -469,7 +469,6 @@ namespace CursorAgents
             global::CursorAgents.AddFollowupRequestPrompt prompt,
             global::System.Threading.CancellationToken cancellationToken = default)
         {
-
             var __request = new global::CursorAgents.AddFollowupRequest
             {
                 Prompt = prompt,

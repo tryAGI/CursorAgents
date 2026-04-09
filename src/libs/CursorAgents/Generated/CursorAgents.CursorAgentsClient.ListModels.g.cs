@@ -5,6 +5,25 @@ namespace CursorAgents
 {
     public partial class CursorAgentsClient
     {
+
+
+        private static readonly global::CursorAgents.EndPointSecurityRequirement s_ListModelsSecurityRequirement0 =
+            new global::CursorAgents.EndPointSecurityRequirement
+            {
+                Authorizations = new global::CursorAgents.EndPointAuthorizationRequirement[]
+                {                    new global::CursorAgents.EndPointAuthorizationRequirement
+                    {
+                        Type = "Http",
+                        Location = "Header",
+                        Name = "Bearer",
+                        FriendlyName = "Bearer",
+                    },
+                },
+            };
+        private static readonly global::CursorAgents.EndPointSecurityRequirement[] s_ListModelsSecurityRequirements =
+            new global::CursorAgents.EndPointSecurityRequirement[]
+            {                s_ListModelsSecurityRequirement0,
+            };
         partial void PrepareListModelsArguments(
             global::System.Net.Http.HttpClient httpClient);
         partial void PrepareListModelsRequest(
@@ -33,9 +52,15 @@ namespace CursorAgents
             PrepareListModelsArguments(
                 httpClient: HttpClient);
 
+
+            var __authorizations = global::CursorAgents.EndPointSecurityResolver.ResolveAuthorizations(
+                availableAuthorizations: Authorizations,
+                securityRequirements: s_ListModelsSecurityRequirements,
+                operationName: "ListModelsAsync");
+
             var __pathBuilder = new global::CursorAgents.PathBuilder(
                 path: "/v0/models",
-                baseUri: HttpClient.BaseAddress); 
+                baseUri: HttpClient.BaseAddress);
             var __path = __pathBuilder.ToString();
             using var __httpRequest = new global::System.Net.Http.HttpRequestMessage(
                 method: global::System.Net.Http.HttpMethod.Get,
@@ -45,7 +70,7 @@ namespace CursorAgents
             __httpRequest.VersionPolicy = global::System.Net.Http.HttpVersionPolicy.RequestVersionOrHigher;
 #endif
 
-            foreach (var __authorization in Authorizations)
+            foreach (var __authorization in __authorizations)
             {
                 if (__authorization.Type == "Http" ||
                     __authorization.Type == "OAuth2")

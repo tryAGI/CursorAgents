@@ -5,6 +5,25 @@ namespace CursorAgents
 {
     public partial class CursorAgentsClient
     {
+
+
+        private static readonly global::CursorAgents.EndPointSecurityRequirement s_DeleteAgentSecurityRequirement0 =
+            new global::CursorAgents.EndPointSecurityRequirement
+            {
+                Authorizations = new global::CursorAgents.EndPointAuthorizationRequirement[]
+                {                    new global::CursorAgents.EndPointAuthorizationRequirement
+                    {
+                        Type = "Http",
+                        Location = "Header",
+                        Name = "Bearer",
+                        FriendlyName = "Bearer",
+                    },
+                },
+            };
+        private static readonly global::CursorAgents.EndPointSecurityRequirement[] s_DeleteAgentSecurityRequirements =
+            new global::CursorAgents.EndPointSecurityRequirement[]
+            {                s_DeleteAgentSecurityRequirement0,
+            };
         partial void PrepareDeleteAgentArguments(
             global::System.Net.Http.HttpClient httpClient,
             ref string id);
@@ -40,9 +59,15 @@ namespace CursorAgents
                 httpClient: HttpClient,
                 id: ref id);
 
+
+            var __authorizations = global::CursorAgents.EndPointSecurityResolver.ResolveAuthorizations(
+                availableAuthorizations: Authorizations,
+                securityRequirements: s_DeleteAgentSecurityRequirements,
+                operationName: "DeleteAgentAsync");
+
             var __pathBuilder = new global::CursorAgents.PathBuilder(
                 path: $"/v0/agents/{id}",
-                baseUri: HttpClient.BaseAddress); 
+                baseUri: HttpClient.BaseAddress);
             var __path = __pathBuilder.ToString();
             using var __httpRequest = new global::System.Net.Http.HttpRequestMessage(
                 method: global::System.Net.Http.HttpMethod.Delete,
@@ -52,7 +77,7 @@ namespace CursorAgents
             __httpRequest.VersionPolicy = global::System.Net.Http.HttpVersionPolicy.RequestVersionOrHigher;
 #endif
 
-            foreach (var __authorization in Authorizations)
+            foreach (var __authorization in __authorizations)
             {
                 if (__authorization.Type == "Http" ||
                     __authorization.Type == "OAuth2")

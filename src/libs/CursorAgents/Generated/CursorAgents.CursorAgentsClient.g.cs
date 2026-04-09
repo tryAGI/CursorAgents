@@ -13,7 +13,7 @@ namespace CursorAgents
         /// <summary>
         /// Production server
         /// </summary>
-        public const string DefaultBaseUrl = "https://api.cursor.com";
+        public const string DefaultBaseUrl = "https://api.cursor.com/";
 
         private bool _disposeHttpClient = true;
 

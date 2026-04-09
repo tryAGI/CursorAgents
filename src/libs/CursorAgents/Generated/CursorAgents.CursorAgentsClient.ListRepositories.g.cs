@@ -5,6 +5,25 @@ namespace CursorAgents
 {
     public partial class CursorAgentsClient
     {
+
+
+        private static readonly global::CursorAgents.EndPointSecurityRequirement s_ListRepositoriesSecurityRequirement0 =
+            new global::CursorAgents.EndPointSecurityRequirement
+            {
+                Authorizations = new global::CursorAgents.EndPointAuthorizationRequirement[]
+                {                    new global::CursorAgents.EndPointAuthorizationRequirement
+                    {
+                        Type = "Http",
+                        Location = "Header",
+                        Name = "Bearer",
+                        FriendlyName = "Bearer",
+                    },
+                },
+            };
+        private static readonly global::CursorAgents.EndPointSecurityRequirement[] s_ListRepositoriesSecurityRequirements =
+            new global::CursorAgents.EndPointSecurityRequirement[]
+            {                s_ListRepositoriesSecurityRequirement0,
+            };
         partial void PrepareListRepositoriesArguments(
             global::System.Net.Http.HttpClient httpClient);
         partial void PrepareListRepositoriesRequest(
@@ -33,9 +52,15 @@ namespace CursorAgents
             PrepareListRepositoriesArguments(
                 httpClient: HttpClient);
 
+
+            var __authorizations = global::CursorAgents.EndPointSecurityResolver.ResolveAuthorizations(
+                availableAuthorizations: Authorizations,
+                securityRequirements: s_ListRepositoriesSecurityRequirements,
+                operationName: "ListRepositoriesAsync");
+
             var __pathBuilder = new global::CursorAgents.PathBuilder(
                 path: "/v0/repositories",
-                baseUri: HttpClient.BaseAddress); 
+                baseUri: HttpClient.BaseAddress);
             var __path = __pathBuilder.ToString();
             using var __httpRequest = new global::System.Net.Http.HttpRequestMessage(
                 method: global::System.Net.Http.HttpMethod.Get,
@@ -45,7 +70,7 @@ namespace CursorAgents
             __httpRequest.VersionPolicy = global::System.Net.Http.HttpVersionPolicy.RequestVersionOrHigher;
 #endif
 
-            foreach (var __authorization in Authorizations)
+            foreach (var __authorization in __authorizations)
             {
                 if (__authorization.Type == "Http" ||
                     __authorization.Type == "OAuth2")

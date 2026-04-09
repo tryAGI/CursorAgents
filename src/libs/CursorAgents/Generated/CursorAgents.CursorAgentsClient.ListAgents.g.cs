@@ -5,6 +5,25 @@ namespace CursorAgents
 {
     public partial class CursorAgentsClient
     {
+
+
+        private static readonly global::CursorAgents.EndPointSecurityRequirement s_ListAgentsSecurityRequirement0 =
+            new global::CursorAgents.EndPointSecurityRequirement
+            {
+                Authorizations = new global::CursorAgents.EndPointAuthorizationRequirement[]
+                {                    new global::CursorAgents.EndPointAuthorizationRequirement
+                    {
+                        Type = "Http",
+                        Location = "Header",
+                        Name = "Bearer",
+                        FriendlyName = "Bearer",
+                    },
+                },
+            };
+        private static readonly global::CursorAgents.EndPointSecurityRequirement[] s_ListAgentsSecurityRequirements =
+            new global::CursorAgents.EndPointSecurityRequirement[]
+            {                s_ListAgentsSecurityRequirement0,
+            };
         partial void PrepareListAgentsArguments(
             global::System.Net.Http.HttpClient httpClient,
             ref int? limit,
@@ -54,6 +73,12 @@ namespace CursorAgents
                 cursor: ref cursor,
                 prUrl: ref prUrl);
 
+
+            var __authorizations = global::CursorAgents.EndPointSecurityResolver.ResolveAuthorizations(
+                availableAuthorizations: Authorizations,
+                securityRequirements: s_ListAgentsSecurityRequirements,
+                operationName: "ListAgentsAsync");
+
             var __pathBuilder = new global::CursorAgents.PathBuilder(
                 path: "/v0/agents",
                 baseUri: HttpClient.BaseAddress); 
@@ -61,7 +86,7 @@ namespace CursorAgents
                 .AddOptionalParameter("limit", limit?.ToString())
                 .AddOptionalParameter("cursor", cursor)
                 .AddOptionalParameter("prUrl", prUrl) 
-                ; 
+                ;
             var __path = __pathBuilder.ToString();
             using var __httpRequest = new global::System.Net.Http.HttpRequestMessage(
                 method: global::System.Net.Http.HttpMethod.Get,
@@ -71,7 +96,7 @@ namespace CursorAgents
             __httpRequest.VersionPolicy = global::System.Net.Http.HttpVersionPolicy.RequestVersionOrHigher;
 #endif
 
-            foreach (var __authorization in Authorizations)
+            foreach (var __authorization in __authorizations)
             {
                 if (__authorization.Type == "Http" ||
                     __authorization.Type == "OAuth2")

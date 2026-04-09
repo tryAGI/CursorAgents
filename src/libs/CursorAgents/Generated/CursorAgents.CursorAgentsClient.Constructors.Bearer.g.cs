@@ -6,6 +6,7 @@ namespace CursorAgents
     public sealed partial class CursorAgentsClient
     {
         /// <inheritdoc cref="CursorAgentsClient(global::System.Net.Http.HttpClient?, global::System.Uri?, global::System.Collections.Generic.List{global::CursorAgents.EndPointAuthorization}?, bool)"/>
+
         public CursorAgentsClient(
             string apiKey,
             global::System.Net.Http.HttpClient? httpClient = null,

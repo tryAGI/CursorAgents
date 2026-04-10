@@ -25,6 +25,7 @@ namespace CursorAgents
             Authorizations.Add(new global::CursorAgents.EndPointAuthorization
             {
                 Type = "Http",
+                SchemeId = "BearerAuth",
                 Location = "Header",
                 Name = "Bearer",
                 Value = apiKey,

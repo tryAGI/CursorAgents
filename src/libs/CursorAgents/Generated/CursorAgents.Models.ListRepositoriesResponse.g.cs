@@ -9,11 +9,11 @@ namespace CursorAgents
     public sealed partial class ListRepositoriesResponse
     {
         /// <summary>
-        /// Array of GitHub repositories the user has access to
+        /// 
         /// </summary>
-        [global::System.Text.Json.Serialization.JsonPropertyName("repositories")]
+        [global::System.Text.Json.Serialization.JsonPropertyName("items")]
         [global::System.Text.Json.Serialization.JsonRequired]
-        public required global::System.Collections.Generic.IList<global::CursorAgents.ListRepositoriesResponseRepositorie> Repositories { get; set; }
+        public required global::System.Collections.Generic.IList<global::CursorAgents.Repository> Items { get; set; }
 
         /// <summary>
         /// Additional properties that are not explicitly defined in the schema
@@ -24,16 +24,14 @@ namespace CursorAgents
         /// <summary>
         /// Initializes a new instance of the <see cref="ListRepositoriesResponse" /> class.
         /// </summary>
-        /// <param name="repositories">
-        /// Array of GitHub repositories the user has access to
-        /// </param>
+        /// <param name="items"></param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
 #endif
         public ListRepositoriesResponse(
-            global::System.Collections.Generic.IList<global::CursorAgents.ListRepositoriesResponseRepositorie> repositories)
+            global::System.Collections.Generic.IList<global::CursorAgents.Repository> items)
         {
-            this.Repositories = repositories ?? throw new global::System.ArgumentNullException(nameof(repositories));
+            this.Items = items ?? throw new global::System.ArgumentNullException(nameof(items));
         }
 
         /// <summary>

@@ -9,17 +9,17 @@ namespace CursorAgents
     public sealed partial class ListAgentsResponse
     {
         /// <summary>
-        /// List of agents
+        /// Agents, newest first.
         /// </summary>
-        [global::System.Text.Json.Serialization.JsonPropertyName("agents")]
+        [global::System.Text.Json.Serialization.JsonPropertyName("items")]
         [global::System.Text.Json.Serialization.JsonRequired]
-        public required global::System.Collections.Generic.IList<global::CursorAgents.ListAgentsResponseAgent> Agents { get; set; }
+        public required global::System.Collections.Generic.IList<global::CursorAgents.AgentSummary> Items { get; set; }
 
         /// <summary>
-        /// Cursor for fetching the next page of results<br/>
-        /// Example: bc_def456
+        /// Cursor for fetching the next page of results, or null when there are no more.<br/>
+        /// Example: bc-00000000-0000-0000-0000-000000000002
         /// </summary>
-        /// <example>bc_def456</example>
+        /// <example>bc-00000000-0000-0000-0000-000000000002</example>
         [global::System.Text.Json.Serialization.JsonPropertyName("nextCursor")]
         public string? NextCursor { get; set; }
 
@@ -32,21 +32,21 @@ namespace CursorAgents
         /// <summary>
         /// Initializes a new instance of the <see cref="ListAgentsResponse" /> class.
         /// </summary>
-        /// <param name="agents">
-        /// List of agents
+        /// <param name="items">
+        /// Agents, newest first.
         /// </param>
         /// <param name="nextCursor">
-        /// Cursor for fetching the next page of results<br/>
-        /// Example: bc_def456
+        /// Cursor for fetching the next page of results, or null when there are no more.<br/>
+        /// Example: bc-00000000-0000-0000-0000-000000000002
         /// </param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
 #endif
         public ListAgentsResponse(
-            global::System.Collections.Generic.IList<global::CursorAgents.ListAgentsResponseAgent> agents,
+            global::System.Collections.Generic.IList<global::CursorAgents.AgentSummary> items,
             string? nextCursor)
         {
-            this.Agents = agents ?? throw new global::System.ArgumentNullException(nameof(agents));
+            this.Items = items ?? throw new global::System.ArgumentNullException(nameof(items));
             this.NextCursor = nextCursor;
         }
 

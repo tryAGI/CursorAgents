@@ -9,19 +9,17 @@ namespace CursorAgents
     public sealed partial class CreateAgentRequestPrompt
     {
         /// <summary>
-        /// The task or instructions for the agent to execute<br/>
-        /// Example: Add a README.md file with installation instructions
+        /// Task instruction for the agent.<br/>
+        /// Example: Add a README with setup instructions
         /// </summary>
-        /// <example>Add a README.md file with installation instructions</example>
+        /// <example>Add a README with setup instructions</example>
         [global::System.Text.Json.Serialization.JsonPropertyName("text")]
         [global::System.Text.Json.Serialization.JsonRequired]
         public required string Text { get; set; }
 
         /// <summary>
-        /// Optional array of base64 encoded images (max 5)<br/>
-        /// Example: [{"data":"iVBORw0KGgoAAAANSUhEUgAA...","dimension":{"width":1024,"height":768}}]
+        /// Optional base64-encoded images. Maximum 5 images, 15 MB each.
         /// </summary>
-        /// <example>[{"data":"iVBORw0KGgoAAAANSUhEUgAA...","dimension":{"width":1024,"height":768}}]</example>
         [global::System.Text.Json.Serialization.JsonPropertyName("images")]
         public global::System.Collections.Generic.IList<global::CursorAgents.Image>? Images { get; set; }
 
@@ -35,12 +33,11 @@ namespace CursorAgents
         /// Initializes a new instance of the <see cref="CreateAgentRequestPrompt" /> class.
         /// </summary>
         /// <param name="text">
-        /// The task or instructions for the agent to execute<br/>
-        /// Example: Add a README.md file with installation instructions
+        /// Task instruction for the agent.<br/>
+        /// Example: Add a README with setup instructions
         /// </param>
         /// <param name="images">
-        /// Optional array of base64 encoded images (max 5)<br/>
-        /// Example: [{"data":"iVBORw0KGgoAAAANSUhEUgAA...","dimension":{"width":1024,"height":768}}]
+        /// Optional base64-encoded images. Maximum 5 images, 15 MB each.
         /// </param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]

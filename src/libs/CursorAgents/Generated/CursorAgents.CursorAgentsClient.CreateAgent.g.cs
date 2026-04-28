@@ -14,10 +14,10 @@ namespace CursorAgents
                 {                    new global::CursorAgents.EndPointAuthorizationRequirement
                     {
                         Type = "Http",
-                        SchemeId = "BearerAuth",
+                        SchemeId = "BasicAuth",
                         Location = "Header",
-                        Name = "Bearer",
-                        FriendlyName = "Bearer",
+                        Name = "Basic",
+                        FriendlyName = "Basic",
                     },
                 },
             };
@@ -42,8 +42,10 @@ namespace CursorAgents
             ref string content);
 
         /// <summary>
-        /// Launch an agent<br/>
-        /// Start a new cloud agent to work on your repository
+        /// Create an agent<br/>
+        /// Create a Cloud Agent and immediately enqueue its initial run.<br/>
+        /// The response contains both the durable `agent` and the initial<br/>
+        /// `run`.
         /// </summary>
         /// <param name="request"></param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
@@ -86,7 +88,7 @@ namespace CursorAgents
             global::System.Net.Http.HttpRequestMessage __CreateHttpRequest()
             {
                             var __pathBuilder = new global::CursorAgents.PathBuilder(
-                                path: "/v0/agents",
+                                path: "/v1/agents",
                                 baseUri: HttpClient.BaseAddress);
                             var __path = __pathBuilder.ToString();
                 __path = global::CursorAgents.AutoSDKRequestOptionsSupport.AppendQueryParameters(
@@ -153,7 +155,7 @@ namespace CursorAgents
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
                                 operationId: "CreateAgent",
                                 methodName: "CreateAgentAsync",
-                                pathTemplate: "\"/v0/agents\"",
+                                pathTemplate: "\"/v1/agents\"",
                                 httpMethod: "POST",
                                 baseUri: BaseUri,
                                 request: __httpRequest!,
@@ -180,7 +182,7 @@ namespace CursorAgents
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
                                 operationId: "CreateAgent",
                                 methodName: "CreateAgentAsync",
-                                pathTemplate: "\"/v0/agents\"",
+                                pathTemplate: "\"/v1/agents\"",
                                 httpMethod: "POST",
                                 baseUri: BaseUri,
                                 request: __httpRequest!,
@@ -215,7 +217,7 @@ namespace CursorAgents
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
                                 operationId: "CreateAgent",
                                 methodName: "CreateAgentAsync",
-                                pathTemplate: "\"/v0/agents\"",
+                                pathTemplate: "\"/v1/agents\"",
                                 httpMethod: "POST",
                                 baseUri: BaseUri,
                                 request: __httpRequest!,
@@ -262,7 +264,7 @@ namespace CursorAgents
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
                                 operationId: "CreateAgent",
                                 methodName: "CreateAgentAsync",
-                                pathTemplate: "\"/v0/agents\"",
+                                pathTemplate: "\"/v1/agents\"",
                                 httpMethod: "POST",
                                 baseUri: BaseUri,
                                 request: __httpRequest!,
@@ -282,7 +284,7 @@ namespace CursorAgents
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
                                 operationId: "CreateAgent",
                                 methodName: "CreateAgentAsync",
-                                pathTemplate: "\"/v0/agents\"",
+                                pathTemplate: "\"/v1/agents\"",
                                 httpMethod: "POST",
                                 baseUri: BaseUri,
                                 request: __httpRequest!,
@@ -295,7 +297,7 @@ namespace CursorAgents
                                 willRetry: false,
                                 cancellationToken: __effectiveCancellationToken)).ConfigureAwait(false);
                 }
-                            // Invalid request
+                            // Validation error or malformed request body.
                             if ((int)__response.StatusCode == 400)
                             {
                                 string? __content_400 = null;
@@ -333,7 +335,7 @@ namespace CursorAgents
                                         h => h.Value),
                                 };
                             }
-                            // Unauthorized - invalid or missing API key
+                            // Invalid or missing API key.
                             if ((int)__response.StatusCode == 401)
                             {
                                 string? __content_401 = null;
@@ -371,7 +373,7 @@ namespace CursorAgents
                                         h => h.Value),
                                 };
                             }
-                            // Forbidden - insufficient permissions, plan limits exceeded, or storage full
+                            // Authenticated but insufficient permissions, plan required, or feature unavailable.
                             if ((int)__response.StatusCode == 403)
                             {
                                 string? __content_403 = null;
@@ -409,7 +411,7 @@ namespace CursorAgents
                                         h => h.Value),
                                 };
                             }
-                            // Rate limit exceeded
+                            // Rate limit exceeded. Response includes `Retry-After`, `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` headers.
                             if ((int)__response.StatusCode == 429)
                             {
                                 string? __content_429 = null;
@@ -447,7 +449,7 @@ namespace CursorAgents
                                         h => h.Value),
                                 };
                             }
-                            // Internal server error
+                            // Internal server error.
                             if ((int)__response.StatusCode == 500)
                             {
                                 string? __content_500 = null;
@@ -578,26 +580,43 @@ namespace CursorAgents
             }
         }
         /// <summary>
-        /// Launch an agent<br/>
-        /// Start a new cloud agent to work on your repository
+        /// Create an agent<br/>
+        /// Create a Cloud Agent and immediately enqueue its initial run.<br/>
+        /// The response contains both the durable `agent` and the initial<br/>
+        /// `run`.
         /// </summary>
         /// <param name="prompt"></param>
-        /// <param name="model">
-        /// Set to an explicit model ID for launch requests, or use "default" to use the configured default model. When omitted, Cursor resolves your user default model, then your team default model, then a system default.<br/>
-        /// Example: claude-4-sonnet
+        /// <param name="model"></param>
+        /// <param name="repos">
+        /// Repository configuration. v1 currently supports one entry.
         /// </param>
-        /// <param name="source"></param>
-        /// <param name="target"></param>
-        /// <param name="webhook"></param>
+        /// <param name="branchName">
+        /// Custom branch name for the agent to create.<br/>
+        /// Example: feature/add-readme
+        /// </param>
+        /// <param name="autoGenerateBranch">
+        /// Whether to create a new branch (true) or push to an existing head branch (false). Only applies when `repos[0].prUrl` is provided.<br/>
+        /// Default Value: true
+        /// </param>
+        /// <param name="autoCreatePR">
+        /// Whether Cursor should open a pull request when the run completes.<br/>
+        /// Default Value: false
+        /// </param>
+        /// <param name="skipReviewerRequest">
+        /// Whether to skip requesting the user as a reviewer when Cursor opens a PR. Only applies when `autoCreatePR` is true.<br/>
+        /// Default Value: false
+        /// </param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
         /// <param name="cancellationToken">The token to cancel the operation with</param>
         /// <exception cref="global::System.InvalidOperationException"></exception>
         public async global::System.Threading.Tasks.Task<global::CursorAgents.CreateAgentResponse> CreateAgentAsync(
             global::CursorAgents.CreateAgentRequestPrompt prompt,
-            global::CursorAgents.CreateAgentRequestSource source,
-            string? model = default,
-            global::CursorAgents.CreateAgentRequestTarget? target = default,
-            global::CursorAgents.CreateAgentRequestWebhook? webhook = default,
+            global::System.Collections.Generic.IList<global::CursorAgents.RepoConfig> repos,
+            global::CursorAgents.ModelRef? model = default,
+            string? branchName = default,
+            bool? autoGenerateBranch = default,
+            bool? autoCreatePR = default,
+            bool? skipReviewerRequest = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default)
         {
@@ -605,9 +624,11 @@ namespace CursorAgents
             {
                 Prompt = prompt,
                 Model = model,
-                Source = source,
-                Target = target,
-                Webhook = webhook,
+                Repos = repos,
+                BranchName = branchName,
+                AutoGenerateBranch = autoGenerateBranch,
+                AutoCreatePR = autoCreatePR,
+                SkipReviewerRequest = skipReviewerRequest,
             };
 
             return await CreateAgentAsync(

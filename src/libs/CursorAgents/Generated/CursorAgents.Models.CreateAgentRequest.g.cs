@@ -16,31 +16,46 @@ namespace CursorAgents
         public required global::CursorAgents.CreateAgentRequestPrompt Prompt { get; set; }
 
         /// <summary>
-        /// Set to an explicit model ID for launch requests, or use "default" to use the configured default model. When omitted, Cursor resolves your user default model, then your team default model, then a system default.<br/>
-        /// Example: claude-4-sonnet
+        /// 
         /// </summary>
-        /// <example>claude-4-sonnet</example>
         [global::System.Text.Json.Serialization.JsonPropertyName("model")]
-        public string? Model { get; set; }
+        public global::CursorAgents.ModelRef? Model { get; set; }
 
         /// <summary>
-        /// 
+        /// Repository configuration. v1 currently supports one entry.
         /// </summary>
-        [global::System.Text.Json.Serialization.JsonPropertyName("source")]
+        [global::System.Text.Json.Serialization.JsonPropertyName("repos")]
         [global::System.Text.Json.Serialization.JsonRequired]
-        public required global::CursorAgents.CreateAgentRequestSource Source { get; set; }
+        public required global::System.Collections.Generic.IList<global::CursorAgents.RepoConfig> Repos { get; set; }
 
         /// <summary>
-        /// 
+        /// Custom branch name for the agent to create.<br/>
+        /// Example: feature/add-readme
         /// </summary>
-        [global::System.Text.Json.Serialization.JsonPropertyName("target")]
-        public global::CursorAgents.CreateAgentRequestTarget? Target { get; set; }
+        /// <example>feature/add-readme</example>
+        [global::System.Text.Json.Serialization.JsonPropertyName("branchName")]
+        public string? BranchName { get; set; }
 
         /// <summary>
-        /// 
+        /// Whether to create a new branch (true) or push to an existing head branch (false). Only applies when `repos[0].prUrl` is provided.<br/>
+        /// Default Value: true
         /// </summary>
-        [global::System.Text.Json.Serialization.JsonPropertyName("webhook")]
-        public global::CursorAgents.CreateAgentRequestWebhook? Webhook { get; set; }
+        [global::System.Text.Json.Serialization.JsonPropertyName("autoGenerateBranch")]
+        public bool? AutoGenerateBranch { get; set; }
+
+        /// <summary>
+        /// Whether Cursor should open a pull request when the run completes.<br/>
+        /// Default Value: false
+        /// </summary>
+        [global::System.Text.Json.Serialization.JsonPropertyName("autoCreatePR")]
+        public bool? AutoCreatePR { get; set; }
+
+        /// <summary>
+        /// Whether to skip requesting the user as a reviewer when Cursor opens a PR. Only applies when `autoCreatePR` is true.<br/>
+        /// Default Value: false
+        /// </summary>
+        [global::System.Text.Json.Serialization.JsonPropertyName("skipReviewerRequest")]
+        public bool? SkipReviewerRequest { get; set; }
 
         /// <summary>
         /// Additional properties that are not explicitly defined in the schema
@@ -52,28 +67,45 @@ namespace CursorAgents
         /// Initializes a new instance of the <see cref="CreateAgentRequest" /> class.
         /// </summary>
         /// <param name="prompt"></param>
-        /// <param name="source"></param>
-        /// <param name="model">
-        /// Set to an explicit model ID for launch requests, or use "default" to use the configured default model. When omitted, Cursor resolves your user default model, then your team default model, then a system default.<br/>
-        /// Example: claude-4-sonnet
+        /// <param name="repos">
+        /// Repository configuration. v1 currently supports one entry.
         /// </param>
-        /// <param name="target"></param>
-        /// <param name="webhook"></param>
+        /// <param name="model"></param>
+        /// <param name="branchName">
+        /// Custom branch name for the agent to create.<br/>
+        /// Example: feature/add-readme
+        /// </param>
+        /// <param name="autoGenerateBranch">
+        /// Whether to create a new branch (true) or push to an existing head branch (false). Only applies when `repos[0].prUrl` is provided.<br/>
+        /// Default Value: true
+        /// </param>
+        /// <param name="autoCreatePR">
+        /// Whether Cursor should open a pull request when the run completes.<br/>
+        /// Default Value: false
+        /// </param>
+        /// <param name="skipReviewerRequest">
+        /// Whether to skip requesting the user as a reviewer when Cursor opens a PR. Only applies when `autoCreatePR` is true.<br/>
+        /// Default Value: false
+        /// </param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
 #endif
         public CreateAgentRequest(
             global::CursorAgents.CreateAgentRequestPrompt prompt,
-            global::CursorAgents.CreateAgentRequestSource source,
-            string? model,
-            global::CursorAgents.CreateAgentRequestTarget? target,
-            global::CursorAgents.CreateAgentRequestWebhook? webhook)
+            global::System.Collections.Generic.IList<global::CursorAgents.RepoConfig> repos,
+            global::CursorAgents.ModelRef? model,
+            string? branchName,
+            bool? autoGenerateBranch,
+            bool? autoCreatePR,
+            bool? skipReviewerRequest)
         {
             this.Prompt = prompt ?? throw new global::System.ArgumentNullException(nameof(prompt));
             this.Model = model;
-            this.Source = source ?? throw new global::System.ArgumentNullException(nameof(source));
-            this.Target = target;
-            this.Webhook = webhook;
+            this.Repos = repos ?? throw new global::System.ArgumentNullException(nameof(repos));
+            this.BranchName = branchName;
+            this.AutoGenerateBranch = autoGenerateBranch;
+            this.AutoCreatePR = autoCreatePR;
+            this.SkipReviewerRequest = skipReviewerRequest;
         }
 
         /// <summary>

@@ -9,13 +9,13 @@ namespace CursorAgents
     public sealed partial class ListModelsResponse
     {
         /// <summary>
-        /// Array of recommended explicit model IDs<br/>
-        /// Example: [claude-4-sonnet-thinking, gpt-5.2, claude-4.5-sonnet-thinking]
+        /// Recommended set of explicit model IDs you can pass to the `model.id` field on POST /v1/agents.<br/>
+        /// Example: [composer-2, gpt-5.5, claude-4.6-sonnet-thinking]
         /// </summary>
-        /// <example>[claude-4-sonnet-thinking, gpt-5.2, claude-4.5-sonnet-thinking]</example>
-        [global::System.Text.Json.Serialization.JsonPropertyName("models")]
+        /// <example>[composer-2, gpt-5.5, claude-4.6-sonnet-thinking]</example>
+        [global::System.Text.Json.Serialization.JsonPropertyName("items")]
         [global::System.Text.Json.Serialization.JsonRequired]
-        public required global::System.Collections.Generic.IList<string> Models { get; set; }
+        public required global::System.Collections.Generic.IList<string> Items { get; set; }
 
         /// <summary>
         /// Additional properties that are not explicitly defined in the schema
@@ -26,17 +26,17 @@ namespace CursorAgents
         /// <summary>
         /// Initializes a new instance of the <see cref="ListModelsResponse" /> class.
         /// </summary>
-        /// <param name="models">
-        /// Array of recommended explicit model IDs<br/>
-        /// Example: [claude-4-sonnet-thinking, gpt-5.2, claude-4.5-sonnet-thinking]
+        /// <param name="items">
+        /// Recommended set of explicit model IDs you can pass to the `model.id` field on POST /v1/agents.<br/>
+        /// Example: [composer-2, gpt-5.5, claude-4.6-sonnet-thinking]
         /// </param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
 #endif
         public ListModelsResponse(
-            global::System.Collections.Generic.IList<string> models)
+            global::System.Collections.Generic.IList<string> items)
         {
-            this.Models = models ?? throw new global::System.ArgumentNullException(nameof(models));
+            this.Items = items ?? throw new global::System.ArgumentNullException(nameof(items));
         }
 
         /// <summary>

@@ -14,10 +14,10 @@ namespace CursorAgents
                 {                    new global::CursorAgents.EndPointAuthorizationRequirement
                     {
                         Type = "Http",
-                        SchemeId = "BearerAuth",
+                        SchemeId = "BasicAuth",
                         Location = "Header",
-                        Name = "Bearer",
-                        FriendlyName = "Bearer",
+                        Name = "Basic",
+                        FriendlyName = "Basic",
                     },
                 },
             };
@@ -29,13 +29,15 @@ namespace CursorAgents
             global::System.Net.Http.HttpClient httpClient,
             ref int? limit,
             ref string? cursor,
-            ref string? prUrl);
+            ref string? prUrl,
+            ref bool? includeArchived);
         partial void PrepareListAgentsRequest(
             global::System.Net.Http.HttpClient httpClient,
             global::System.Net.Http.HttpRequestMessage httpRequestMessage,
             int? limit,
             string? cursor,
-            string? prUrl);
+            string? prUrl,
+            bool? includeArchived);
         partial void ProcessListAgentsResponse(
             global::System.Net.Http.HttpClient httpClient,
             global::System.Net.Http.HttpResponseMessage httpResponseMessage);
@@ -47,16 +49,15 @@ namespace CursorAgents
 
         /// <summary>
         /// List agents<br/>
-        /// List all cloud agents for the authenticated user
+        /// List agents for the authenticated user, newest first.
         /// </summary>
         /// <param name="limit">
         /// Default Value: 20
         /// </param>
-        /// <param name="cursor">
-        /// Example: bc_xyz789
-        /// </param>
-        /// <param name="prUrl">
-        /// Example: https://github.com/your-org/your-repo/pull/123
+        /// <param name="cursor"></param>
+        /// <param name="prUrl"></param>
+        /// <param name="includeArchived">
+        /// Default Value: true
         /// </param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
         /// <param name="cancellationToken">The token to cancel the operation with</param>
@@ -65,6 +66,7 @@ namespace CursorAgents
             int? limit = default,
             string? cursor = default,
             string? prUrl = default,
+            bool? includeArchived = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default)
         {
@@ -74,7 +76,8 @@ namespace CursorAgents
                 httpClient: HttpClient,
                 limit: ref limit,
                 cursor: ref cursor,
-                prUrl: ref prUrl);
+                prUrl: ref prUrl,
+                includeArchived: ref includeArchived);
 
 
             var __authorizations = global::CursorAgents.EndPointSecurityResolver.ResolveAuthorizations(
@@ -99,12 +102,13 @@ namespace CursorAgents
             global::System.Net.Http.HttpRequestMessage __CreateHttpRequest()
             {
                             var __pathBuilder = new global::CursorAgents.PathBuilder(
-                                path: "/v0/agents",
+                                path: "/v1/agents",
                                 baseUri: HttpClient.BaseAddress); 
                             __pathBuilder
                                 .AddOptionalParameter("limit", limit?.ToString())
                                 .AddOptionalParameter("cursor", cursor)
-                                .AddOptionalParameter("prUrl", prUrl) 
+                                .AddOptionalParameter("prUrl", prUrl)
+                                .AddOptionalParameter("includeArchived", includeArchived?.ToString().ToLowerInvariant()) 
                                 ;
                             var __path = __pathBuilder.ToString();
                 __path = global::CursorAgents.AutoSDKRequestOptionsSupport.AppendQueryParameters(
@@ -148,7 +152,8 @@ namespace CursorAgents
                     httpRequestMessage: __httpRequest,
                     limit: limit,
                     cursor: cursor,
-                    prUrl: prUrl);
+                    prUrl: prUrl,
+                    includeArchived: includeArchived);
 
                 return __httpRequest;
             }
@@ -167,7 +172,7 @@ namespace CursorAgents
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
                                 operationId: "ListAgents",
                                 methodName: "ListAgentsAsync",
-                                pathTemplate: "\"/v0/agents\"",
+                                pathTemplate: "\"/v1/agents\"",
                                 httpMethod: "GET",
                                 baseUri: BaseUri,
                                 request: __httpRequest!,
@@ -194,7 +199,7 @@ namespace CursorAgents
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
                                 operationId: "ListAgents",
                                 methodName: "ListAgentsAsync",
-                                pathTemplate: "\"/v0/agents\"",
+                                pathTemplate: "\"/v1/agents\"",
                                 httpMethod: "GET",
                                 baseUri: BaseUri,
                                 request: __httpRequest!,
@@ -229,7 +234,7 @@ namespace CursorAgents
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
                                 operationId: "ListAgents",
                                 methodName: "ListAgentsAsync",
-                                pathTemplate: "\"/v0/agents\"",
+                                pathTemplate: "\"/v1/agents\"",
                                 httpMethod: "GET",
                                 baseUri: BaseUri,
                                 request: __httpRequest!,
@@ -276,7 +281,7 @@ namespace CursorAgents
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
                                 operationId: "ListAgents",
                                 methodName: "ListAgentsAsync",
-                                pathTemplate: "\"/v0/agents\"",
+                                pathTemplate: "\"/v1/agents\"",
                                 httpMethod: "GET",
                                 baseUri: BaseUri,
                                 request: __httpRequest!,
@@ -296,7 +301,7 @@ namespace CursorAgents
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
                                 operationId: "ListAgents",
                                 methodName: "ListAgentsAsync",
-                                pathTemplate: "\"/v0/agents\"",
+                                pathTemplate: "\"/v1/agents\"",
                                 httpMethod: "GET",
                                 baseUri: BaseUri,
                                 request: __httpRequest!,
@@ -309,7 +314,7 @@ namespace CursorAgents
                                 willRetry: false,
                                 cancellationToken: __effectiveCancellationToken)).ConfigureAwait(false);
                 }
-                            // Invalid request - bad query parameters
+                            // Validation error or malformed request body.
                             if ((int)__response.StatusCode == 400)
                             {
                                 string? __content_400 = null;
@@ -347,7 +352,7 @@ namespace CursorAgents
                                         h => h.Value),
                                 };
                             }
-                            // Unauthorized - invalid or missing API key
+                            // Invalid or missing API key.
                             if ((int)__response.StatusCode == 401)
                             {
                                 string? __content_401 = null;
@@ -385,7 +390,7 @@ namespace CursorAgents
                                         h => h.Value),
                                 };
                             }
-                            // Forbidden - insufficient permissions
+                            // Authenticated but insufficient permissions, plan required, or feature unavailable.
                             if ((int)__response.StatusCode == 403)
                             {
                                 string? __content_403 = null;
@@ -423,7 +428,7 @@ namespace CursorAgents
                                         h => h.Value),
                                 };
                             }
-                            // Rate limit exceeded
+                            // Rate limit exceeded. Response includes `Retry-After`, `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` headers.
                             if ((int)__response.StatusCode == 429)
                             {
                                 string? __content_429 = null;
@@ -461,7 +466,7 @@ namespace CursorAgents
                                         h => h.Value),
                                 };
                             }
-                            // Internal server error
+                            // Internal server error.
                             if ((int)__response.StatusCode == 500)
                             {
                                 string? __content_500 = null;

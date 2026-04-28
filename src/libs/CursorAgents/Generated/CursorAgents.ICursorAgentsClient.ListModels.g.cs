@@ -5,8 +5,11 @@ namespace CursorAgents
     public partial interface ICursorAgentsClient
     {
         /// <summary>
-        /// List available models<br/>
-        /// Returns a recommended set of explicit model IDs for launch requests. This list excludes "default".
+        /// List models<br/>
+        /// Returns a recommended set of explicit model IDs you can pass<br/>
+        /// to the `model.id` field on POST /v1/agents. To use the<br/>
+        /// configured default model, omit the `model` field from the<br/>
+        /// request body entirely.
         /// </summary>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
         /// <param name="cancellationToken">The token to cancel the operation with</param>

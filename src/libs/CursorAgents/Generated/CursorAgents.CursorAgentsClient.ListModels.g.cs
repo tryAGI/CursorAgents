@@ -14,10 +14,10 @@ namespace CursorAgents
                 {                    new global::CursorAgents.EndPointAuthorizationRequirement
                     {
                         Type = "Http",
-                        SchemeId = "BearerAuth",
+                        SchemeId = "BasicAuth",
                         Location = "Header",
-                        Name = "Bearer",
-                        FriendlyName = "Bearer",
+                        Name = "Basic",
+                        FriendlyName = "Basic",
                     },
                 },
             };
@@ -40,8 +40,11 @@ namespace CursorAgents
             ref string content);
 
         /// <summary>
-        /// List available models<br/>
-        /// Returns a recommended set of explicit model IDs for launch requests. This list excludes "default".
+        /// List models<br/>
+        /// Returns a recommended set of explicit model IDs you can pass<br/>
+        /// to the `model.id` field on POST /v1/agents. To use the<br/>
+        /// configured default model, omit the `model` field from the<br/>
+        /// request body entirely.
         /// </summary>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
         /// <param name="cancellationToken">The token to cancel the operation with</param>
@@ -78,7 +81,7 @@ namespace CursorAgents
             global::System.Net.Http.HttpRequestMessage __CreateHttpRequest()
             {
                             var __pathBuilder = new global::CursorAgents.PathBuilder(
-                                path: "/v0/models",
+                                path: "/v1/models",
                                 baseUri: HttpClient.BaseAddress);
                             var __path = __pathBuilder.ToString();
                 __path = global::CursorAgents.AutoSDKRequestOptionsSupport.AppendQueryParameters(
@@ -138,7 +141,7 @@ namespace CursorAgents
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
                                 operationId: "ListModels",
                                 methodName: "ListModelsAsync",
-                                pathTemplate: "\"/v0/models\"",
+                                pathTemplate: "\"/v1/models\"",
                                 httpMethod: "GET",
                                 baseUri: BaseUri,
                                 request: __httpRequest!,
@@ -165,7 +168,7 @@ namespace CursorAgents
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
                                 operationId: "ListModels",
                                 methodName: "ListModelsAsync",
-                                pathTemplate: "\"/v0/models\"",
+                                pathTemplate: "\"/v1/models\"",
                                 httpMethod: "GET",
                                 baseUri: BaseUri,
                                 request: __httpRequest!,
@@ -200,7 +203,7 @@ namespace CursorAgents
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
                                 operationId: "ListModels",
                                 methodName: "ListModelsAsync",
-                                pathTemplate: "\"/v0/models\"",
+                                pathTemplate: "\"/v1/models\"",
                                 httpMethod: "GET",
                                 baseUri: BaseUri,
                                 request: __httpRequest!,
@@ -247,7 +250,7 @@ namespace CursorAgents
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
                                 operationId: "ListModels",
                                 methodName: "ListModelsAsync",
-                                pathTemplate: "\"/v0/models\"",
+                                pathTemplate: "\"/v1/models\"",
                                 httpMethod: "GET",
                                 baseUri: BaseUri,
                                 request: __httpRequest!,
@@ -267,7 +270,7 @@ namespace CursorAgents
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
                                 operationId: "ListModels",
                                 methodName: "ListModelsAsync",
-                                pathTemplate: "\"/v0/models\"",
+                                pathTemplate: "\"/v1/models\"",
                                 httpMethod: "GET",
                                 baseUri: BaseUri,
                                 request: __httpRequest!,
@@ -280,7 +283,7 @@ namespace CursorAgents
                                 willRetry: false,
                                 cancellationToken: __effectiveCancellationToken)).ConfigureAwait(false);
                 }
-                            // Unauthorized - invalid or missing API key
+                            // Invalid or missing API key.
                             if ((int)__response.StatusCode == 401)
                             {
                                 string? __content_401 = null;
@@ -318,7 +321,7 @@ namespace CursorAgents
                                         h => h.Value),
                                 };
                             }
-                            // Rate limit exceeded
+                            // Rate limit exceeded. Response includes `Retry-After`, `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` headers.
                             if ((int)__response.StatusCode == 429)
                             {
                                 string? __content_429 = null;
@@ -356,7 +359,7 @@ namespace CursorAgents
                                         h => h.Value),
                                 };
                             }
-                            // Internal server error
+                            // Internal server error.
                             if ((int)__response.StatusCode == 500)
                             {
                                 string? __content_500 = null;

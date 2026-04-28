@@ -6,16 +6,15 @@ namespace CursorAgents
     {
         /// <summary>
         /// List agents<br/>
-        /// List all cloud agents for the authenticated user
+        /// List agents for the authenticated user, newest first.
         /// </summary>
         /// <param name="limit">
         /// Default Value: 20
         /// </param>
-        /// <param name="cursor">
-        /// Example: bc_xyz789
-        /// </param>
-        /// <param name="prUrl">
-        /// Example: https://github.com/your-org/your-repo/pull/123
+        /// <param name="cursor"></param>
+        /// <param name="prUrl"></param>
+        /// <param name="includeArchived">
+        /// Default Value: true
         /// </param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
         /// <param name="cancellationToken">The token to cancel the operation with</param>
@@ -24,6 +23,7 @@ namespace CursorAgents
             int? limit = default,
             string? cursor = default,
             string? prUrl = default,
+            bool? includeArchived = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default);
     }

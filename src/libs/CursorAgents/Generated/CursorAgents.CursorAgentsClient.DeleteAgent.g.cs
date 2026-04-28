@@ -14,10 +14,10 @@ namespace CursorAgents
                 {                    new global::CursorAgents.EndPointAuthorizationRequirement
                     {
                         Type = "Http",
-                        SchemeId = "BearerAuth",
+                        SchemeId = "BasicAuth",
                         Location = "Header",
-                        Name = "Bearer",
-                        FriendlyName = "Bearer",
+                        Name = "Basic",
+                        FriendlyName = "Basic",
                     },
                 },
             };
@@ -42,16 +42,16 @@ namespace CursorAgents
             ref string content);
 
         /// <summary>
-        /// Delete an agent<br/>
-        /// Delete a cloud agent. This action is permanent and cannot be undone.
+        /// Delete an agent permanently<br/>
+        /// Permanently delete an agent. This action is irreversible. Use POST /v1/agents/{id}/archive for reversible removal.
         /// </summary>
         /// <param name="id">
-        /// Example: bc_abc123
+        /// Example: bc-00000000-0000-0000-0000-000000000001
         /// </param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
         /// <param name="cancellationToken">The token to cancel the operation with</param>
         /// <exception cref="global::CursorAgents.ApiException"></exception>
-        public async global::System.Threading.Tasks.Task<global::CursorAgents.DeleteAgentResponse> DeleteAgentAsync(
+        public async global::System.Threading.Tasks.Task<global::CursorAgents.IdResponse> DeleteAgentAsync(
             string id,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default)
@@ -85,7 +85,7 @@ namespace CursorAgents
             global::System.Net.Http.HttpRequestMessage __CreateHttpRequest()
             {
                             var __pathBuilder = new global::CursorAgents.PathBuilder(
-                                path: $"/v0/agents/{id}",
+                                path: $"/v1/agents/{id}",
                                 baseUri: HttpClient.BaseAddress);
                             var __path = __pathBuilder.ToString();
                 __path = global::CursorAgents.AutoSDKRequestOptionsSupport.AppendQueryParameters(
@@ -146,7 +146,7 @@ namespace CursorAgents
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
                                 operationId: "DeleteAgent",
                                 methodName: "DeleteAgentAsync",
-                                pathTemplate: "$\"/v0/agents/{id}\"",
+                                pathTemplate: "$\"/v1/agents/{id}\"",
                                 httpMethod: "DELETE",
                                 baseUri: BaseUri,
                                 request: __httpRequest!,
@@ -173,7 +173,7 @@ namespace CursorAgents
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
                                 operationId: "DeleteAgent",
                                 methodName: "DeleteAgentAsync",
-                                pathTemplate: "$\"/v0/agents/{id}\"",
+                                pathTemplate: "$\"/v1/agents/{id}\"",
                                 httpMethod: "DELETE",
                                 baseUri: BaseUri,
                                 request: __httpRequest!,
@@ -208,7 +208,7 @@ namespace CursorAgents
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
                                 operationId: "DeleteAgent",
                                 methodName: "DeleteAgentAsync",
-                                pathTemplate: "$\"/v0/agents/{id}\"",
+                                pathTemplate: "$\"/v1/agents/{id}\"",
                                 httpMethod: "DELETE",
                                 baseUri: BaseUri,
                                 request: __httpRequest!,
@@ -255,7 +255,7 @@ namespace CursorAgents
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
                                 operationId: "DeleteAgent",
                                 methodName: "DeleteAgentAsync",
-                                pathTemplate: "$\"/v0/agents/{id}\"",
+                                pathTemplate: "$\"/v1/agents/{id}\"",
                                 httpMethod: "DELETE",
                                 baseUri: BaseUri,
                                 request: __httpRequest!,
@@ -275,7 +275,7 @@ namespace CursorAgents
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
                                 operationId: "DeleteAgent",
                                 methodName: "DeleteAgentAsync",
-                                pathTemplate: "$\"/v0/agents/{id}\"",
+                                pathTemplate: "$\"/v1/agents/{id}\"",
                                 httpMethod: "DELETE",
                                 baseUri: BaseUri,
                                 request: __httpRequest!,
@@ -288,45 +288,7 @@ namespace CursorAgents
                                 willRetry: false,
                                 cancellationToken: __effectiveCancellationToken)).ConfigureAwait(false);
                 }
-                            // Invalid request - bad agent ID format
-                            if ((int)__response.StatusCode == 400)
-                            {
-                                string? __content_400 = null;
-                                global::System.Exception? __exception_400 = null;
-                                global::CursorAgents.Error? __value_400 = null;
-                                try
-                                {
-                                    if (__effectiveReadResponseAsString)
-                                    {
-                                        __content_400 = await __response.Content.ReadAsStringAsync(__effectiveCancellationToken).ConfigureAwait(false);
-                                        __value_400 = global::CursorAgents.Error.FromJson(__content_400, JsonSerializerContext);
-                                    }
-                                    else
-                                    {
-                                        __content_400 = await __response.Content.ReadAsStringAsync(__effectiveCancellationToken).ConfigureAwait(false);
-
-                                        __value_400 = global::CursorAgents.Error.FromJson(__content_400, JsonSerializerContext);
-                                    }
-                                }
-                                catch (global::System.Exception __ex)
-                                {
-                                    __exception_400 = __ex;
-                                }
-
-                                throw new global::CursorAgents.ApiException<global::CursorAgents.Error>(
-                                    message: __content_400 ?? __response.ReasonPhrase ?? string.Empty,
-                                    innerException: __exception_400,
-                                    statusCode: __response.StatusCode)
-                                {
-                                    ResponseBody = __content_400,
-                                    ResponseObject = __value_400,
-                                    ResponseHeaders = global::System.Linq.Enumerable.ToDictionary(
-                                        __response.Headers,
-                                        h => h.Key,
-                                        h => h.Value),
-                                };
-                            }
-                            // Unauthorized - invalid or missing API key
+                            // Invalid or missing API key.
                             if ((int)__response.StatusCode == 401)
                             {
                                 string? __content_401 = null;
@@ -364,7 +326,7 @@ namespace CursorAgents
                                         h => h.Value),
                                 };
                             }
-                            // Forbidden - insufficient permissions
+                            // Authenticated but insufficient permissions, plan required, or feature unavailable.
                             if ((int)__response.StatusCode == 403)
                             {
                                 string? __content_403 = null;
@@ -402,7 +364,7 @@ namespace CursorAgents
                                         h => h.Value),
                                 };
                             }
-                            // Agent not found or access denied
+                            // Agent or run not found.
                             if ((int)__response.StatusCode == 404)
                             {
                                 string? __content_404 = null;
@@ -440,45 +402,7 @@ namespace CursorAgents
                                         h => h.Value),
                                 };
                             }
-                            // Conflict - agent is deleted or archived
-                            if ((int)__response.StatusCode == 409)
-                            {
-                                string? __content_409 = null;
-                                global::System.Exception? __exception_409 = null;
-                                global::CursorAgents.Error? __value_409 = null;
-                                try
-                                {
-                                    if (__effectiveReadResponseAsString)
-                                    {
-                                        __content_409 = await __response.Content.ReadAsStringAsync(__effectiveCancellationToken).ConfigureAwait(false);
-                                        __value_409 = global::CursorAgents.Error.FromJson(__content_409, JsonSerializerContext);
-                                    }
-                                    else
-                                    {
-                                        __content_409 = await __response.Content.ReadAsStringAsync(__effectiveCancellationToken).ConfigureAwait(false);
-
-                                        __value_409 = global::CursorAgents.Error.FromJson(__content_409, JsonSerializerContext);
-                                    }
-                                }
-                                catch (global::System.Exception __ex)
-                                {
-                                    __exception_409 = __ex;
-                                }
-
-                                throw new global::CursorAgents.ApiException<global::CursorAgents.Error>(
-                                    message: __content_409 ?? __response.ReasonPhrase ?? string.Empty,
-                                    innerException: __exception_409,
-                                    statusCode: __response.StatusCode)
-                                {
-                                    ResponseBody = __content_409,
-                                    ResponseObject = __value_409,
-                                    ResponseHeaders = global::System.Linq.Enumerable.ToDictionary(
-                                        __response.Headers,
-                                        h => h.Key,
-                                        h => h.Value),
-                                };
-                            }
-                            // Rate limit exceeded
+                            // Rate limit exceeded. Response includes `Retry-After`, `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` headers.
                             if ((int)__response.StatusCode == 429)
                             {
                                 string? __content_429 = null;
@@ -516,7 +440,7 @@ namespace CursorAgents
                                         h => h.Value),
                                 };
                             }
-                            // Internal server error
+                            // Internal server error.
                             if ((int)__response.StatusCode == 500)
                             {
                                 string? __content_500 = null;
@@ -577,7 +501,7 @@ namespace CursorAgents
                                     __response.EnsureSuccessStatusCode();
 
                                     return
-                                        global::CursorAgents.DeleteAgentResponse.FromJson(__content, JsonSerializerContext) ??
+                                        global::CursorAgents.IdResponse.FromJson(__content, JsonSerializerContext) ??
                                         throw new global::System.InvalidOperationException($"Response deserialization failed for \"{__content}\" ");
                                 }
                                 catch (global::System.Exception __ex)
@@ -607,7 +531,7 @@ namespace CursorAgents
                                     ).ConfigureAwait(false);
 
                                     return
-                                        await global::CursorAgents.DeleteAgentResponse.FromJsonStreamAsync(__content, JsonSerializerContext).ConfigureAwait(false) ??
+                                        await global::CursorAgents.IdResponse.FromJsonStreamAsync(__content, JsonSerializerContext).ConfigureAwait(false) ??
                                         throw new global::System.InvalidOperationException("Response deserialization failed.");
                                 }
                                 catch (global::System.Exception __ex)

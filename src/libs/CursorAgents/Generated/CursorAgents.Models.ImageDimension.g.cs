@@ -9,14 +9,14 @@ namespace CursorAgents
     public sealed partial class ImageDimension
     {
         /// <summary>
-        /// Width must be a positive integer
+        /// Width in pixels
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("width")]
         [global::System.Text.Json.Serialization.JsonRequired]
         public required int Width { get; set; }
 
         /// <summary>
-        /// Height must be a positive integer
+        /// Height in pixels
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("height")]
         [global::System.Text.Json.Serialization.JsonRequired]
@@ -32,10 +32,10 @@ namespace CursorAgents
         /// Initializes a new instance of the <see cref="ImageDimension" /> class.
         /// </summary>
         /// <param name="width">
-        /// Width must be a positive integer
+        /// Width in pixels
         /// </param>
         /// <param name="height">
-        /// Height must be a positive integer
+        /// Height in pixels
         /// </param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]

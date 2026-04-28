@@ -12,7 +12,8 @@ namespace CursorAgents
         /// 
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("error")]
-        public global::CursorAgents.ErrorError1? Error1 { get; set; }
+        [global::System.Text.Json.Serialization.JsonRequired]
+        public required global::CursorAgents.ErrorError1 Error1 { get; set; }
 
         /// <summary>
         /// Additional properties that are not explicitly defined in the schema
@@ -28,9 +29,9 @@ namespace CursorAgents
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
 #endif
         public Error(
-            global::CursorAgents.ErrorError1? error1)
+            global::CursorAgents.ErrorError1 error1)
         {
-            this.Error1 = error1;
+            this.Error1 = error1 ?? throw new global::System.ArgumentNullException(nameof(error1));
         }
 
         /// <summary>

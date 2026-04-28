@@ -9,16 +9,16 @@ namespace CursorAgents
     public sealed partial class Artifact
     {
         /// <summary>
-        /// Absolute artifact path in the cloud agent environment<br/>
-        /// Example: /opt/cursor/artifacts/screenshot.png
+        /// Artifact path relative to the workspace's `artifacts/` directory.<br/>
+        /// Example: artifacts/screenshot.png
         /// </summary>
-        /// <example>/opt/cursor/artifacts/screenshot.png</example>
-        [global::System.Text.Json.Serialization.JsonPropertyName("absolutePath")]
+        /// <example>artifacts/screenshot.png</example>
+        [global::System.Text.Json.Serialization.JsonPropertyName("path")]
         [global::System.Text.Json.Serialization.JsonRequired]
-        public required string AbsolutePath { get; set; }
+        public required string Path { get; set; }
 
         /// <summary>
-        /// Artifact file size in bytes<br/>
+        /// File size in bytes.<br/>
         /// Example: 12345
         /// </summary>
         /// <example>12345</example>
@@ -27,10 +27,8 @@ namespace CursorAgents
         public required long SizeBytes { get; set; }
 
         /// <summary>
-        /// Last modified timestamp for the artifact<br/>
-        /// Example: 2024-01-15T11:02:00.000Z
+        /// Last modified timestamp.
         /// </summary>
-        /// <example>2024-01-15T11:02:00.000Z</example>
         [global::System.Text.Json.Serialization.JsonPropertyName("updatedAt")]
         [global::System.Text.Json.Serialization.JsonRequired]
         public required global::System.DateTime UpdatedAt { get; set; }
@@ -44,27 +42,26 @@ namespace CursorAgents
         /// <summary>
         /// Initializes a new instance of the <see cref="Artifact" /> class.
         /// </summary>
-        /// <param name="absolutePath">
-        /// Absolute artifact path in the cloud agent environment<br/>
-        /// Example: /opt/cursor/artifacts/screenshot.png
+        /// <param name="path">
+        /// Artifact path relative to the workspace's `artifacts/` directory.<br/>
+        /// Example: artifacts/screenshot.png
         /// </param>
         /// <param name="sizeBytes">
-        /// Artifact file size in bytes<br/>
+        /// File size in bytes.<br/>
         /// Example: 12345
         /// </param>
         /// <param name="updatedAt">
-        /// Last modified timestamp for the artifact<br/>
-        /// Example: 2024-01-15T11:02:00.000Z
+        /// Last modified timestamp.
         /// </param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
 #endif
         public Artifact(
-            string absolutePath,
+            string path,
             long sizeBytes,
             global::System.DateTime updatedAt)
         {
-            this.AbsolutePath = absolutePath ?? throw new global::System.ArgumentNullException(nameof(absolutePath));
+            this.Path = path ?? throw new global::System.ArgumentNullException(nameof(path));
             this.SizeBytes = sizeBytes;
             this.UpdatedAt = updatedAt;
         }

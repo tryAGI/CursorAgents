@@ -9,7 +9,7 @@ namespace CursorAgents
     public sealed partial class Image
     {
         /// <summary>
-        /// Base64 encoded image data<br/>
+        /// Base64 encoded image data (max 15 MB)<br/>
         /// Example: iVBORw0KGgoAAAANSUhEUgAA...
         /// </summary>
         /// <example>iVBORw0KGgoAAAANSUhEUgAA...</example>
@@ -33,7 +33,7 @@ namespace CursorAgents
         /// Initializes a new instance of the <see cref="Image" /> class.
         /// </summary>
         /// <param name="data">
-        /// Base64 encoded image data<br/>
+        /// Base64 encoded image data (max 15 MB)<br/>
         /// Example: iVBORw0KGgoAAAANSUhEUgAA...
         /// </param>
         /// <param name="dimension"></param>

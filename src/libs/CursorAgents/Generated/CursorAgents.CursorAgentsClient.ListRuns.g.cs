@@ -143,7 +143,7 @@ namespace CursorAgents
                 PrepareListRunsRequest(
                     httpClient: HttpClient,
                     httpRequestMessage: __httpRequest,
-                    id: id,
+                    id: id!,
                     limit: limit,
                     cursor: cursor);
 

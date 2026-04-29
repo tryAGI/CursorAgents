@@ -139,8 +139,8 @@ namespace CursorAgents
                 PrepareDownloadArtifactRequest(
                     httpClient: HttpClient,
                     httpRequestMessage: __httpRequest,
-                    id: id,
-                    path: path);
+                    id: id!,
+                    path: path!);
 
                 return __httpRequest;
             }

@@ -134,8 +134,8 @@ namespace CursorAgents
                 PrepareGetRunRequest(
                     httpClient: HttpClient,
                     httpRequestMessage: __httpRequest,
-                    id: id,
-                    runId: runId);
+                    id: id!,
+                    runId: runId!);
 
                 return __httpRequest;
             }

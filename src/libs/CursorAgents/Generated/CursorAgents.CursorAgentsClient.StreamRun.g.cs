@@ -146,8 +146,8 @@ namespace CursorAgents
                 PrepareStreamRunRequest(
                     httpClient: HttpClient,
                     httpRequestMessage: __httpRequest,
-                    id: id,
-                    runId: runId,
+                    id: id!,
+                    runId: runId!,
                     lastEventId: lastEventId);
 
                 return __httpRequest;

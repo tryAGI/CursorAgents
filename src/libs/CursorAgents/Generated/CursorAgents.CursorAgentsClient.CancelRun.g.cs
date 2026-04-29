@@ -138,8 +138,8 @@ namespace CursorAgents
                 PrepareCancelRunRequest(
                     httpClient: HttpClient,
                     httpRequestMessage: __httpRequest,
-                    id: id,
-                    runId: runId);
+                    id: id!,
+                    runId: runId!);
 
                 return __httpRequest;
             }

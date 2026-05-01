@@ -48,175 +48,187 @@ namespace CursorAgents
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.RepoConfig? Type5 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.ModelRefParam>? Type5 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.AgentEnv? Type6 { get; set; }
+        public global::CursorAgents.ModelRefParam? Type6 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.AgentSummary? Type7 { get; set; }
+        public global::CursorAgents.RepoConfig? Type7 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.AgentSummaryStatus? Type8 { get; set; }
+        public global::CursorAgents.AgentEnv? Type8 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::System.DateTime? Type9 { get; set; }
+        public global::CursorAgents.AgentSummary? Type9 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.Agent? Type10 { get; set; }
+        public global::CursorAgents.AgentSummaryStatus? Type10 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.AgentVariant2? Type11 { get; set; }
+        public global::System.DateTime? Type11 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.RepoConfig>? Type12 { get; set; }
+        public global::CursorAgents.Agent? Type12 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public bool? Type13 { get; set; }
+        public global::CursorAgents.AgentVariant2? Type13 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.Run? Type14 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.RepoConfig>? Type14 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.RunStatus? Type15 { get; set; }
+        public bool? Type15 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.CreateAgentRequest? Type16 { get; set; }
+        public global::CursorAgents.Run? Type16 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.CreateAgentRequestPrompt? Type17 { get; set; }
+        public global::CursorAgents.RunStatus? Type17 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.Image>? Type18 { get; set; }
+        public global::CursorAgents.CreateAgentRequest? Type18 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.CreateRunRequest? Type19 { get; set; }
+        public global::CursorAgents.CreateAgentRequestPrompt? Type19 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.CreateRunRequestPrompt? Type20 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.Image>? Type20 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.CreateAgentResponse? Type21 { get; set; }
+        public global::CursorAgents.CreateRunRequest? Type21 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.CreateRunResponse? Type22 { get; set; }
+        public global::CursorAgents.CreateRunRequestPrompt? Type22 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.ListAgentsResponse? Type23 { get; set; }
+        public global::CursorAgents.CreateAgentResponse? Type23 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.AgentSummary>? Type24 { get; set; }
+        public global::CursorAgents.CreateRunResponse? Type24 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.ListRunsResponse? Type25 { get; set; }
+        public global::CursorAgents.ListAgentsResponse? Type25 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.Run>? Type26 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.AgentSummary>? Type26 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.IdResponse? Type27 { get; set; }
+        public global::CursorAgents.ListRunsResponse? Type27 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.Artifact? Type28 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.Run>? Type28 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public long? Type29 { get; set; }
+        public global::CursorAgents.IdResponse? Type29 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.ListArtifactsResponse? Type30 { get; set; }
+        public global::CursorAgents.Artifact? Type30 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.Artifact>? Type31 { get; set; }
+        public long? Type31 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.DownloadArtifactResponse? Type32 { get; set; }
+        public global::CursorAgents.ListArtifactsResponse? Type32 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.ApiKeyInfo? Type33 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.Artifact>? Type33 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.ListModelsResponse? Type34 { get; set; }
+        public global::CursorAgents.DownloadArtifactResponse? Type34 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::System.Collections.Generic.IList<string>? Type35 { get; set; }
+        public global::CursorAgents.ApiKeyInfo? Type35 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.Repository? Type36 { get; set; }
+        public global::CursorAgents.ListModelsResponse? Type36 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.ListRepositoriesResponse? Type37 { get; set; }
+        public global::System.Collections.Generic.IList<string>? Type37 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.Repository>? Type38 { get; set; }
+        public global::CursorAgents.Repository? Type38 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.Error? Type39 { get; set; }
+        public global::CursorAgents.ListRepositoriesResponse? Type39 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.ErrorError1? Type40 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.Repository>? Type40 { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public global::CursorAgents.Error? Type41 { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public global::CursorAgents.ErrorError1? Type42 { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public global::System.Collections.Generic.List<global::CursorAgents.RepoConfig>? ListType0 { get; set; }
+        public global::System.Collections.Generic.List<global::CursorAgents.ModelRefParam>? ListType0 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::System.Collections.Generic.List<global::CursorAgents.Image>? ListType1 { get; set; }
+        public global::System.Collections.Generic.List<global::CursorAgents.RepoConfig>? ListType1 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::System.Collections.Generic.List<global::CursorAgents.AgentSummary>? ListType2 { get; set; }
+        public global::System.Collections.Generic.List<global::CursorAgents.Image>? ListType2 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::System.Collections.Generic.List<global::CursorAgents.Run>? ListType3 { get; set; }
+        public global::System.Collections.Generic.List<global::CursorAgents.AgentSummary>? ListType3 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::System.Collections.Generic.List<global::CursorAgents.Artifact>? ListType4 { get; set; }
+        public global::System.Collections.Generic.List<global::CursorAgents.Run>? ListType4 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::System.Collections.Generic.List<string>? ListType5 { get; set; }
+        public global::System.Collections.Generic.List<global::CursorAgents.Artifact>? ListType5 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::System.Collections.Generic.List<global::CursorAgents.Repository>? ListType6 { get; set; }
+        public global::System.Collections.Generic.List<string>? ListType6 { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public global::System.Collections.Generic.List<global::CursorAgents.Repository>? ListType7 { get; set; }
     }
 }

@@ -65,6 +65,23 @@ components:
           minLength: 1
           description: Explicit model ID returned by GET /v1/models. Omit `model` from the request to use the configured default.
           example: 'composer-2'
+        params:
+          type: array
+          description: Per-model parameters such as reasoning effort or max mode. Use only parameters supported by the selected model.
+          items:
+            type: object
+            required:
+              - id
+              - value
+            properties:
+              id:
+                type: string
+                minLength: 1
+                example: 'thinking'
+              value:
+                type: string
+                minLength: 1
+                example: 'high'
 
     RepoConfig:
       type: object

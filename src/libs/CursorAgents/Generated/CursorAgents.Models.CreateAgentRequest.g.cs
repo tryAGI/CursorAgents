@@ -58,6 +58,12 @@ namespace CursorAgents
         public bool? SkipReviewerRequest { get; set; }
 
         /// <summary>
+        /// Session-scoped environment variables for the cloud agent. Values are encrypted at rest, injected into the agent's shell, and deleted with the agent. Names must be non-empty, 1024 bytes or less, and cannot start with `CURSOR_`. Values must be non-empty and 4096 bytes or less.
+        /// </summary>
+        [global::System.Text.Json.Serialization.JsonPropertyName("envVars")]
+        public global::System.Collections.Generic.Dictionary<string, string>? EnvVars { get; set; }
+
+        /// <summary>
         /// Additional properties that are not explicitly defined in the schema
         /// </summary>
         [global::System.Text.Json.Serialization.JsonExtensionData]
@@ -87,6 +93,9 @@ namespace CursorAgents
         /// Whether to skip requesting the user as a reviewer when Cursor opens a PR. Only applies when `autoCreatePR` is true.<br/>
         /// Default Value: false
         /// </param>
+        /// <param name="envVars">
+        /// Session-scoped environment variables for the cloud agent. Values are encrypted at rest, injected into the agent's shell, and deleted with the agent. Names must be non-empty, 1024 bytes or less, and cannot start with `CURSOR_`. Values must be non-empty and 4096 bytes or less.
+        /// </param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
 #endif
@@ -97,7 +106,8 @@ namespace CursorAgents
             string? branchName,
             bool? autoGenerateBranch,
             bool? autoCreatePR,
-            bool? skipReviewerRequest)
+            bool? skipReviewerRequest,
+            global::System.Collections.Generic.Dictionary<string, string>? envVars)
         {
             this.Prompt = prompt ?? throw new global::System.ArgumentNullException(nameof(prompt));
             this.Model = model;
@@ -106,6 +116,7 @@ namespace CursorAgents
             this.AutoGenerateBranch = autoGenerateBranch;
             this.AutoCreatePR = autoCreatePR;
             this.SkipReviewerRequest = skipReviewerRequest;
+            this.EnvVars = envVars;
         }
 
         /// <summary>

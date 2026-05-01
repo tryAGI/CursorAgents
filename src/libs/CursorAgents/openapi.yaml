@@ -258,6 +258,14 @@ components:
           type: boolean
           description: Whether to skip requesting the user as a reviewer when Cursor opens a PR. Only applies when `autoCreatePR` is true.
           default: false
+        envVars:
+          type: object
+          maxProperties: 50
+          description: Session-scoped environment variables for the cloud agent. Values are encrypted at rest, injected into the agent's shell, and deleted with the agent. Names must be non-empty, 1024 bytes or less, and cannot start with `CURSOR_`. Values must be non-empty and 4096 bytes or less.
+          additionalProperties:
+            type: string
+            minLength: 1
+            maxLength: 4096
 
     CreateRunRequest:
       type: object

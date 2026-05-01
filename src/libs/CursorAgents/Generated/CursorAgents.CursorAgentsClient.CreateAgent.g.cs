@@ -606,6 +606,9 @@ namespace CursorAgents
         /// Whether to skip requesting the user as a reviewer when Cursor opens a PR. Only applies when `autoCreatePR` is true.<br/>
         /// Default Value: false
         /// </param>
+        /// <param name="envVars">
+        /// Session-scoped environment variables for the cloud agent. Values are encrypted at rest, injected into the agent's shell, and deleted with the agent. Names must be non-empty, 1024 bytes or less, and cannot start with `CURSOR_`. Values must be non-empty and 4096 bytes or less.
+        /// </param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
         /// <param name="cancellationToken">The token to cancel the operation with</param>
         /// <exception cref="global::System.InvalidOperationException"></exception>
@@ -617,6 +620,7 @@ namespace CursorAgents
             bool? autoGenerateBranch = default,
             bool? autoCreatePR = default,
             bool? skipReviewerRequest = default,
+            global::System.Collections.Generic.Dictionary<string, string>? envVars = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default)
         {
@@ -629,6 +633,7 @@ namespace CursorAgents
                 AutoGenerateBranch = autoGenerateBranch,
                 AutoCreatePR = autoCreatePR,
                 SkipReviewerRequest = skipReviewerRequest,
+                EnvVars = envVars,
             };
 
             return await CreateAgentAsync(

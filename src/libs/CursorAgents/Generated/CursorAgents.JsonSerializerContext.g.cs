@@ -47,6 +47,7 @@ namespace CursorAgents
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.CreateAgentRequest))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.CreateAgentRequestPrompt))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.Image>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.Dictionary<string, string>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.CreateRunRequest))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.CreateRunRequestPrompt))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.CreateAgentResponse))]

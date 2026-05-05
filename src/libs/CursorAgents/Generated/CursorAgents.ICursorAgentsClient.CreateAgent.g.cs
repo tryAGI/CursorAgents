@@ -25,6 +25,21 @@ namespace CursorAgents
         /// The response contains both the durable `agent` and the initial<br/>
         /// `run`.
         /// </summary>
+        /// <param name="request"></param>
+        /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
+        /// <param name="cancellationToken">The token to cancel the operation with</param>
+        /// <exception cref="global::CursorAgents.ApiException"></exception>
+        global::System.Threading.Tasks.Task<global::CursorAgents.AutoSDKHttpResponse<global::CursorAgents.CreateAgentResponse>> CreateAgentAsResponseAsync(
+
+            global::CursorAgents.CreateAgentRequest request,
+            global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
+            global::System.Threading.CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Create an agent<br/>
+        /// Create a Cloud Agent and immediately enqueue its initial run.<br/>
+        /// The response contains both the durable `agent` and the initial<br/>
+        /// `run`.
+        /// </summary>
         /// <param name="prompt"></param>
         /// <param name="model"></param>
         /// <param name="repos">

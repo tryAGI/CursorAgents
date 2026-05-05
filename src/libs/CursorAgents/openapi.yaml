@@ -450,18 +450,18 @@ components:
 
     CreateSubTokenRequest:
       type: object
-      description: Specify exactly one of `forUserEmail` or `forUserId` to identify the active team member the worker should run as.
+      description: Provide exactly one active team member identifier.
       properties:
         forUserEmail:
           type: string
           format: email
           minLength: 1
-          description: Email address of the active team member. Matched case-insensitively. Mutually exclusive with `forUserId`.
+          description: Active team member email. Case-insensitive. Mutually exclusive with `forUserId`.
           example: 'alice@company.com'
         forUserId:
           type: integer
           minimum: 1
-          description: Numeric Cursor user ID of the active team member. Mutually exclusive with `forUserEmail`.
+          description: Active team member's numeric Cursor user ID. Mutually exclusive with `forUserEmail`.
           example: 42
       oneOf:
         - required: [forUserEmail]
@@ -1096,14 +1096,11 @@ paths:
 
   /v1/sub-tokens:
     post:
-      summary: Create a user-scoped worker token
+      summary: Create A User-Scoped Worker Token
       description: |
-        Create a short-lived access token for an active team member.
-        This endpoint requires an agent-scoped team service account
-        API key. Use the returned token to start a My Machines worker
-        that runs as the requested user. The caller must be an
-        unfederated service account API key (federated user sessions
-        cannot mint sub-tokens).
+        Create a one-hour user-scoped token for a My Machines worker to run as an
+        active team member. Requires an agent-scoped team service account
+        API key. User-scoped tokens can't mint other user-scoped tokens.
       operationId: createSubToken
       requestBody:
         required: true

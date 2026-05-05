@@ -42,13 +42,10 @@ namespace CursorAgents
             ref string content);
 
         /// <summary>
-        /// Create a user-scoped worker token<br/>
-        /// Create a short-lived access token for an active team member.<br/>
-        /// This endpoint requires an agent-scoped team service account<br/>
-        /// API key. Use the returned token to start a My Machines worker<br/>
-        /// that runs as the requested user. The caller must be an<br/>
-        /// unfederated service account API key (federated user sessions<br/>
-        /// cannot mint sub-tokens).
+        /// Create A User-Scoped Worker Token<br/>
+        /// Create a one-hour user-scoped token for a My Machines worker to run as an<br/>
+        /// active team member. Requires an agent-scoped team service account<br/>
+        /// API key. User-scoped tokens can't mint other user-scoped tokens.
         /// </summary>
         /// <param name="request"></param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
@@ -621,20 +618,17 @@ namespace CursorAgents
             }
         }
         /// <summary>
-        /// Create a user-scoped worker token<br/>
-        /// Create a short-lived access token for an active team member.<br/>
-        /// This endpoint requires an agent-scoped team service account<br/>
-        /// API key. Use the returned token to start a My Machines worker<br/>
-        /// that runs as the requested user. The caller must be an<br/>
-        /// unfederated service account API key (federated user sessions<br/>
-        /// cannot mint sub-tokens).
+        /// Create A User-Scoped Worker Token<br/>
+        /// Create a one-hour user-scoped token for a My Machines worker to run as an<br/>
+        /// active team member. Requires an agent-scoped team service account<br/>
+        /// API key. User-scoped tokens can't mint other user-scoped tokens.
         /// </summary>
         /// <param name="forUserEmail">
-        /// Email address of the active team member. Matched case-insensitively. Mutually exclusive with `forUserId`.<br/>
+        /// Active team member email. Case-insensitive. Mutually exclusive with `forUserId`.<br/>
         /// Example: alice@company.com
         /// </param>
         /// <param name="forUserId">
-        /// Numeric Cursor user ID of the active team member. Mutually exclusive with `forUserEmail`.<br/>
+        /// Active team member's numeric Cursor user ID. Mutually exclusive with `forUserEmail`.<br/>
         /// Example: 42
         /// </param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>

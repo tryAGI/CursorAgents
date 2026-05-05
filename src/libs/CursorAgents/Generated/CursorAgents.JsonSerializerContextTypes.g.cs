@@ -196,11 +196,23 @@ namespace CursorAgents
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.Error? Type42 { get; set; }
+        public global::CursorAgents.CreateSubTokenRequest? Type42 { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public global::CursorAgents.ErrorError1? Type43 { get; set; }
+        public object? Type43 { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public global::CursorAgents.CreateSubTokenResponse? Type44 { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public global::CursorAgents.Error? Type45 { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public global::CursorAgents.ErrorError1? Type46 { get; set; }
 
         /// <summary>
         /// 

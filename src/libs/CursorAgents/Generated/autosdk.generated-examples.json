@@ -1,0 +1,15 @@
+{
+  "Examples": [
+    {
+      "Order": 1,
+      "Title": "Create a user-scoped worker token",
+      "Slug": "createsubtoken",
+      "Description": "Create a short-lived access token for an active team member.\nThis endpoint requires an agent-scoped team service account\nAPI key. Use the returned token to start a My Machines worker\nthat runs as the requested user. The caller must be an\nunfederated service account API key (federated user sessions\ncannot mint sub-tokens).",
+      "Language": "csharp",
+      "Code": "using var client = new CursorAgentsClient(username, password);\n\nvar request = global::System.Text.Json.JsonSerializer.Deserialize\u003Cglobal::CursorAgents.CreateSubTokenRequest\u003E(\n    @\u0022{\n  \u0022\u0022forUserEmail\u0022\u0022: \u0022\u0022alice@company.com\u0022\u0022\n}\u0022)!;\n\nvar response = await client.CreateSubTokenAsync(\n    request: request\n);\n\n// Example response:\n// {\n//   \u0022accessToken\u0022: \u0022eyJ...\u0022,\n//   \u0022expiresAt\u0022: \u00222026-04-24T19:00:00.000Z\u0022,\n//   \u0022userId\u0022: 42,\n//   \u0022teamId\u0022: 456\n// }",
+      "Format": "sdk",
+      "OperationId": "createSubToken",
+      "Setup": "This example assumes \u0060using CursorAgents;\u0060 is in scope and \u0060username\u0060 / \u0060password\u0060 contain the required credentials."
+    }
+  ]
+}

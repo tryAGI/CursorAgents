@@ -59,6 +59,32 @@ namespace CursorAgents
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default)
         {
+            var __response = await ListArtifactsAsResponseAsync(
+                id: id,
+                requestOptions: requestOptions,
+                cancellationToken: cancellationToken
+            ).ConfigureAwait(false);
+
+            return __response.Body;
+        }
+        /// <summary>
+        /// List artifacts<br/>
+        /// List artifacts produced by an agent. Each artifact's `path` is<br/>
+        /// relative to the workspace's `artifacts/` directory. Pass that<br/>
+        /// `path` to GET /v1/agents/{id}/artifacts/download to obtain a<br/>
+        /// presigned download URL.
+        /// </summary>
+        /// <param name="id">
+        /// Example: bc-00000000-0000-0000-0000-000000000001
+        /// </param>
+        /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
+        /// <param name="cancellationToken">The token to cancel the operation with</param>
+        /// <exception cref="global::CursorAgents.ApiException"></exception>
+        public async global::System.Threading.Tasks.Task<global::CursorAgents.AutoSDKHttpResponse<global::CursorAgents.ListArtifactsResponse>> ListArtifactsAsResponseAsync(
+            string id,
+            global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
+            global::System.Threading.CancellationToken cancellationToken = default)
+        {
             PrepareArguments(
                 client: HttpClient);
             PrepareListArtifactsArguments(
@@ -87,6 +113,7 @@ namespace CursorAgents
 
             global::System.Net.Http.HttpRequestMessage __CreateHttpRequest()
             {
+
                             var __pathBuilder = new global::CursorAgents.PathBuilder(
                                 path: $"/v1/agents/{id}/artifacts",
                                 baseUri: HttpClient.BaseAddress);
@@ -160,6 +187,8 @@ namespace CursorAgents
                                 attempt: __attempt,
                                 maxAttempts: __maxAttempts,
                                 willRetry: false,
+                                retryDelay: null,
+                                retryReason: global::System.String.Empty,
                                 cancellationToken: __effectiveCancellationToken)).ConfigureAwait(false);
                     try
                     {
@@ -170,6 +199,11 @@ namespace CursorAgents
                     }
                     catch (global::System.Net.Http.HttpRequestException __exception)
                     {
+                        var __retryDelay = global::CursorAgents.AutoSDKRequestOptionsSupport.GetRetryDelay(
+                            clientOptions: Options,
+                            requestOptions: requestOptions,
+                            response: null,
+                            attempt: __attempt);
                         var __willRetry = __attempt < __maxAttempts && !__effectiveCancellationToken.IsCancellationRequested;
                         await global::CursorAgents.AutoSDKRequestOptionsSupport.OnAfterErrorAsync(
                             clientOptions: Options,
@@ -187,6 +221,8 @@ namespace CursorAgents
                                 attempt: __attempt,
                                 maxAttempts: __maxAttempts,
                                 willRetry: __willRetry,
+                                retryDelay: __willRetry ? __retryDelay : (global::System.TimeSpan?)null,
+                                retryReason: "exception",
                                 cancellationToken: __effectiveCancellationToken)).ConfigureAwait(false);
                         if (!__willRetry)
                         {
@@ -196,8 +232,7 @@ namespace CursorAgents
                         __httpRequest.Dispose();
                         __httpRequest = null;
                         await global::CursorAgents.AutoSDKRequestOptionsSupport.DelayBeforeRetryAsync(
-                            clientOptions: Options,
-                            requestOptions: requestOptions,
+                            retryDelay: __retryDelay,
                             cancellationToken: __effectiveCancellationToken).ConfigureAwait(false);
                         continue;
                     }
@@ -206,6 +241,11 @@ namespace CursorAgents
                         __attempt < __maxAttempts &&
                         global::CursorAgents.AutoSDKRequestOptionsSupport.ShouldRetryStatusCode(__response.StatusCode))
                     {
+                        var __retryDelay = global::CursorAgents.AutoSDKRequestOptionsSupport.GetRetryDelay(
+                            clientOptions: Options,
+                            requestOptions: requestOptions,
+                            response: __response,
+                            attempt: __attempt);
                         await global::CursorAgents.AutoSDKRequestOptionsSupport.OnAfterErrorAsync(
                             clientOptions: Options,
                             context: global::CursorAgents.AutoSDKRequestOptionsSupport.CreateHookContext(
@@ -222,14 +262,15 @@ namespace CursorAgents
                                 attempt: __attempt,
                                 maxAttempts: __maxAttempts,
                                 willRetry: true,
+                                retryDelay: __retryDelay,
+                                retryReason: "status:" + ((int)__response.StatusCode).ToString(global::System.Globalization.CultureInfo.InvariantCulture),
                                 cancellationToken: __effectiveCancellationToken)).ConfigureAwait(false);
                         __response.Dispose();
                         __response = null;
                         __httpRequest.Dispose();
                         __httpRequest = null;
                         await global::CursorAgents.AutoSDKRequestOptionsSupport.DelayBeforeRetryAsync(
-                            clientOptions: Options,
-                            requestOptions: requestOptions,
+                            retryDelay: __retryDelay,
                             cancellationToken: __effectiveCancellationToken).ConfigureAwait(false);
                         continue;
                     }
@@ -269,6 +310,8 @@ namespace CursorAgents
                                 attempt: __attemptNumber,
                                 maxAttempts: __maxAttempts,
                                 willRetry: false,
+                                retryDelay: null,
+                                retryReason: global::System.String.Empty,
                                 cancellationToken: __effectiveCancellationToken)).ConfigureAwait(false);
                 }
                 else
@@ -289,6 +332,8 @@ namespace CursorAgents
                                 attempt: __attemptNumber,
                                 maxAttempts: __maxAttempts,
                                 willRetry: false,
+                                retryDelay: null,
+                                retryReason: global::System.String.Empty,
                                 cancellationToken: __effectiveCancellationToken)).ConfigureAwait(false);
                 }
                             // Invalid or missing API key.
@@ -503,9 +548,13 @@ namespace CursorAgents
                                 {
                                     __response.EnsureSuccessStatusCode();
 
-                                    return
-                                        global::CursorAgents.ListArtifactsResponse.FromJson(__content, JsonSerializerContext) ??
+                                    var __value = global::CursorAgents.ListArtifactsResponse.FromJson(__content, JsonSerializerContext) ??
                                         throw new global::System.InvalidOperationException($"Response deserialization failed for \"{__content}\" ");
+                                    return new global::CursorAgents.AutoSDKHttpResponse<global::CursorAgents.ListArtifactsResponse>(
+                                        statusCode: __response.StatusCode,
+                                        headers: global::CursorAgents.AutoSDKHttpResponse.CreateHeaders(__response),
+                                        requestUri: __response.RequestMessage?.RequestUri,
+                                        body: __value);
                                 }
                                 catch (global::System.Exception __ex)
                                 {
@@ -533,9 +582,13 @@ namespace CursorAgents
                 #endif
                                     ).ConfigureAwait(false);
 
-                                    return
-                                        await global::CursorAgents.ListArtifactsResponse.FromJsonStreamAsync(__content, JsonSerializerContext).ConfigureAwait(false) ??
+                                    var __value = await global::CursorAgents.ListArtifactsResponse.FromJsonStreamAsync(__content, JsonSerializerContext).ConfigureAwait(false) ??
                                         throw new global::System.InvalidOperationException("Response deserialization failed.");
+                                    return new global::CursorAgents.AutoSDKHttpResponse<global::CursorAgents.ListArtifactsResponse>(
+                                        statusCode: __response.StatusCode,
+                                        headers: global::CursorAgents.AutoSDKHttpResponse.CreateHeaders(__response),
+                                        requestUri: __response.RequestMessage?.RequestUri,
+                                        body: __value);
                                 }
                                 catch (global::System.Exception __ex)
                                 {

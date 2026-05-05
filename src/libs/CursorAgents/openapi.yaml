@@ -448,6 +448,56 @@ components:
           items:
             $ref: '#/components/schemas/Repository'
 
+    CreateSubTokenRequest:
+      type: object
+      description: Specify exactly one of `forUserEmail` or `forUserId` to identify the active team member the worker should run as.
+      properties:
+        forUserEmail:
+          type: string
+          format: email
+          minLength: 1
+          description: Email address of the active team member. Matched case-insensitively. Mutually exclusive with `forUserId`.
+          example: 'alice@company.com'
+        forUserId:
+          type: integer
+          minimum: 1
+          description: Numeric Cursor user ID of the active team member. Mutually exclusive with `forUserEmail`.
+          example: 42
+      oneOf:
+        - required: [forUserEmail]
+          not:
+            required: [forUserId]
+        - required: [forUserId]
+          not:
+            required: [forUserEmail]
+
+    CreateSubTokenResponse:
+      type: object
+      required:
+        - accessToken
+        - expiresAt
+        - userId
+        - teamId
+      properties:
+        accessToken:
+          type: string
+          minLength: 1
+          description: Short-lived access token scoped to the requested user. Pass this to the worker with --auth-token or write it to the file used by --auth-token-file.
+          example: 'eyJ...'
+        expiresAt:
+          type: string
+          format: date-time
+          description: When the access token expires (1 hour after mint).
+          example: '2026-04-24T19:00:00.000Z'
+        userId:
+          type: integer
+          description: Numeric ID of the resolved team member.
+          example: 42
+        teamId:
+          type: integer
+          description: Numeric ID of the service account's team.
+          example: 456
+
     Error:
       type: object
       required:
@@ -1039,6 +1089,57 @@ paths:
                 $ref: '#/components/schemas/ListRepositoriesResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/sub-tokens:
+    post:
+      summary: Create a user-scoped worker token
+      description: |
+        Create a short-lived access token for an active team member.
+        This endpoint requires an agent-scoped team service account
+        API key. Use the returned token to start a My Machines worker
+        that runs as the requested user. The caller must be an
+        unfederated service account API key (federated user sessions
+        cannot mint sub-tokens).
+      operationId: createSubToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSubTokenRequest'
+            examples:
+              byEmail:
+                summary: Identify the user by email
+                value:
+                  forUserEmail: 'alice@company.com'
+              byUserId:
+                summary: Identify the user by Cursor user ID
+                value:
+                  forUserId: 42
+      responses:
+        '200':
+          description: User-scoped token created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateSubTokenResponse'
+              example:
+                accessToken: 'eyJ...'
+                expiresAt: '2026-04-24T19:00:00.000Z'
+                userId: 42
+                teamId: 456
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
         '429':
           $ref: '#/components/responses/RateLimited'
         '500':

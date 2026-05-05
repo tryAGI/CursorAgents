@@ -4,12 +4,12 @@
 namespace CursorAgents
 {
     /// <summary>
-    /// Specify exactly one of `forUserEmail` or `forUserId` to identify the active team member the worker should run as.
+    /// Provide exactly one active team member identifier.
     /// </summary>
     public sealed partial class CreateSubTokenRequest
     {
         /// <summary>
-        /// Email address of the active team member. Matched case-insensitively. Mutually exclusive with `forUserId`.<br/>
+        /// Active team member email. Case-insensitive. Mutually exclusive with `forUserId`.<br/>
         /// Example: alice@company.com
         /// </summary>
         /// <example>alice@company.com</example>
@@ -17,7 +17,7 @@ namespace CursorAgents
         public string? ForUserEmail { get; set; }
 
         /// <summary>
-        /// Numeric Cursor user ID of the active team member. Mutually exclusive with `forUserEmail`.<br/>
+        /// Active team member's numeric Cursor user ID. Mutually exclusive with `forUserEmail`.<br/>
         /// Example: 42
         /// </summary>
         /// <example>42</example>
@@ -34,11 +34,11 @@ namespace CursorAgents
         /// Initializes a new instance of the <see cref="CreateSubTokenRequest" /> class.
         /// </summary>
         /// <param name="forUserEmail">
-        /// Email address of the active team member. Matched case-insensitively. Mutually exclusive with `forUserId`.<br/>
+        /// Active team member email. Case-insensitive. Mutually exclusive with `forUserId`.<br/>
         /// Example: alice@company.com
         /// </param>
         /// <param name="forUserId">
-        /// Numeric Cursor user ID of the active team member. Mutually exclusive with `forUserEmail`.<br/>
+        /// Active team member's numeric Cursor user ID. Mutually exclusive with `forUserEmail`.<br/>
         /// Example: 42
         /// </param>
 #if NET7_0_OR_GREATER

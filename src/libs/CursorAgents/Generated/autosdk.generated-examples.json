@@ -6,10 +6,10 @@
       "Slug": "createsubtoken",
       "Description": "Create a one-hour user-scoped token for a My Machines worker to run as an\nactive team member. Requires an agent-scoped team service account\nAPI key. User-scoped tokens can\u0027t mint other user-scoped tokens.",
       "Language": "csharp",
-      "Code": "using var client = new CursorAgentsClient(username, password);\n\nvar request = global::System.Text.Json.JsonSerializer.Deserialize\u003Cglobal::CursorAgents.CreateSubTokenRequest\u003E(\n    @\u0022{\n  \u0022\u0022forUserEmail\u0022\u0022: \u0022\u0022alice@company.com\u0022\u0022\n}\u0022)!;\n\nvar response = await client.CreateSubTokenAsync(\n    request: request\n);\n\n// Example response:\n// {\n//   \u0022accessToken\u0022: \u0022eyJ...\u0022,\n//   \u0022expiresAt\u0022: \u00222026-04-24T19:00:00.000Z\u0022,\n//   \u0022userId\u0022: 42,\n//   \u0022teamId\u0022: 456\n// }",
+      "Code": "using var client = new CursorAgentsClient(apiKey);\n\nvar request = global::System.Text.Json.JsonSerializer.Deserialize\u003Cglobal::CursorAgents.CreateSubTokenRequest\u003E(\n    @\u0022{\n  \u0022\u0022forUserEmail\u0022\u0022: \u0022\u0022alice@company.com\u0022\u0022\n}\u0022)!;\n\nvar response = await client.CreateSubTokenAsync(\n    request: request\n);\n\n// Example response:\n// {\n//   \u0022accessToken\u0022: \u0022eyJ...\u0022,\n//   \u0022expiresAt\u0022: \u00222026-04-24T19:00:00.000Z\u0022,\n//   \u0022userId\u0022: 42,\n//   \u0022teamId\u0022: 456\n// }",
       "Format": "sdk",
       "OperationId": "createSubToken",
-      "Setup": "This example assumes \u0060using CursorAgents;\u0060 is in scope and \u0060username\u0060 / \u0060password\u0060 contain the required credentials."
+      "Setup": "This example assumes \u0060using CursorAgents;\u0060 is in scope and \u0060apiKey\u0060 contains the required credential."
     }
   ]
 }

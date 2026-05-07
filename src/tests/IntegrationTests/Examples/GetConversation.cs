@@ -22,21 +22,17 @@ public partial class Tests
                 : throw new AssertInconclusiveException(
                     "CURSORAGENTS_TEST_AGENT_ID environment variable is not found.");
 
-        //// Retrieve the full conversation history for a specific agent.
-        var response = await client.GetAgentConversationAsync(
+        //// Retrieve the current metadata for a specific agent.
+        var response = await client.GetAgentAsync(
             id: agentId);
 
-        //// The response contains the agent ID and all messages in chronological order.
-        response.Id.Should().NotBeNullOrWhiteSpace();
-        response.Messages.Should().NotBeNull();
+        //// The response contains the agent ID and current status.
+        response.Summary?.Id.Should().NotBeNullOrWhiteSpace();
 
-        foreach (var message in response.Messages)
+        if (response.Summary is { } summary)
         {
-            var role = message.Type == GetAgentConversationResponseMessageType.UserMessage
-                ? "User"
-                : "Assistant";
-
-            Console.WriteLine($"[{role}] {message.Text}");
+            Console.WriteLine($"Agent {summary.Id}: {summary.Name}");
+            Console.WriteLine($"Status: {summary.Status.ToValueString()}");
         }
     }
 }

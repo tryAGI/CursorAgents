@@ -21,9 +21,9 @@ public partial class Tests
             limit: 10);
 
         //// The response contains a list of agents with their status and metadata.
-        response.Agents.Should().NotBeNull();
+        response.Items.Should().NotBeNull();
 
-        foreach (var agent in response.Agents)
+        foreach (var agent in response.Items)
         {
             agent.Id.Should().NotBeNullOrWhiteSpace();
             agent.Name.Should().NotBeNullOrWhiteSpace();
@@ -32,9 +32,9 @@ public partial class Tests
             Console.WriteLine($"  Status: {agent.Status.ToValueString()}");
             Console.WriteLine($"  Created: {agent.CreatedAt}");
 
-            if (agent.Summary is { Length: > 0 })
+            if (agent.LatestRunId is { Length: > 0 })
             {
-                Console.WriteLine($"  Summary: {agent.Summary}");
+                Console.WriteLine($"  Latest run: {agent.LatestRunId}");
             }
         }
 

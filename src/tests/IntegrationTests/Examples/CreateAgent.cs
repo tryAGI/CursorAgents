@@ -28,23 +28,23 @@ public partial class Tests
             {
                 Text = "Add a CONTRIBUTING.md file with guidelines for submitting pull requests",
             },
-            source: new CreateAgentRequestSource
-            {
-                Repository = repositoryUrl,
-                Ref = "main",
-            },
-            target: new CreateAgentRequestTarget
-            {
-                AutoCreatePr = true,
-                BranchName = "cursor/add-contributing",
-            });
+            repos:
+            [
+                new RepoConfig
+                {
+                    Url = repositoryUrl,
+                    StartingRef = "main",
+                },
+            ],
+            branchName: "cursor/add-contributing",
+            autoCreatePR: true);
 
         //// The response contains the agent ID, name, and initial status.
-        response.Id.Should().NotBeNullOrWhiteSpace();
-        response.Name.Should().NotBeNullOrWhiteSpace();
-        response.CreatedAt.Should().BeOnOrBefore(DateTime.UtcNow);
+        response.Agent.Summary?.Id.Should().NotBeNullOrWhiteSpace();
+        response.Agent.Summary?.Name.Should().NotBeNullOrWhiteSpace();
+        response.Run.CreatedAt.Should().BeOnOrBefore(DateTime.UtcNow);
 
-        Console.WriteLine($"Agent created: {response.Id} ({response.Name})");
-        Console.WriteLine($"Status: {response.Status}");
+        Console.WriteLine($"Agent created: {response.Agent.Summary?.Id} ({response.Agent.Summary?.Name})");
+        Console.WriteLine($"Run status: {response.Run.Status}");
     }
 }

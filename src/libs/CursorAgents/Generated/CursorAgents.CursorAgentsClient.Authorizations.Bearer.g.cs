@@ -7,18 +7,16 @@ namespace CursorAgents
     {
 
         /// <inheritdoc/>
-        public void AuthorizeUsingBasic(
-            string username,
-            string password)
+        public void AuthorizeUsingBearer(
+            string apiKey)
         {
-            username = username ?? throw new global::System.ArgumentNullException(nameof(username));
-            password = password ?? throw new global::System.ArgumentNullException(nameof(password));
+            apiKey = apiKey ?? throw new global::System.ArgumentNullException(nameof(apiKey));
 
             for (var i = Authorizations.Count - 1; i >= 0; i--)
             {
                 var __authorization = Authorizations[i];
                 if (__authorization.Type == "Http" &&
-                    __authorization.Name == "Basic")
+                    __authorization.Name == "Bearer")
                 {
                     Authorizations.RemoveAt(i);
                 }
@@ -27,11 +25,10 @@ namespace CursorAgents
             Authorizations.Add(new global::CursorAgents.EndPointAuthorization
             {
                 Type = "Http",
-                SchemeId = "BasicAuth",
+                SchemeId = "HttpBearer",
                 Location = "Header",
-                Name = "Basic",
-                Value = global::System.Convert.ToBase64String(
-                    global::System.Text.Encoding.UTF8.GetBytes($"{username}:{password}")),
+                Name = "Bearer",
+                Value = apiKey,
             });
         }
     }

@@ -14,10 +14,10 @@ namespace CursorAgents
                 {                    new global::CursorAgents.EndPointAuthorizationRequirement
                     {
                         Type = "Http",
-                        SchemeId = "BasicAuth",
+                        SchemeId = "HttpBearer",
                         Location = "Header",
-                        Name = "Basic",
-                        FriendlyName = "Basic",
+                        Name = "Bearer",
+                        FriendlyName = "Bearer",
                     },
                 },
             };

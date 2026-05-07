@@ -30,16 +30,16 @@ public static class CursorAgentsToolExtensions
                     {
                         Text = prompt,
                     },
-                    source: new CreateAgentRequestSource
-                    {
-                        Repository = repository,
-                        Ref = branch,
-                    },
-                    target: new CreateAgentRequestTarget
-                    {
-                        AutoCreatePr = autoCreatePr,
-                        BranchName = targetBranch,
-                    },
+                    repos:
+                    [
+                        new RepoConfig
+                        {
+                            Url = repository,
+                            StartingRef = branch,
+                        },
+                    ],
+                    branchName: targetBranch,
+                    autoCreatePR: autoCreatePr,
                     cancellationToken: cancellationToken).ConfigureAwait(false);
 
                 return FormatCreateAgentResponse(response);
@@ -99,16 +99,20 @@ public static class CursorAgentsToolExtensions
 
     private static string FormatCreateAgentResponse(CreateAgentResponse response)
     {
+        var agent = response.Agent.Summary;
+
         var parts = new List<string>
         {
             $"Agent created successfully.",
-            $"ID: {response.Id}",
-            $"Name: {response.Name}",
-            $"Status: {response.Status}",
-            $"Created: {response.CreatedAt:u}",
+            $"ID: {agent?.Id ?? response.Run.AgentId}",
+            $"Name: {agent?.Name ?? "New agent"}",
+            $"Agent status: {(agent is not null ? agent.Status.ToValueString() : "unknown")}",
+            $"Run ID: {response.Run.Id}",
+            $"Run status: {response.Run.Status.ToValueString()}",
+            $"Created: {response.Run.CreatedAt:u}",
         };
 
-        if (response.Target.BranchName is { Length: > 0 } branch)
+        if (response.Agent.AgentVariant2?.BranchName is { Length: > 0 } branch)
         {
             parts.Add($"Branch: {branch}");
         }
@@ -120,25 +124,20 @@ public static class CursorAgentsToolExtensions
     {
         var parts = new List<string>();
 
-        if (response.Agents is { Count: 0 })
+        if (response.Items is { Count: 0 })
         {
             return "No agents found.";
         }
 
-        parts.Add($"Found {response.Agents.Count} agent(s):");
+        parts.Add($"Found {response.Items.Count} agent(s):");
 
-        foreach (var agent in response.Agents)
+        foreach (var agent in response.Items)
         {
             var entry = $"- [{agent.Status.ToValueString()}] {agent.Name} (ID: {agent.Id})";
 
-            if (agent.Source.Repository is { Length: > 0 } repo)
+            if (agent.Url is { Length: > 0 } url)
             {
-                entry += $" — {repo}";
-            }
-
-            if (agent.Summary is { Length: > 0 } summary)
-            {
-                entry += $"\n  Summary: {summary}";
+                entry += $" — {url}";
             }
 
             parts.Add(entry);
@@ -152,44 +151,47 @@ public static class CursorAgentsToolExtensions
         return string.Join("\n", parts);
     }
 
-    private static string FormatGetAgentResponse(GetAgentResponse response)
+    private static string FormatGetAgentResponse(Agent response)
     {
+        var agent = response.Summary;
+        var details = response.AgentVariant2;
+
         var parts = new List<string>
         {
-            $"Agent: {response.Name}",
-            $"ID: {response.Id}",
-            $"Status: {response.Status.ToValueString()}",
-            $"Created: {response.CreatedAt:u}",
+            $"Agent: {agent?.Name ?? "Unknown"}",
+            $"ID: {agent?.Id ?? "unknown"}",
+            $"Status: {(agent is not null ? agent.Status.ToValueString() : "unknown")}",
+            $"Created: {(agent is not null ? agent.CreatedAt.ToString("u") : "unknown")}",
         };
 
-        if (response.Source.Repository is { Length: > 0 } repo)
+        if (details?.Repos?.FirstOrDefault()?.Url is { Length: > 0 } repo)
         {
             parts.Add($"Repository: {repo}");
         }
 
-        if (response.Source.Ref is { Length: > 0 } sourceRef)
+        if (details?.Repos?.FirstOrDefault()?.StartingRef is { Length: > 0 } sourceRef)
         {
             parts.Add($"Source branch: {sourceRef}");
         }
 
-        if (response.Target.BranchName is { Length: > 0 } branch)
+        if (details?.BranchName is { Length: > 0 } branch)
         {
             parts.Add($"Target branch: {branch}");
         }
 
-        if (response.Target.Url is { Length: > 0 } url)
+        if (agent?.Url is { Length: > 0 } url)
         {
             parts.Add($"View: {url}");
         }
 
-        if (response.Target.PrUrl is { Length: > 0 } prUrl)
+        if (details?.Repos?.FirstOrDefault()?.PrUrl is { Length: > 0 } prUrl)
         {
             parts.Add($"PR: {prUrl}");
         }
 
-        if (response.Summary is { Length: > 0 } summary)
+        if (agent?.LatestRunId is { Length: > 0 } latestRunId)
         {
-            parts.Add($"Summary: {summary}");
+            parts.Add($"Latest run: {latestRunId}");
         }
 
         return string.Join("\n", parts);

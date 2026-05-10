@@ -136,5 +136,6 @@ namespace CursorAgents
         public AgentSummary()
         {
         }
+
     }
 }

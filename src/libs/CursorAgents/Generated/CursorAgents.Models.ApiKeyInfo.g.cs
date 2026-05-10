@@ -66,5 +66,6 @@ namespace CursorAgents
         public ApiKeyInfo()
         {
         }
+
     }
 }

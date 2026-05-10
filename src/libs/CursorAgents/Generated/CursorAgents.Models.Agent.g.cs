@@ -42,6 +42,13 @@ namespace CursorAgents
         /// <summary>
         /// 
         /// </summary>
+        public global::CursorAgents.AgentSummary PickSummary() => IsSummary
+            ? Summary!
+            : throw new global::System.InvalidOperationException($"Expected union variant 'Summary' but the value was {ToString()}.");
+
+        /// <summary>
+        /// 
+        /// </summary>
 #if NET6_0_OR_GREATER
         public global::CursorAgents.AgentVariant2? AgentVariant2 { get; init; }
 #else
@@ -68,6 +75,13 @@ namespace CursorAgents
             value = AgentVariant2;
             return IsAgentVariant2;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public global::CursorAgents.AgentVariant2 PickAgentVariant2() => IsAgentVariant2
+            ? AgentVariant2!
+            : throw new global::System.InvalidOperationException($"Expected union variant 'AgentVariant2' but the value was {ToString()}.");
         /// <summary>
         /// 
         /// </summary>

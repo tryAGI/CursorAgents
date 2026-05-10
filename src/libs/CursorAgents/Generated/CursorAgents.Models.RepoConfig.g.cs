@@ -72,5 +72,6 @@ namespace CursorAgents
         public RepoConfig()
         {
         }
+
     }
 }

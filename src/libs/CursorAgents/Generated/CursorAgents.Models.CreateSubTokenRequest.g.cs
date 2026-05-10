@@ -58,5 +58,6 @@ namespace CursorAgents
         public CreateSubTokenRequest()
         {
         }
+
     }
 }

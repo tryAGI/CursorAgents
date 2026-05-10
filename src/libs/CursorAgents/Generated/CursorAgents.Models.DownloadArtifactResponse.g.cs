@@ -57,5 +57,6 @@ namespace CursorAgents
         public DownloadArtifactResponse()
         {
         }
+
     }
 }

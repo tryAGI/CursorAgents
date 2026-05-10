@@ -42,5 +42,6 @@ namespace CursorAgents
         public ListArtifactsResponse()
         {
         }
+
     }
 }

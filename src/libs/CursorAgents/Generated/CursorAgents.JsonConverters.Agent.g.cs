@@ -95,6 +95,7 @@ namespace CursorAgents.JsonConverters
             {
                 try
                 {
+
                     var typeInfo = typeInfoResolver.GetTypeInfo(typeof(global::CursorAgents.AgentSummary), options) as global::System.Text.Json.Serialization.Metadata.JsonTypeInfo<global::CursorAgents.AgentSummary> ??
                                    throw new global::System.InvalidOperationException($"Cannot get type info for {typeof(global::CursorAgents.AgentSummary).Name}");
                     summary = global::System.Text.Json.JsonSerializer.Deserialize(__rawJson, typeInfo);
@@ -105,9 +106,13 @@ namespace CursorAgents.JsonConverters
                 catch (global::System.InvalidOperationException)
                 {
                 }
+            }
 
+            if (summary == null && agentVariant2 == null)
+            {
                 try
                 {
+
                     var typeInfo = typeInfoResolver.GetTypeInfo(typeof(global::CursorAgents.AgentVariant2), options) as global::System.Text.Json.Serialization.Metadata.JsonTypeInfo<global::CursorAgents.AgentVariant2> ??
                                    throw new global::System.InvalidOperationException($"Cannot get type info for {typeof(global::CursorAgents.AgentVariant2).Name}");
                     agentVariant2 = global::System.Text.Json.JsonSerializer.Deserialize(__rawJson, typeInfo);

@@ -89,6 +89,11 @@ namespace CursorAgents
         /// <summary>
         /// 
         /// </summary>
+        public static Agent FromSummary(global::CursorAgents.AgentSummary? value) => new Agent(value);
+
+        /// <summary>
+        /// 
+        /// </summary>
         public static implicit operator Agent(global::CursorAgents.AgentVariant2 value) => new Agent((global::CursorAgents.AgentVariant2?)value);
 
         /// <summary>
@@ -103,6 +108,11 @@ namespace CursorAgents
         {
             AgentVariant2 = value;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static Agent FromAgentVariant2(global::CursorAgents.AgentVariant2? value) => new Agent(value);
 
         /// <summary>
         /// 

@@ -109,8 +109,14 @@ components:
       properties:
         type:
           type: string
-          description: Execution environment type.
+          enum: ['cloud', 'pool', 'machine']
+          description: Execution environment type. `cloud` uses Cursor-hosted VMs; `pool` and `machine` route to self-hosted workers.
           example: 'cloud'
+        name:
+          type: string
+          minLength: 1
+          description: Named Cursor-hosted environment, self-hosted pool, or self-hosted machine name.
+          example: 'Release workspace'
 
     AgentSummary:
       type: object
@@ -162,7 +168,7 @@ components:
           properties:
             repos:
               type: array
-              description: Repository configuration. v1 currently supports one entry.
+              description: Repository configuration. Empty for no-repo agents.
               items:
                 $ref: '#/components/schemas/RepoConfig'
             branchName:
@@ -214,7 +220,6 @@ components:
       type: object
       required:
         - prompt
-        - repos
       properties:
         prompt:
           type: object
@@ -234,11 +239,12 @@ components:
               description: Optional base64-encoded images. Maximum 5 images, 15 MB each.
         model:
           $ref: '#/components/schemas/ModelRef'
+        env:
+          $ref: '#/components/schemas/AgentEnv'
         repos:
           type: array
-          minItems: 1
-          maxItems: 1
-          description: Repository configuration. v1 currently supports one entry.
+          maxItems: 20
+          description: Repository configuration. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` to start a no-repo agent.
           items:
             $ref: '#/components/schemas/RepoConfig'
         branchName:

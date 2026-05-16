@@ -37,6 +37,7 @@ namespace CursorAgents.JsonConverters
             var __score0 = 0;
             if (__jsonProps.Contains("createdAt")) __score0++;
             if (__jsonProps.Contains("env")) __score0++;
+            if (__jsonProps.Contains("env.name")) __score0++;
             if (__jsonProps.Contains("env.type")) __score0++;
             if (__jsonProps.Contains("id")) __score0++;
             if (__jsonProps.Contains("latestRunId")) __score0++;

@@ -639,8 +639,9 @@ namespace CursorAgents
         /// </summary>
         /// <param name="prompt"></param>
         /// <param name="model"></param>
+        /// <param name="env"></param>
         /// <param name="repos">
-        /// Repository configuration. v1 currently supports one entry.
+        /// Repository configuration. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` to start a no-repo agent.
         /// </param>
         /// <param name="branchName">
         /// Custom branch name for the agent to create.<br/>
@@ -666,8 +667,9 @@ namespace CursorAgents
         /// <exception cref="global::System.InvalidOperationException"></exception>
         public async global::System.Threading.Tasks.Task<global::CursorAgents.CreateAgentResponse> CreateAgentAsync(
             global::CursorAgents.CreateAgentRequestPrompt prompt,
-            global::System.Collections.Generic.IList<global::CursorAgents.RepoConfig> repos,
             global::CursorAgents.ModelRef? model = default,
+            global::CursorAgents.AgentEnv? env = default,
+            global::System.Collections.Generic.IList<global::CursorAgents.RepoConfig>? repos = default,
             string? branchName = default,
             bool? autoGenerateBranch = default,
             bool? autoCreatePR = default,
@@ -680,6 +682,7 @@ namespace CursorAgents
             {
                 Prompt = prompt,
                 Model = model,
+                Env = env,
                 Repos = repos,
                 BranchName = branchName,
                 AutoGenerateBranch = autoGenerateBranch,

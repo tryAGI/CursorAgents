@@ -22,11 +22,16 @@ namespace CursorAgents
         public global::CursorAgents.ModelRef? Model { get; set; }
 
         /// <summary>
-        /// Repository configuration. v1 currently supports one entry.
+        /// 
+        /// </summary>
+        [global::System.Text.Json.Serialization.JsonPropertyName("env")]
+        public global::CursorAgents.AgentEnv? Env { get; set; }
+
+        /// <summary>
+        /// Repository configuration. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` to start a no-repo agent.
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("repos")]
-        [global::System.Text.Json.Serialization.JsonRequired]
-        public required global::System.Collections.Generic.IList<global::CursorAgents.RepoConfig> Repos { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.RepoConfig>? Repos { get; set; }
 
         /// <summary>
         /// Custom branch name for the agent to create.<br/>
@@ -73,10 +78,11 @@ namespace CursorAgents
         /// Initializes a new instance of the <see cref="CreateAgentRequest" /> class.
         /// </summary>
         /// <param name="prompt"></param>
-        /// <param name="repos">
-        /// Repository configuration. v1 currently supports one entry.
-        /// </param>
         /// <param name="model"></param>
+        /// <param name="env"></param>
+        /// <param name="repos">
+        /// Repository configuration. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` to start a no-repo agent.
+        /// </param>
         /// <param name="branchName">
         /// Custom branch name for the agent to create.<br/>
         /// Example: feature/add-readme
@@ -101,8 +107,9 @@ namespace CursorAgents
 #endif
         public CreateAgentRequest(
             global::CursorAgents.CreateAgentRequestPrompt prompt,
-            global::System.Collections.Generic.IList<global::CursorAgents.RepoConfig> repos,
             global::CursorAgents.ModelRef? model,
+            global::CursorAgents.AgentEnv? env,
+            global::System.Collections.Generic.IList<global::CursorAgents.RepoConfig>? repos,
             string? branchName,
             bool? autoGenerateBranch,
             bool? autoCreatePR,
@@ -111,7 +118,8 @@ namespace CursorAgents
         {
             this.Prompt = prompt ?? throw new global::System.ArgumentNullException(nameof(prompt));
             this.Model = model;
-            this.Repos = repos ?? throw new global::System.ArgumentNullException(nameof(repos));
+            this.Env = env;
+            this.Repos = repos;
             this.BranchName = branchName;
             this.AutoGenerateBranch = autoGenerateBranch;
             this.AutoCreatePR = autoCreatePR;

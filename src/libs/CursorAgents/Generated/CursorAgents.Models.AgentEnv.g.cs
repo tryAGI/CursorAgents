@@ -9,13 +9,22 @@ namespace CursorAgents
     public sealed partial class AgentEnv
     {
         /// <summary>
-        /// Execution environment type.<br/>
+        /// Execution environment type. `cloud` uses Cursor-hosted VMs; `pool` and `machine` route to self-hosted workers.<br/>
         /// Example: cloud
         /// </summary>
         /// <example>cloud</example>
         [global::System.Text.Json.Serialization.JsonPropertyName("type")]
+        [global::System.Text.Json.Serialization.JsonConverter(typeof(global::CursorAgents.JsonConverters.AgentEnvTypeJsonConverter))]
         [global::System.Text.Json.Serialization.JsonRequired]
-        public required string Type { get; set; }
+        public required global::CursorAgents.AgentEnvType Type { get; set; }
+
+        /// <summary>
+        /// Named Cursor-hosted environment, self-hosted pool, or self-hosted machine name.<br/>
+        /// Example: Release workspace
+        /// </summary>
+        /// <example>Release workspace</example>
+        [global::System.Text.Json.Serialization.JsonPropertyName("name")]
+        public string? Name { get; set; }
 
         /// <summary>
         /// Additional properties that are not explicitly defined in the schema
@@ -27,16 +36,22 @@ namespace CursorAgents
         /// Initializes a new instance of the <see cref="AgentEnv" /> class.
         /// </summary>
         /// <param name="type">
-        /// Execution environment type.<br/>
+        /// Execution environment type. `cloud` uses Cursor-hosted VMs; `pool` and `machine` route to self-hosted workers.<br/>
         /// Example: cloud
+        /// </param>
+        /// <param name="name">
+        /// Named Cursor-hosted environment, self-hosted pool, or self-hosted machine name.<br/>
+        /// Example: Release workspace
         /// </param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
 #endif
         public AgentEnv(
-            string type)
+            global::CursorAgents.AgentEnvType type,
+            string? name)
         {
-            this.Type = type ?? throw new global::System.ArgumentNullException(nameof(type));
+            this.Type = type;
+            this.Name = name;
         }
 
         /// <summary>

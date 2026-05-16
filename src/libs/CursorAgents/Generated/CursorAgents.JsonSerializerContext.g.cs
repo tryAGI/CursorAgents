@@ -13,6 +13,10 @@ namespace CursorAgents
         DefaultIgnoreCondition = global::System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
         Converters = new global::System.Type[]
         {
+            typeof(global::CursorAgents.JsonConverters.AgentEnvTypeJsonConverter),
+
+            typeof(global::CursorAgents.JsonConverters.AgentEnvTypeNullableJsonConverter),
+
             typeof(global::CursorAgents.JsonConverters.AgentSummaryStatusJsonConverter),
 
             typeof(global::CursorAgents.JsonConverters.AgentSummaryStatusNullableJsonConverter),
@@ -35,6 +39,7 @@ namespace CursorAgents
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ModelRefParam))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.RepoConfig))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.AgentEnv))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.AgentEnvType), TypeInfoPropertyName = "AgentEnvType2")]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.AgentSummary))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.AgentSummaryStatus), TypeInfoPropertyName = "AgentSummaryStatus2")]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.DateTime))]

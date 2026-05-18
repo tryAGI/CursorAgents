@@ -272,6 +272,11 @@ components:
             type: string
             minLength: 1
             maxLength: 4096
+        mode:
+          allOf:
+            - $ref: '#/components/schemas/AgentMode'
+          default: agent
+          description: Initial conversation mode for the agent's first run.
 
     CreateRunRequest:
       type: object
@@ -294,6 +299,19 @@ components:
               items:
                 $ref: '#/components/schemas/Image'
               description: Optional base64-encoded images. Maximum 5 images, 15 MB each.
+        mode:
+          $ref: '#/components/schemas/AgentMode'
+
+    AgentMode:
+      type: string
+      enum:
+        - agent
+        - plan
+      description: >
+        Conversation mode. `plan` explores and drafts a plan before coding;
+        `agent` implements changes directly. On follow-up runs, omit to keep
+        the conversation's current mode; set explicitly to switch modes for
+        that run.
 
     CreateAgentResponse:
       type: object

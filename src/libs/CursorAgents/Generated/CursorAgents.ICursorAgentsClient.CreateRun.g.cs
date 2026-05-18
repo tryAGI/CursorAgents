@@ -52,12 +52,16 @@ namespace CursorAgents
         /// Example: bc-00000000-0000-0000-0000-000000000001
         /// </param>
         /// <param name="prompt"></param>
+        /// <param name="mode">
+        /// Conversation mode. `plan` explores and drafts a plan before coding; `agent` implements changes directly. On follow-up runs, omit to keep the conversation's current mode; set explicitly to switch modes for that run.
+        /// </param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
         /// <param name="cancellationToken">The token to cancel the operation with</param>
         /// <exception cref="global::System.InvalidOperationException"></exception>
         global::System.Threading.Tasks.Task<global::CursorAgents.CreateRunResponse> CreateRunAsync(
             string id,
             global::CursorAgents.CreateRunRequestPrompt prompt,
+            global::CursorAgents.AgentMode? mode = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default);
     }

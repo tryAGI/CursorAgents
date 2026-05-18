@@ -69,6 +69,14 @@ namespace CursorAgents
         public global::System.Collections.Generic.Dictionary<string, string>? EnvVars { get; set; }
 
         /// <summary>
+        /// Initial conversation mode for the agent's first run.<br/>
+        /// Default Value: agent
+        /// </summary>
+        [global::System.Text.Json.Serialization.JsonPropertyName("mode")]
+        [global::System.Text.Json.Serialization.JsonConverter(typeof(global::CursorAgents.JsonConverters.AgentModeJsonConverter))]
+        public global::CursorAgents.AgentMode? Mode { get; set; }
+
+        /// <summary>
         /// Additional properties that are not explicitly defined in the schema
         /// </summary>
         [global::System.Text.Json.Serialization.JsonExtensionData]
@@ -102,6 +110,10 @@ namespace CursorAgents
         /// <param name="envVars">
         /// Session-scoped environment variables for the cloud agent. Values are encrypted at rest, injected into the agent's shell, and deleted with the agent. Names must be non-empty, 1024 bytes or less, and cannot start with `CURSOR_`. Values must be non-empty and 4096 bytes or less.
         /// </param>
+        /// <param name="mode">
+        /// Initial conversation mode for the agent's first run.<br/>
+        /// Default Value: agent
+        /// </param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
 #endif
@@ -114,7 +126,8 @@ namespace CursorAgents
             bool? autoGenerateBranch,
             bool? autoCreatePR,
             bool? skipReviewerRequest,
-            global::System.Collections.Generic.Dictionary<string, string>? envVars)
+            global::System.Collections.Generic.Dictionary<string, string>? envVars,
+            global::CursorAgents.AgentMode? mode)
         {
             this.Prompt = prompt ?? throw new global::System.ArgumentNullException(nameof(prompt));
             this.Model = model;
@@ -125,6 +138,7 @@ namespace CursorAgents
             this.AutoCreatePR = autoCreatePR;
             this.SkipReviewerRequest = skipReviewerRequest;
             this.EnvVars = envVars;
+            this.Mode = mode;
         }
 
         /// <summary>

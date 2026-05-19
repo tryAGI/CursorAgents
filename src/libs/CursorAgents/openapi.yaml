@@ -118,6 +118,102 @@ components:
           description: Named Cursor-hosted environment, self-hosted pool, or self-hosted machine name.
           example: 'Release workspace'
 
+    McpAuth:
+      type: object
+      additionalProperties: false
+      required:
+        - CLIENT_ID
+      properties:
+        CLIENT_ID:
+          type: string
+          minLength: 1
+          description: OAuth client ID for the MCP server.
+          example: 'client-id'
+        CLIENT_SECRET:
+          type: string
+          description: OAuth client secret for the MCP server.
+          example: 'client-secret'
+        scopes:
+          type: array
+          description: OAuth scopes to request for the MCP server.
+          items:
+            type: string
+            minLength: 1
+          example: ['file_content:read']
+
+    StdioMcpServer:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+        - command
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: MCP server name exposed to the agent.
+          example: 'github'
+        type:
+          type: string
+          enum: ['stdio']
+          description: Stdio MCP server. Defaults to `stdio` when `command` is provided.
+          example: 'stdio'
+        command:
+          type: string
+          minLength: 1
+          description: Command to start inside the cloud agent VM.
+          example: 'npx'
+        args:
+          type: array
+          description: Command arguments.
+          items:
+            type: string
+          example: ['-y', '@modelcontextprotocol/server-github']
+        env:
+          type: object
+          description: Environment variables passed to the stdio MCP server inside the VM.
+          additionalProperties:
+            type: string
+          example:
+            GITHUB_TOKEN: 'ghp_...'
+
+    RemoteMcpServer:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+        - url
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: MCP server name exposed to the agent.
+          example: 'linear'
+        type:
+          type: string
+          enum: ['http', 'sse']
+          description: Remote MCP transport. Defaults to `http` when `url` is provided.
+          example: 'http'
+        url:
+          type: string
+          format: uri
+          description: HTTP or HTTPS URL for the remote MCP server. Userinfo in the URL is not allowed.
+          example: 'https://mcp.linear.app/sse'
+        headers:
+          type: object
+          description: Headers Cursor sends with every request to the remote MCP server.
+          additionalProperties:
+            type: string
+          example:
+            Authorization: 'Bearer lin_api_...'
+        auth:
+          $ref: '#/components/schemas/McpAuth'
+
+    McpServer:
+      oneOf:
+        - $ref: '#/components/schemas/StdioMcpServer'
+        - $ref: '#/components/schemas/RemoteMcpServer'
+
     AgentSummary:
       type: object
       required:
@@ -272,6 +368,12 @@ components:
             type: string
             minLength: 1
             maxLength: 4096
+        mcpServers:
+          type: array
+          maxItems: 50
+          description: Inline MCP server definitions available to the initial run. Remote servers support `headers` or OAuth `auth`; stdio servers run inside the cloud agent VM and can receive `env`. Server names must be unique.
+          items:
+            $ref: '#/components/schemas/McpServer'
         mode:
           allOf:
             - $ref: '#/components/schemas/AgentMode'
@@ -299,6 +401,12 @@ components:
               items:
                 $ref: '#/components/schemas/Image'
               description: Optional base64-encoded images. Maximum 5 images, 15 MB each.
+        mcpServers:
+          type: array
+          maxItems: 50
+          description: Inline MCP server definitions for this follow-up run. When provided, these definitions replace any create-time inline MCP servers for this run.
+          items:
+            $ref: '#/components/schemas/McpServer'
         mode:
           $ref: '#/components/schemas/AgentMode'
 

@@ -662,6 +662,9 @@ namespace CursorAgents
         /// <param name="envVars">
         /// Session-scoped environment variables for the cloud agent. Values are encrypted at rest, injected into the agent's shell, and deleted with the agent. Names must be non-empty, 1024 bytes or less, and cannot start with `CURSOR_`. Values must be non-empty and 4096 bytes or less.
         /// </param>
+        /// <param name="mcpServers">
+        /// Inline MCP server definitions available to the initial run. Remote servers support `headers` or OAuth `auth`; stdio servers run inside the cloud agent VM and can receive `env`. Server names must be unique.
+        /// </param>
         /// <param name="mode">
         /// Initial conversation mode for the agent's first run.<br/>
         /// Default Value: agent
@@ -679,6 +682,7 @@ namespace CursorAgents
             bool? autoCreatePR = default,
             bool? skipReviewerRequest = default,
             global::System.Collections.Generic.Dictionary<string, string>? envVars = default,
+            global::System.Collections.Generic.IList<global::CursorAgents.McpServer>? mcpServers = default,
             global::CursorAgents.AgentMode? mode = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default)
@@ -694,6 +698,7 @@ namespace CursorAgents
                 AutoCreatePR = autoCreatePR,
                 SkipReviewerRequest = skipReviewerRequest,
                 EnvVars = envVars,
+                McpServers = mcpServers,
                 Mode = mode,
             };
 

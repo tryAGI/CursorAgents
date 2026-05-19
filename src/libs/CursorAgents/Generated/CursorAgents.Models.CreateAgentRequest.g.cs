@@ -69,6 +69,12 @@ namespace CursorAgents
         public global::System.Collections.Generic.Dictionary<string, string>? EnvVars { get; set; }
 
         /// <summary>
+        /// Inline MCP server definitions available to the initial run. Remote servers support `headers` or OAuth `auth`; stdio servers run inside the cloud agent VM and can receive `env`. Server names must be unique.
+        /// </summary>
+        [global::System.Text.Json.Serialization.JsonPropertyName("mcpServers")]
+        public global::System.Collections.Generic.IList<global::CursorAgents.McpServer>? McpServers { get; set; }
+
+        /// <summary>
         /// Initial conversation mode for the agent's first run.<br/>
         /// Default Value: agent
         /// </summary>
@@ -110,6 +116,9 @@ namespace CursorAgents
         /// <param name="envVars">
         /// Session-scoped environment variables for the cloud agent. Values are encrypted at rest, injected into the agent's shell, and deleted with the agent. Names must be non-empty, 1024 bytes or less, and cannot start with `CURSOR_`. Values must be non-empty and 4096 bytes or less.
         /// </param>
+        /// <param name="mcpServers">
+        /// Inline MCP server definitions available to the initial run. Remote servers support `headers` or OAuth `auth`; stdio servers run inside the cloud agent VM and can receive `env`. Server names must be unique.
+        /// </param>
         /// <param name="mode">
         /// Initial conversation mode for the agent's first run.<br/>
         /// Default Value: agent
@@ -127,6 +136,7 @@ namespace CursorAgents
             bool? autoCreatePR,
             bool? skipReviewerRequest,
             global::System.Collections.Generic.Dictionary<string, string>? envVars,
+            global::System.Collections.Generic.IList<global::CursorAgents.McpServer>? mcpServers,
             global::CursorAgents.AgentMode? mode)
         {
             this.Prompt = prompt ?? throw new global::System.ArgumentNullException(nameof(prompt));
@@ -138,6 +148,7 @@ namespace CursorAgents
             this.AutoCreatePR = autoCreatePR;
             this.SkipReviewerRequest = skipReviewerRequest;
             this.EnvVars = envVars;
+            this.McpServers = mcpServers;
             this.Mode = mode;
         }
 

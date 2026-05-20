@@ -48,7 +48,8 @@ namespace CursorAgents
         /// `Last-Event-ID` header to resume after a disconnect; the event<br/>
         /// ID must belong to the requested run. Responses include the<br/>
         /// `X-Cursor-Stream-Retention-Seconds` header. After the<br/>
-        /// retention window the endpoint may return `410 stream_expired`.
+        /// retention window the endpoint may return `410 stream_expired`.<br/>
+        /// `tool_call` event data uses the `RunStreamToolCallData` schema.
         /// </summary>
         /// <param name="id">
         /// Example: bc-00000000-0000-0000-0000-000000000001

@@ -10,6 +10,17 @@
       "Format": "sdk",
       "OperationId": "createSubToken",
       "Setup": "This example assumes \u0060using CursorAgents;\u0060 is in scope and \u0060apiKey\u0060 contains the required credential."
+    },
+    {
+      "Order": 2,
+      "Title": "Stream a run",
+      "Slug": "streamrun",
+      "Description": "Stream Server-Sent Events for one run. Event types include\n\u0060status\u0060, \u0060assistant\u0060, \u0060thinking\u0060, \u0060tool_call\u0060, \u0060heartbeat\u0060,\n\u0060result\u0060, \u0060error\u0060, and \u0060done\u0060. Reconnect with the\n\u0060Last-Event-ID\u0060 header to resume after a disconnect; the event\nID must belong to the requested run. Responses include the\n\u0060X-Cursor-Stream-Retention-Seconds\u0060 header. After the\nretention window the endpoint may return \u0060410 stream_expired\u0060.\n\u0060tool_call\u0060 event data uses the \u0060RunStreamToolCallData\u0060 schema.",
+      "Language": "http",
+      "Code": "### Stream a run\n# @name streamRun\nGET {{host}}/v1/agents/{{id}}/runs/{{runId}}/stream\nAuthorization: Bearer {{token}}\nLast-Event-ID: {{Last-Event-ID}}\nAccept: application/json, text/event-stream\n\n## Responses\n# 200\n# Description: SSE stream of run events.\n# Content-Type: text/event-stream\n# 400\n# Description: Validation error or malformed request body.\n# Content-Type: application/json\n# 401\n# Description: Invalid or missing API key.\n# Content-Type: application/json\n# 403\n# Description: Authenticated but insufficient permissions, plan required, or feature unavailable.\n# Content-Type: application/json\n# 404\n# Description: Agent or run not found.\n# Content-Type: application/json\n# 410\n# Description: Stream retention window has elapsed (\u0060stream_expired\u0060).\n# Content-Type: application/json\n# 429\n# Description: Rate limit exceeded. Response includes \u0060Retry-After\u0060, \u0060X-RateLimit-Limit\u0060, \u0060X-RateLimit-Remaining\u0060, and \u0060X-RateLimit-Reset\u0060 headers.\n# Content-Type: application/json\n# 500\n# Description: Internal server error.\n# Content-Type: application/json",
+      "Format": "http",
+      "OperationId": "streamRun",
+      "Setup": null
     }
   ]
 }

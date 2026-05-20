@@ -312,6 +312,90 @@ components:
           type: string
           format: date-time
 
+    RunStreamToolCallTruncation:
+      type: object
+      additionalProperties: false
+      properties:
+        args:
+          type: boolean
+          description: Present and true when the tool arguments were too large to include in the stream.
+          example: true
+        result:
+          type: boolean
+          description: Present and true when the tool result was too large to include in the stream.
+          example: true
+
+    JsonValue:
+      description: Any JSON value.
+      nullable: true
+      oneOf:
+        - type: string
+        - type: number
+        - type: boolean
+        - type: object
+          additionalProperties: true
+        - type: array
+          items: {}
+
+    RunStreamToolCallData:
+      type: object
+      additionalProperties: false
+      required:
+        - callId
+        - name
+        - status
+      properties:
+        callId:
+          type: string
+          minLength: 1
+          description: Stable identifier for one tool invocation across updates.
+          example: 'call-1'
+        name:
+          type: string
+          minLength: 1
+          description: Public tool name, such as `read_file`, `run_terminal_cmd`, or `mcp`.
+          example: 'read_file'
+        status:
+          type: string
+          enum: ['running', 'completed']
+          description: Tool invocation lifecycle status.
+          example: 'completed'
+        args:
+          allOf:
+            - $ref: '#/components/schemas/JsonValue'
+          description: Tool-specific JSON arguments, when available.
+          example:
+            path: 'README.md'
+        result:
+          allOf:
+            - $ref: '#/components/schemas/JsonValue'
+          description: Tool-specific JSON result, when available.
+          example:
+            success:
+              content: '# Project'
+              totalLines: 1
+              fileSize: 9
+              path: 'README.md'
+        truncated:
+          $ref: '#/components/schemas/RunStreamToolCallTruncation'
+
+    RunStreamToolCallEvent:
+      type: object
+      additionalProperties: false
+      required:
+        - event
+        - data
+      properties:
+        event:
+          type: string
+          enum: ['tool_call']
+        id:
+          type: string
+          description: SSE event id used with the `Last-Event-ID` resume header.
+          example: '1713033006000-0'
+        data:
+          $ref: '#/components/schemas/RunStreamToolCallData'
+
     CreateAgentRequest:
       type: object
       required:
@@ -971,6 +1055,7 @@ paths:
         ID must belong to the requested run. Responses include the
         `X-Cursor-Stream-Retention-Seconds` header. After the
         retention window the endpoint may return `410 stream_expired`.
+        `tool_call` event data uses the `RunStreamToolCallData` schema.
       operationId: streamRun
       parameters:
         - $ref: '#/components/parameters/AgentId'
@@ -993,6 +1078,17 @@ paths:
             text/event-stream:
               schema:
                 type: string
+              examples:
+                toolCall:
+                  summary: Tool call events
+                  value: |
+                    id: 1713033005000-0
+                    event: tool_call
+                    data: {"callId":"call-1","name":"read_file","status":"running","args":{"path":"README.md"}}
+
+                    id: 1713033006000-0
+                    event: tool_call
+                    data: {"callId":"call-1","name":"read_file","status":"completed","args":{"path":"README.md"},"result":{"success":{"content":"# Project","totalLines":1,"fileSize":9,"path":"README.md"}}}
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':

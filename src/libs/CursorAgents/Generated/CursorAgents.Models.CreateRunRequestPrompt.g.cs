@@ -18,7 +18,7 @@ namespace CursorAgents
         public required string Text { get; set; }
 
         /// <summary>
-        /// Optional base64-encoded images. Maximum 5 images, 15 MB each.
+        /// Image inputs for the follow-up. Each entry must provide either `data` (with required `mimeType`) or `url`. Maximum 5 images, 15 MB each.
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("images")]
         public global::System.Collections.Generic.IList<global::CursorAgents.Image>? Images { get; set; }
@@ -37,7 +37,7 @@ namespace CursorAgents
         /// Example: Also add troubleshooting steps
         /// </param>
         /// <param name="images">
-        /// Optional base64-encoded images. Maximum 5 images, 15 MB each.
+        /// Image inputs for the follow-up. Each entry must provide either `data` (with required `mimeType`) or `url`. Maximum 5 images, 15 MB each.
         /// </param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]

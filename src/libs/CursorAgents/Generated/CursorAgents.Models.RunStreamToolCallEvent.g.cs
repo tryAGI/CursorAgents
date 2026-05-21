@@ -16,7 +16,7 @@ namespace CursorAgents
         public global::CursorAgents.RunStreamToolCallEventEvent Event { get; set; }
 
         /// <summary>
-        /// SSE event id used with the `Last-Event-ID` resume header.<br/>
+        /// Opaque SSE event id passed back via `Last-Event-ID` to resume the stream. Do not parse — the format is implementation-defined.<br/>
         /// Example: 1713033006000-0
         /// </summary>
         /// <example>1713033006000-0</example>
@@ -42,7 +42,7 @@ namespace CursorAgents
         /// <param name="data"></param>
         /// <param name="event"></param>
         /// <param name="id">
-        /// SSE event id used with the `Last-Event-ID` resume header.<br/>
+        /// Opaque SSE event id passed back via `Last-Event-ID` to resume the stream. Do not parse — the format is implementation-defined.<br/>
         /// Example: 1713033006000-0
         /// </param>
 #if NET7_0_OR_GREATER

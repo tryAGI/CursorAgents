@@ -16,7 +16,7 @@ namespace CursorAgents
         public required global::System.Collections.Generic.IList<global::CursorAgents.AgentSummary> Items { get; set; }
 
         /// <summary>
-        /// Cursor for fetching the next page of results, or null when there are no more.<br/>
+        /// Cursor for fetching the next page of results. Omitted (not `null`) when there are no more pages.<br/>
         /// Example: bc-00000000-0000-0000-0000-000000000002
         /// </summary>
         /// <example>bc-00000000-0000-0000-0000-000000000002</example>
@@ -36,7 +36,7 @@ namespace CursorAgents
         /// Agents, newest first.
         /// </param>
         /// <param name="nextCursor">
-        /// Cursor for fetching the next page of results, or null when there are no more.<br/>
+        /// Cursor for fetching the next page of results. Omitted (not `null`) when there are no more pages.<br/>
         /// Example: bc-00000000-0000-0000-0000-000000000002
         /// </param>
 #if NET7_0_OR_GREATER

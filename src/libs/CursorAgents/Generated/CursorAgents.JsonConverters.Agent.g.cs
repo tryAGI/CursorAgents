@@ -47,10 +47,10 @@ namespace CursorAgents.JsonConverters
             if (__jsonProps.Contains("url")) __score0++;
             var __score1 = 0;
             if (__jsonProps.Contains("autoCreatePR")) __score1++;
-            if (__jsonProps.Contains("autoGenerateBranch")) __score1++;
-            if (__jsonProps.Contains("branchName")) __score1++;
+            if (__jsonProps.Contains("customSubagents")) __score1++;
             if (__jsonProps.Contains("repos")) __score1++;
             if (__jsonProps.Contains("skipReviewerRequest")) __score1++;
+            if (__jsonProps.Contains("workOnCurrentBranch")) __score1++;
             var __bestScore = 0;
             var __bestIndex = -1;
             if (__score0 > __bestScore) { __bestScore = __score0; __bestIndex = 0; }

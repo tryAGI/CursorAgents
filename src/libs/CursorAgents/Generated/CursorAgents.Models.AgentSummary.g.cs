@@ -18,13 +18,12 @@ namespace CursorAgents
         public required string Id { get; set; }
 
         /// <summary>
-        /// Auto-derived agent name.<br/>
+        /// Display name. Auto-derived from the prompt when not supplied at create time. Omitted when no name has been set.<br/>
         /// Example: Add README with setup instructions
         /// </summary>
         /// <example>Add README with setup instructions</example>
         [global::System.Text.Json.Serialization.JsonPropertyName("name")]
-        [global::System.Text.Json.Serialization.JsonRequired]
-        public required string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// Agent lifecycle state. Execution status lives on runs.
@@ -43,9 +42,9 @@ namespace CursorAgents
 
         /// <summary>
         /// URL to view the agent in Cursor Web.<br/>
-        /// Example: https://cursor.com/agents?id=bc-00000000-0000-0000-0000-000000000001
+        /// Example: https://cursor.com/agents/bc-00000000-0000-0000-0000-000000000001
         /// </summary>
-        /// <example>https://cursor.com/agents?id=bc-00000000-0000-0000-0000-000000000001</example>
+        /// <example>https://cursor.com/agents/bc-00000000-0000-0000-0000-000000000001</example>
         [global::System.Text.Json.Serialization.JsonPropertyName("url")]
         [global::System.Text.Json.Serialization.JsonRequired]
         public required string Url { get; set; }
@@ -85,23 +84,23 @@ namespace CursorAgents
         /// Unique agent identifier.<br/>
         /// Example: bc-00000000-0000-0000-0000-000000000001
         /// </param>
-        /// <param name="name">
-        /// Auto-derived agent name.<br/>
-        /// Example: Add README with setup instructions
-        /// </param>
         /// <param name="status">
         /// Agent lifecycle state. Execution status lives on runs.
         /// </param>
         /// <param name="env"></param>
         /// <param name="url">
         /// URL to view the agent in Cursor Web.<br/>
-        /// Example: https://cursor.com/agents?id=bc-00000000-0000-0000-0000-000000000001
+        /// Example: https://cursor.com/agents/bc-00000000-0000-0000-0000-000000000001
         /// </param>
         /// <param name="createdAt">
         /// When the agent was created.
         /// </param>
         /// <param name="updatedAt">
         /// When the agent was last updated.
+        /// </param>
+        /// <param name="name">
+        /// Display name. Auto-derived from the prompt when not supplied at create time. Omitted when no name has been set.<br/>
+        /// Example: Add README with setup instructions
         /// </param>
         /// <param name="latestRunId">
         /// ID of the most recent run on this agent, if any.<br/>
@@ -112,16 +111,16 @@ namespace CursorAgents
 #endif
         public AgentSummary(
             string id,
-            string name,
             global::CursorAgents.AgentSummaryStatus status,
             global::CursorAgents.AgentEnv env,
             string url,
             global::System.DateTime createdAt,
             global::System.DateTime updatedAt,
+            string? name,
             string? latestRunId)
         {
             this.Id = id ?? throw new global::System.ArgumentNullException(nameof(id));
-            this.Name = name ?? throw new global::System.ArgumentNullException(nameof(name));
+            this.Name = name;
             this.Status = status;
             this.Env = env ?? throw new global::System.ArgumentNullException(nameof(env));
             this.Url = url ?? throw new global::System.ArgumentNullException(nameof(url));

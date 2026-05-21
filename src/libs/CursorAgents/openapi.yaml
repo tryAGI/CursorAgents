@@ -16,6 +16,7 @@ servers:
 
 security:
   - basicAuth: []
+  - bearerAuth: []
 
 components:
   securitySchemes:
@@ -25,6 +26,12 @@ components:
       description: |
         API key from Cursor Dashboard, supplied as the Basic
         Authentication username with an empty password.
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: |
+        API key from Cursor Dashboard, supplied via
+        `Authorization: Bearer <key>`. Equivalent to Basic Auth.
 
   schemas:
     ImageDimension:
@@ -44,16 +51,38 @@ components:
 
     Image:
       type: object
-      required:
-        - data
+      description: |
+        An image input. Provide exactly one of `data` or `url`. When
+        `data` is provided, `mimeType` is required. When `url` is
+        provided, Cursor fetches the image and `mimeType` must be
+        omitted.
       properties:
         data:
           type: string
           minLength: 1
-          description: Base64 encoded image data (max 15 MB)
+          description: Base64 encoded image bytes (max 15 MB). Mutually exclusive with `url`.
           example: 'iVBORw0KGgoAAAANSUhEUgAA...'
+        url:
+          type: string
+          format: uri
+          description: HTTP or HTTPS URL Cursor fetches. Mutually exclusive with `data`.
+          example: 'https://example.com/screenshot.png'
+        mimeType:
+          type: string
+          minLength: 1
+          description: MIME type of the image bytes. Required when `data` is provided; must be omitted when `url` is provided. Supported types are `image/png`, `image/jpeg`, `image/gif`, and `image/webp`.
+          example: 'image/png'
         dimension:
           $ref: '#/components/schemas/ImageDimension'
+      oneOf:
+        - required: [data, mimeType]
+          not:
+            required: [url]
+        - required: [url]
+          not:
+            anyOf:
+              - required: [data]
+              - required: [mimeType]
 
     ModelRef:
       type: object
@@ -85,21 +114,23 @@ components:
 
     RepoConfig:
       type: object
+      required:
+        - url
       properties:
         url:
           type: string
           minLength: 1
-          description: GitHub repository URL. Required unless `prUrl` is provided.
+          description: GitHub repository URL. Required on every repo entry, including when `prUrl` is provided.
           example: 'https://github.com/your-org/your-repo'
         startingRef:
           type: string
           minLength: 1
-          description: Branch, tag, or commit hash to use as the starting point.
+          description: Branch, tag, or commit hash to use as the starting point. Ignored when `prUrl` is provided.
           example: 'main'
         prUrl:
           type: string
           format: uri
-          description: GitHub pull request URL. When provided, the agent works on this PR's repository and branches; `url` and `startingRef` are ignored.
+          description: GitHub pull request URL. When provided, the agent works on this PR's repository and branches; `startingRef` is ignored. `url` must still be set on the same entry.
           example: 'https://github.com/your-org/your-repo/pull/123'
 
     AgentEnv:
@@ -218,7 +249,6 @@ components:
       type: object
       required:
         - id
-        - name
         - status
         - env
         - url
@@ -231,7 +261,7 @@ components:
           example: 'bc-00000000-0000-0000-0000-000000000001'
         name:
           type: string
-          description: Auto-derived agent name.
+          description: Display name. Auto-derived from the prompt when not supplied at create time. Omitted when no name has been set.
           example: 'Add README with setup instructions'
         status:
           type: string
@@ -243,7 +273,7 @@ components:
           type: string
           format: uri
           description: URL to view the agent in Cursor Web.
-          example: 'https://cursor.com/agents?id=bc-00000000-0000-0000-0000-000000000001'
+          example: 'https://cursor.com/agents/bc-00000000-0000-0000-0000-000000000001'
         createdAt:
           type: string
           format: date-time
@@ -267,14 +297,10 @@ components:
               description: Repository configuration. Empty for no-repo agents.
               items:
                 $ref: '#/components/schemas/RepoConfig'
-            branchName:
-              type: string
-              description: Branch the agent works on.
-              example: 'cursor/add-readme'
-            autoGenerateBranch:
+            workOnCurrentBranch:
               type: boolean
-              description: Whether the branch was auto-generated.
-              example: true
+              description: When `false` (the default), Cursor pushes commits to a new auto-generated branch. When `true`, commits land on the existing head branch.
+              example: false
             autoCreatePR:
               type: boolean
               description: Whether Cursor opens a pull request when the run completes.
@@ -282,6 +308,49 @@ components:
             skipReviewerRequest:
               type: boolean
               description: Whether to skip requesting the user as a reviewer when Cursor opens a PR.
+            customSubagents:
+              type: array
+              description: Custom subagents defined at create time. Omitted when none were provided.
+              items:
+                $ref: '#/components/schemas/CustomSubagent'
+
+    RunGitBranch:
+      type: object
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          type: string
+          minLength: 1
+          description: Repository URL the agent pushed to. Returned without the scheme (for example, `github.com/your-org/your-repo`).
+          example: 'github.com/your-org/your-repo'
+        branch:
+          type: string
+          minLength: 1
+          description: Branch name the agent pushed.
+          example: 'cursor/add-readme-a1b2'
+        prUrl:
+          type: string
+          format: uri
+          description: Pull request URL, when Cursor opened a PR.
+          example: 'https://github.com/your-org/your-repo/pull/123'
+
+    RunGit:
+      type: object
+      description: |
+        The agent's current pushed branches and pull requests. This is
+        per-agent state — every run on the same agent returns the same
+        `git` snapshot rather than only that run's contributions. Use
+        the agent's `latestRunId` or the SSE stream to attribute work
+        to a specific run.
+      required:
+        - branches
+      properties:
+        branches:
+          type: array
+          description: Branches the agent has pushed. Stacked agents return one entry per branch.
+          items:
+            $ref: '#/components/schemas/RunGitBranch'
 
     Run:
       type: object
@@ -311,6 +380,20 @@ components:
         updatedAt:
           type: string
           format: date-time
+        durationMs:
+          type: integer
+          minimum: 0
+          description: Wall-clock duration of the run in milliseconds. Populated once the run reaches a terminal status (`FINISHED`, `ERROR`, `CANCELLED`, `EXPIRED`).
+          example: 12357
+        result:
+          type: string
+          minLength: 1
+          description: Final assistant reply text. Populated once the run terminates.
+          example: 'Added README.md with installation instructions.'
+        git:
+          allOf:
+            - $ref: '#/components/schemas/RunGit'
+          description: The agent's pushed branches and PRs. Populated once the agent has pushed at least one branch. Per-agent state, not per-run.
 
     RunStreamToolCallTruncation:
       type: object
@@ -391,10 +474,45 @@ components:
           enum: ['tool_call']
         id:
           type: string
-          description: SSE event id used with the `Last-Event-ID` resume header.
+          description: Opaque SSE event id passed back via `Last-Event-ID` to resume the stream. Do not parse — the format is implementation-defined.
           example: '1713033006000-0'
         data:
           $ref: '#/components/schemas/RunStreamToolCallData'
+
+    CustomSubagent:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+        - description
+        - prompt
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Subagent name. Must be unique within `customSubagents` and cannot collide with built-ins (for example, `explore`, `shell`, `debug`, `computerUse`, `cursorGuide`).
+          example: 'frontend-reviewer'
+        description:
+          type: string
+          minLength: 1
+          maxLength: 1000
+          description: Short summary used by the main agent to decide when to delegate.
+        prompt:
+          type: string
+          minLength: 1
+          maxLength: 8192
+          description: System prompt the subagent receives when invoked.
+        model:
+          oneOf:
+            - type: string
+              enum: ['inherit']
+              description: Use the parent agent's model selection.
+            - type: string
+              minLength: 1
+              description: An explicit model ID.
+              example: 'claude-4.6-sonnet-thinking'
+            - $ref: '#/components/schemas/ModelRef'
 
     CreateAgentRequest:
       type: object
@@ -416,26 +534,40 @@ components:
               maxItems: 5
               items:
                 $ref: '#/components/schemas/Image'
-              description: Optional base64-encoded images. Maximum 5 images, 15 MB each.
+              description: Image inputs. Each entry must provide either `data` (with required `mimeType`) or `url`. Maximum 5 images, 15 MB each.
         model:
           $ref: '#/components/schemas/ModelRef'
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Display name for the agent. Auto-derived from the prompt when omitted.
+          example: 'Add README with setup instructions'
+        agentId:
+          type: string
+          minLength: 1
+          pattern: '^bc-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+          description: Optional client-supplied agent identifier in `bc-<uuid>` form. Re-POSTing the same `agentId` returns `409 agent_id_conflict` instead of creating a duplicate. Cannot be combined with `envVars`; omit `agentId` so the server mints one when you need session secrets.
+          example: 'bc-00000000-0000-0000-0000-000000000001'
         env:
           $ref: '#/components/schemas/AgentEnv'
         repos:
           type: array
           maxItems: 20
-          description: Repository configuration. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` to start a no-repo agent.
+          description: 'Repository configuration. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` (or pass `repos: []`) to start a no-repo agent.'
           items:
             $ref: '#/components/schemas/RepoConfig'
-        branchName:
-          type: string
-          minLength: 1
-          description: Custom branch name for the agent to create.
-          example: 'feature/add-readme'
-        autoGenerateBranch:
+        workOnCurrentBranch:
           type: boolean
-          description: Whether to create a new branch (true) or push to an existing head branch (false). Only applies when `repos[0].prUrl` is provided.
-          default: true
+          description: |
+            When `false` (the default), Cursor pushes commits to a new
+            auto-generated branch (`cursor/...`) based on
+            `repos[0].startingRef` (or the PR base ref when `prUrl`
+            is set). When `true`, Cursor pushes directly to that
+            starting ref — for a non-PR create, that's the branch you
+            passed in `startingRef`; for a `prUrl` create, that's the
+            PR's head branch.
+          default: false
         autoCreatePR:
           type: boolean
           description: Whether Cursor should open a pull request when the run completes.
@@ -447,7 +579,19 @@ components:
         envVars:
           type: object
           maxProperties: 50
-          description: Session-scoped environment variables for the cloud agent. Values are encrypted at rest, injected into the agent's shell, and deleted with the agent. Names must be non-empty, 1024 bytes or less, and cannot start with `CURSOR_`. Values must be non-empty and 4096 bytes or less.
+          description: |
+            Session-scoped environment variables for the cloud agent.
+            Values are encrypted at rest, injected into the agent's
+            shell, and deleted with the agent. Names must be non-empty,
+            255 bytes or less, and cannot start with `CURSOR_`. Values
+            must be non-empty and 4096 bytes or less. Cannot be
+            combined with a client-supplied `agentId`.
+
+            Beta: `envVars` is rolling out. If it isn't enabled for
+            your account yet, the field is silently ignored on create
+            rather than failing the request — verify the values are
+            present on a first run before relying on them in
+            production.
           additionalProperties:
             type: string
             minLength: 1
@@ -458,6 +602,12 @@ components:
           description: Inline MCP server definitions available to the initial run. Remote servers support `headers` or OAuth `auth`; stdio servers run inside the cloud agent VM and can receive `env`. Server names must be unique.
           items:
             $ref: '#/components/schemas/McpServer'
+        customSubagents:
+          type: array
+          maxItems: 20
+          description: Custom subagents the main agent can delegate to. Names must be unique and not collide with built-ins.
+          items:
+            $ref: '#/components/schemas/CustomSubagent'
         mode:
           allOf:
             - $ref: '#/components/schemas/AgentMode'
@@ -484,7 +634,7 @@ components:
               maxItems: 5
               items:
                 $ref: '#/components/schemas/Image'
-              description: Optional base64-encoded images. Maximum 5 images, 15 MB each.
+              description: Image inputs for the follow-up. Each entry must provide either `data` (with required `mimeType`) or `url`. Maximum 5 images, 15 MB each.
         mcpServers:
           type: array
           maxItems: 50
@@ -536,8 +686,8 @@ components:
             $ref: '#/components/schemas/AgentSummary'
         nextCursor:
           type: string
-          nullable: true
-          description: Cursor for fetching the next page of results, or null when there are no more.
+          minLength: 1
+          description: Cursor for fetching the next page of results. Omitted (not `null`) when there are no more pages.
           example: 'bc-00000000-0000-0000-0000-000000000002'
 
     ListRunsResponse:
@@ -552,8 +702,8 @@ components:
             $ref: '#/components/schemas/Run'
         nextCursor:
           type: string
-          nullable: true
-          description: Cursor for fetching the next page of results, or null when there are no more.
+          minLength: 1
+          description: Cursor for fetching the next page of results. Omitted (not `null`) when there are no more pages.
 
     IdResponse:
       type: object
@@ -618,18 +768,143 @@ components:
       required:
         - apiKeyName
         - createdAt
-        - userEmail
       properties:
         apiKeyName:
           type: string
+          description: Display name of the API key.
           example: 'Production API Key'
         createdAt:
           type: string
           format: date-time
+          description: When the API key was created.
+        userId:
+          type: integer
+          minimum: 0
+          description: Numeric Cursor user ID of the API key's owner. Omitted for service-account / team API keys, which aren't tied to a specific user.
+          example: 42
         userEmail:
           type: string
           format: email
+          description: Email of the API key's owner. Omitted for service-account / team API keys.
           example: 'developer@example.com'
+        userFirstName:
+          type: string
+          minLength: 1
+          description: First name of the API key's owner, when populated.
+          example: 'Alex'
+        userLastName:
+          type: string
+          minLength: 1
+          description: Last name of the API key's owner, when populated.
+          example: 'Rivera'
+
+    ModelParameterValueDefinition:
+      type: object
+      required:
+        - value
+      properties:
+        value:
+          type: string
+          minLength: 1
+          description: Permitted value for the parameter.
+          example: 'true'
+        displayName:
+          type: string
+          minLength: 1
+          description: Human-readable label for the value.
+          example: 'Fast'
+
+    ModelParameterDefinition:
+      type: object
+      required:
+        - id
+        - values
+      properties:
+        id:
+          type: string
+          minLength: 1
+          description: Parameter identifier. Pass as `model.params[].id`.
+          example: 'fast'
+        displayName:
+          type: string
+          minLength: 1
+          description: Human-readable label for the parameter.
+          example: 'Fast'
+        values:
+          type: array
+          minItems: 1
+          description: Permitted values for this parameter.
+          items:
+            $ref: '#/components/schemas/ModelParameterValueDefinition'
+
+    ModelVariant:
+      type: object
+      required:
+        - params
+        - displayName
+      properties:
+        params:
+          type: array
+          description: Concrete parameter values that, combined with the parent model `id`, form a valid model selection. May be empty.
+          items:
+            type: object
+            required:
+              - id
+              - value
+            properties:
+              id:
+                type: string
+                minLength: 1
+              value:
+                type: string
+                minLength: 1
+        displayName:
+          type: string
+          minLength: 1
+          description: Human-readable label for this variant.
+        description:
+          type: string
+          minLength: 1
+        isDefault:
+          type: boolean
+          description: True for the variant Cursor selects when the user picks this model without explicit `params`.
+
+    ModelListItem:
+      type: object
+      required:
+        - id
+        - displayName
+      properties:
+        id:
+          type: string
+          minLength: 1
+          description: Pass this value as `model.id` when creating an agent.
+          example: 'composer-2'
+        displayName:
+          type: string
+          minLength: 1
+          description: Human-readable model name.
+          example: 'Composer 2'
+        description:
+          type: string
+          minLength: 1
+        aliases:
+          type: array
+          description: Alternate IDs that resolve to the same model.
+          items:
+            type: string
+            minLength: 1
+          example: ['composer-latest', 'composer']
+        parameters:
+          type: array
+          description: Per-model parameter definitions, when the model accepts parameters. Use these to populate `model.params`.
+          items:
+            $ref: '#/components/schemas/ModelParameterDefinition'
+        variants:
+          type: array
+          description: Concrete `id`+`params` combinations the model accepts.
+          items:
+            $ref: '#/components/schemas/ModelVariant'
 
     ListModelsResponse:
       type: object
@@ -638,10 +913,9 @@ components:
       properties:
         items:
           type: array
-          description: Recommended set of explicit model IDs you can pass to the `model.id` field on POST /v1/agents.
+          description: Recommended models. Use `id` (and optionally `params`) when creating an agent.
           items:
-            type: string
-          example: ['composer-2', 'gpt-5.5', 'claude-4.6-sonnet-thinking']
+            $ref: '#/components/schemas/ModelListItem'
 
     Repository:
       type: object
@@ -731,15 +1005,29 @@ components:
                 Machine-readable error code. Possible values include
                 `unauthorized`, `api_key_not_found`, `plan_required`,
                 `role_forbidden`, `feature_unavailable`,
-                `validation_error`, `missing_body`, `agent_not_found`,
+                `integration_not_connected`, `validation_error`,
+                `missing_body`, `invalid_model`, `invalid_branch_name`,
+                `repository_required`, `repository_access`,
+                `pr_resolution_failed`, `artifact_not_found`,
+                `service_account_required`, `agent_not_found`,
                 `run_not_found`, `agent_busy`, `agent_archived`,
-                `run_not_cancellable`, `rate_limit_exceeded`,
+                `agent_id_conflict`, `run_not_cancellable`,
+                `rate_limit_exceeded`, `usage_limit_exceeded`,
                 `stream_expired`, `stream_unavailable`,
-                `invalid_last_event_id`, `upstream_error`, and
+                `invalid_last_event_id`, `client_cancelled`,
+                `not_implemented`, `upstream_error`, and
                 `internal_error`.
             message:
               type: string
               description: Human-readable error message.
+            helpUrl:
+              type: string
+              format: uri
+              description: Optional follow-up link. Populated for codes like `integration_not_connected`.
+            provider:
+              type: string
+              minLength: 1
+              description: Optional provider identifier. Populated for codes like `integration_not_connected`.
 
   parameters:
     AgentId:
@@ -785,7 +1073,7 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
     Conflict:
-      description: Resource state conflict (`agent_busy`, `agent_archived`, or `run_not_cancellable`).
+      description: Resource state conflict (`agent_busy`, `agent_archived`, `agent_id_conflict`, or `run_not_cancellable`).
       content:
         application/json:
           schema:
@@ -837,6 +1125,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
         '429':
           $ref: '#/components/responses/RateLimited'
         '500':
@@ -1048,14 +1338,29 @@ paths:
     get:
       summary: Stream a run
       description: |
-        Stream Server-Sent Events for one run. Event types include
-        `status`, `assistant`, `thinking`, `tool_call`, `heartbeat`,
-        `result`, `error`, and `done`. Reconnect with the
-        `Last-Event-ID` header to resume after a disconnect; the event
-        ID must belong to the requested run. Responses include the
-        `X-Cursor-Stream-Retention-Seconds` header. After the
-        retention window the endpoint may return `410 stream_expired`.
-        `tool_call` event data uses the `RunStreamToolCallData` schema.
+        Stream Server-Sent Events for one run. Event types are
+        `status`, `assistant`, `thinking`, `tool_call`,
+        `interaction_update`, `heartbeat`, `result`, `error`, and
+        `done`.
+
+        - `status` carries `{ runId, status }`. It has no `id` line
+          and is replayed at the top of every reconnect.
+        - `result` carries `{ runId, status, text?, durationMs?,
+          git? }`; `text` is the final assistant reply, `durationMs`
+          the wall-clock duration, and `git` mirrors `Run.git`.
+        - `interaction_update` carries the richer SDK-shape update
+          used by the TypeScript SDK and is emitted alongside the
+          simplified events that share the same event id. Use this if
+          you want the full SDK stream; otherwise handle the simplified
+          events and ignore it.
+
+        Reconnect with the `Last-Event-ID` header to resume after a
+        disconnect; the event ID must belong to the requested run
+        otherwise the endpoint returns `400 invalid_last_event_id`.
+        Responses include the `X-Cursor-Stream-Retention-Seconds`
+        header; after the retention window the endpoint may return
+        `410 stream_expired`. `tool_call` event data uses the
+        `RunStreamToolCallData` schema.
       operationId: streamRun
       parameters:
         - $ref: '#/components/parameters/AgentId'

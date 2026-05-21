@@ -9,7 +9,7 @@ namespace CursorAgents
     public sealed partial class AgentVariant2
     {
         /// <summary>
-        /// Repository configuration. v1 currently supports one entry.
+        /// Repository configuration. Empty for no-repo agents.
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("repos")]
         public global::System.Collections.Generic.IList<global::CursorAgents.RepoConfig>? Repos { get; set; }
@@ -54,7 +54,7 @@ namespace CursorAgents
         /// Initializes a new instance of the <see cref="AgentVariant2" /> class.
         /// </summary>
         /// <param name="repos">
-        /// Repository configuration. v1 currently supports one entry.
+        /// Repository configuration. Empty for no-repo agents.
         /// </param>
         /// <param name="branchName">
         /// Branch the agent works on.<br/>
@@ -94,5 +94,6 @@ namespace CursorAgents
         public AgentVariant2()
         {
         }
+
     }
 }

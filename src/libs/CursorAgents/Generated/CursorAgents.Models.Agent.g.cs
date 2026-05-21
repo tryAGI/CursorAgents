@@ -29,6 +29,26 @@ namespace CursorAgents
         /// <summary>
         /// 
         /// </summary>
+        public bool TryPickSummary(
+#if NET6_0_OR_GREATER
+            [global::System.Diagnostics.CodeAnalysis.NotNullWhen(true)]
+#endif
+            out global::CursorAgents.AgentSummary? value)
+        {
+            value = Summary;
+            return IsSummary;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public global::CursorAgents.AgentSummary PickSummary() => IsSummary
+            ? Summary!
+            : throw new global::System.InvalidOperationException($"Expected union variant 'Summary' but the value was {ToString()}.");
+
+        /// <summary>
+        /// 
+        /// </summary>
 #if NET6_0_OR_GREATER
         public global::CursorAgents.AgentVariant2? AgentVariant2 { get; init; }
 #else
@@ -42,6 +62,26 @@ namespace CursorAgents
         [global::System.Diagnostics.CodeAnalysis.MemberNotNullWhen(true, nameof(AgentVariant2))]
 #endif
         public bool IsAgentVariant2 => AgentVariant2 != null;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool TryPickAgentVariant2(
+#if NET6_0_OR_GREATER
+            [global::System.Diagnostics.CodeAnalysis.NotNullWhen(true)]
+#endif
+            out global::CursorAgents.AgentVariant2? value)
+        {
+            value = AgentVariant2;
+            return IsAgentVariant2;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public global::CursorAgents.AgentVariant2 PickAgentVariant2() => IsAgentVariant2
+            ? AgentVariant2!
+            : throw new global::System.InvalidOperationException($"Expected union variant 'AgentVariant2' but the value was {ToString()}.");
         /// <summary>
         /// 
         /// </summary>
@@ -63,6 +103,11 @@ namespace CursorAgents
         /// <summary>
         /// 
         /// </summary>
+        public static Agent FromSummary(global::CursorAgents.AgentSummary? value) => new Agent(value);
+
+        /// <summary>
+        /// 
+        /// </summary>
         public static implicit operator Agent(global::CursorAgents.AgentVariant2 value) => new Agent((global::CursorAgents.AgentVariant2?)value);
 
         /// <summary>
@@ -77,6 +122,11 @@ namespace CursorAgents
         {
             AgentVariant2 = value;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static Agent FromAgentVariant2(global::CursorAgents.AgentVariant2? value) => new Agent(value);
 
         /// <summary>
         /// 
@@ -118,8 +168,8 @@ namespace CursorAgents
         /// 
         /// </summary>
         public TResult? Match<TResult>(
-            global::System.Func<global::CursorAgents.AgentSummary?, TResult>? summary = null,
-            global::System.Func<global::CursorAgents.AgentVariant2?, TResult>? agentVariant2 = null,
+            global::System.Func<global::CursorAgents.AgentSummary, TResult>? summary = null,
+            global::System.Func<global::CursorAgents.AgentVariant2, TResult>? agentVariant2 = null,
             bool validate = true)
         {
             if (validate)
@@ -143,8 +193,32 @@ namespace CursorAgents
         /// 
         /// </summary>
         public void Match(
-            global::System.Action<global::CursorAgents.AgentSummary?>? summary = null,
-            global::System.Action<global::CursorAgents.AgentVariant2?>? agentVariant2 = null,
+            global::System.Action<global::CursorAgents.AgentSummary>? summary = null,
+
+            global::System.Action<global::CursorAgents.AgentVariant2>? agentVariant2 = null,
+            bool validate = true)
+        {
+            if (validate)
+            {
+                Validate();
+            }
+
+            if (IsSummary)
+            {
+                summary?.Invoke(Summary!);
+            }
+            else if (IsAgentVariant2)
+            {
+                agentVariant2?.Invoke(AgentVariant2!);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Switch(
+            global::System.Action<global::CursorAgents.AgentSummary>? summary = null,
+            global::System.Action<global::CursorAgents.AgentVariant2>? agentVariant2 = null,
             bool validate = true)
         {
             if (validate)

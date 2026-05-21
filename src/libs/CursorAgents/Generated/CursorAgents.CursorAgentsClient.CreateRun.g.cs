@@ -730,18 +730,28 @@ namespace CursorAgents
         /// Example: bc-00000000-0000-0000-0000-000000000001
         /// </param>
         /// <param name="prompt"></param>
+        /// <param name="mcpServers">
+        /// Inline MCP server definitions for this follow-up run. When provided, these definitions replace any create-time inline MCP servers for this run.
+        /// </param>
+        /// <param name="mode">
+        /// Conversation mode. `plan` explores and drafts a plan before coding; `agent` implements changes directly. On follow-up runs, omit to keep the conversation's current mode; set explicitly to switch modes for that run.
+        /// </param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
         /// <param name="cancellationToken">The token to cancel the operation with</param>
         /// <exception cref="global::System.InvalidOperationException"></exception>
         public async global::System.Threading.Tasks.Task<global::CursorAgents.CreateRunResponse> CreateRunAsync(
             string id,
             global::CursorAgents.CreateRunRequestPrompt prompt,
+            global::System.Collections.Generic.IList<global::CursorAgents.McpServer>? mcpServers = default,
+            global::CursorAgents.AgentMode? mode = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default)
         {
             var __request = new global::CursorAgents.CreateRunRequest
             {
                 Prompt = prompt,
+                McpServers = mcpServers,
+                Mode = mode,
             };
 
             return await CreateRunAsync(

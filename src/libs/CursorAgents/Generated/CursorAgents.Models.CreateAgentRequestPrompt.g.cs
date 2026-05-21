@@ -56,5 +56,6 @@ namespace CursorAgents
         public CreateAgentRequestPrompt()
         {
         }
+
     }
 }

@@ -90,5 +90,6 @@ namespace CursorAgents
         public CreateSubTokenResponse()
         {
         }
+
     }
 }

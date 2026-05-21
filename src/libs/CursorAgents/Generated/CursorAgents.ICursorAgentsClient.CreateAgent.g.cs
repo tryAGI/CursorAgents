@@ -42,8 +42,9 @@ namespace CursorAgents
         /// </summary>
         /// <param name="prompt"></param>
         /// <param name="model"></param>
+        /// <param name="env"></param>
         /// <param name="repos">
-        /// Repository configuration. v1 currently supports one entry.
+        /// Repository configuration. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` to start a no-repo agent.
         /// </param>
         /// <param name="branchName">
         /// Custom branch name for the agent to create.<br/>
@@ -64,18 +65,28 @@ namespace CursorAgents
         /// <param name="envVars">
         /// Session-scoped environment variables for the cloud agent. Values are encrypted at rest, injected into the agent's shell, and deleted with the agent. Names must be non-empty, 1024 bytes or less, and cannot start with `CURSOR_`. Values must be non-empty and 4096 bytes or less.
         /// </param>
+        /// <param name="mcpServers">
+        /// Inline MCP server definitions available to the initial run. Remote servers support `headers` or OAuth `auth`; stdio servers run inside the cloud agent VM and can receive `env`. Server names must be unique.
+        /// </param>
+        /// <param name="mode">
+        /// Initial conversation mode for the agent's first run.<br/>
+        /// Default Value: agent
+        /// </param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
         /// <param name="cancellationToken">The token to cancel the operation with</param>
         /// <exception cref="global::System.InvalidOperationException"></exception>
         global::System.Threading.Tasks.Task<global::CursorAgents.CreateAgentResponse> CreateAgentAsync(
             global::CursorAgents.CreateAgentRequestPrompt prompt,
-            global::System.Collections.Generic.IList<global::CursorAgents.RepoConfig> repos,
             global::CursorAgents.ModelRef? model = default,
+            global::CursorAgents.AgentEnv? env = default,
+            global::System.Collections.Generic.IList<global::CursorAgents.RepoConfig>? repos = default,
             string? branchName = default,
             bool? autoGenerateBranch = default,
             bool? autoCreatePR = default,
             bool? skipReviewerRequest = default,
             global::System.Collections.Generic.Dictionary<string, string>? envVars = default,
+            global::System.Collections.Generic.IList<global::CursorAgents.McpServer>? mcpServers = default,
+            global::CursorAgents.AgentMode? mode = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default);
     }

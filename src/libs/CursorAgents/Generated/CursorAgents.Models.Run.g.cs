@@ -49,6 +49,28 @@ namespace CursorAgents
         public required global::System.DateTime UpdatedAt { get; set; }
 
         /// <summary>
+        /// Wall-clock duration of the run in milliseconds. Populated once the run reaches a terminal status (`FINISHED`, `ERROR`, `CANCELLED`, `EXPIRED`).<br/>
+        /// Example: 12357
+        /// </summary>
+        /// <example>12357</example>
+        [global::System.Text.Json.Serialization.JsonPropertyName("durationMs")]
+        public int? DurationMs { get; set; }
+
+        /// <summary>
+        /// Final assistant reply text. Populated once the run terminates.<br/>
+        /// Example: Added README.md with installation instructions.
+        /// </summary>
+        /// <example>Added README.md with installation instructions.</example>
+        [global::System.Text.Json.Serialization.JsonPropertyName("result")]
+        public string? Result { get; set; }
+
+        /// <summary>
+        /// The agent's pushed branches and PRs. Populated once the agent has pushed at least one branch. Per-agent state, not per-run.
+        /// </summary>
+        [global::System.Text.Json.Serialization.JsonPropertyName("git")]
+        public global::CursorAgents.RunGit? Git { get; set; }
+
+        /// <summary>
         /// Additional properties that are not explicitly defined in the schema
         /// </summary>
         [global::System.Text.Json.Serialization.JsonExtensionData]
@@ -70,6 +92,17 @@ namespace CursorAgents
         /// </param>
         /// <param name="createdAt"></param>
         /// <param name="updatedAt"></param>
+        /// <param name="durationMs">
+        /// Wall-clock duration of the run in milliseconds. Populated once the run reaches a terminal status (`FINISHED`, `ERROR`, `CANCELLED`, `EXPIRED`).<br/>
+        /// Example: 12357
+        /// </param>
+        /// <param name="result">
+        /// Final assistant reply text. Populated once the run terminates.<br/>
+        /// Example: Added README.md with installation instructions.
+        /// </param>
+        /// <param name="git">
+        /// The agent's pushed branches and PRs. Populated once the agent has pushed at least one branch. Per-agent state, not per-run.
+        /// </param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
 #endif
@@ -78,13 +111,19 @@ namespace CursorAgents
             string agentId,
             global::CursorAgents.RunStatus status,
             global::System.DateTime createdAt,
-            global::System.DateTime updatedAt)
+            global::System.DateTime updatedAt,
+            int? durationMs,
+            string? result,
+            global::CursorAgents.RunGit? git)
         {
             this.Id = id ?? throw new global::System.ArgumentNullException(nameof(id));
             this.AgentId = agentId ?? throw new global::System.ArgumentNullException(nameof(agentId));
             this.Status = status;
             this.CreatedAt = createdAt;
             this.UpdatedAt = updatedAt;
+            this.DurationMs = durationMs;
+            this.Result = result;
+            this.Git = git;
         }
 
         /// <summary>

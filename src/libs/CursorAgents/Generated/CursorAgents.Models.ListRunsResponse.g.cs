@@ -16,7 +16,7 @@ namespace CursorAgents
         public required global::System.Collections.Generic.IList<global::CursorAgents.Run> Items { get; set; }
 
         /// <summary>
-        /// Cursor for fetching the next page of results, or null when there are no more.
+        /// Cursor for fetching the next page of results. Omitted (not `null`) when there are no more pages.
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("nextCursor")]
         public string? NextCursor { get; set; }
@@ -34,7 +34,7 @@ namespace CursorAgents
         /// Runs for this agent, newest first.
         /// </param>
         /// <param name="nextCursor">
-        /// Cursor for fetching the next page of results, or null when there are no more.
+        /// Cursor for fetching the next page of results. Omitted (not `null`) when there are no more pages.
         /// </param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]

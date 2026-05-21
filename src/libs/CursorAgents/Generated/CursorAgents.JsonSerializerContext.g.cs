@@ -41,6 +41,10 @@ namespace CursorAgents
 
             typeof(global::CursorAgents.JsonConverters.RunStreamToolCallEventEventNullableJsonConverter),
 
+            typeof(global::CursorAgents.JsonConverters.CustomSubagentModelJsonConverter),
+
+            typeof(global::CursorAgents.JsonConverters.CustomSubagentModelNullableJsonConverter),
+
             typeof(global::CursorAgents.JsonConverters.AgentModeJsonConverter),
 
             typeof(global::CursorAgents.JsonConverters.AgentModeNullableJsonConverter),
@@ -51,6 +55,8 @@ namespace CursorAgents
 
             typeof(global::CursorAgents.JsonConverters.JsonValueJsonConverter),
 
+            typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.CustomSubagentModel?, string, global::CursorAgents.ModelRef>),
+
             typeof(global::CursorAgents.JsonConverters.UnixTimestampJsonConverter),
         })]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.JsonSerializerContextTypes))]
@@ -58,6 +64,7 @@ namespace CursorAgents
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(int))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.Image))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(string))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(object))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ModelRef))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.ModelRefParam>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ModelRefParam))]
@@ -79,17 +86,23 @@ namespace CursorAgents
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.AgentVariant2))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.RepoConfig>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(bool))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.CustomSubagent>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.CustomSubagent))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.RunGitBranch))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.RunGit))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.RunGitBranch>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.Run))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.RunStatus), TypeInfoPropertyName = "RunStatus2")]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.RunStreamToolCallTruncation))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.JsonValue), TypeInfoPropertyName = "JsonValue2")]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(double))]
-    [global::System.Text.Json.Serialization.JsonSerializable(typeof(object))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<object>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.RunStreamToolCallData))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.RunStreamToolCallDataStatus), TypeInfoPropertyName = "RunStreamToolCallDataStatus2")]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.RunStreamToolCallEvent))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.RunStreamToolCallEventEvent), TypeInfoPropertyName = "RunStreamToolCallEventEvent2")]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.OneOf<global::CursorAgents.CustomSubagentModel?, string, global::CursorAgents.ModelRef>), TypeInfoPropertyName = "OneOfCustomSubagentModelStringModelRef2")]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.CustomSubagentModel), TypeInfoPropertyName = "CustomSubagentModel2")]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.CreateAgentRequest))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.CreateAgentRequestPrompt))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.Image>))]
@@ -110,7 +123,17 @@ namespace CursorAgents
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.Artifact>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.DownloadArtifactResponse))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ApiKeyInfo))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ModelParameterValueDefinition))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ModelParameterDefinition))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.ModelParameterValueDefinition>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ModelVariant))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.ModelVariantParam>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ModelVariantParam))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ModelListItem))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.ModelParameterDefinition>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.ModelVariant>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ListModelsResponse))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.ModelListItem>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.Repository))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ListRepositoriesResponse))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.Repository>))]
@@ -121,12 +144,19 @@ namespace CursorAgents
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.ModelRefParam>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<string>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.RepoConfig>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.CustomSubagent>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.RunGitBranch>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<object>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.Image>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.McpServer>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.AgentSummary>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.Run>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.Artifact>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.ModelParameterValueDefinition>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.ModelVariantParam>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.ModelParameterDefinition>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.ModelVariant>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.ModelListItem>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.Repository>))]
     public sealed partial class SourceGenerationContext : global::System.Text.Json.Serialization.JsonSerializerContext
     {

@@ -506,7 +506,7 @@ namespace CursorAgents
                                         h => h.Value),
                                 };
                             }
-                            // Resource state conflict (`agent_busy`, `agent_archived`, or `run_not_cancellable`).
+                            // Resource state conflict (`agent_busy`, `agent_archived`, `agent_id_conflict`, or `run_not_cancellable`).
                             if ((int)__response.StatusCode == 409)
                             {
                                 string? __content_409 = null;

@@ -15,20 +15,12 @@ namespace CursorAgents
         public global::System.Collections.Generic.IList<global::CursorAgents.RepoConfig>? Repos { get; set; }
 
         /// <summary>
-        /// Branch the agent works on.<br/>
-        /// Example: cursor/add-readme
+        /// When `false` (the default), Cursor pushes commits to a new auto-generated branch. When `true`, commits land on the existing head branch.<br/>
+        /// Example: false
         /// </summary>
-        /// <example>cursor/add-readme</example>
-        [global::System.Text.Json.Serialization.JsonPropertyName("branchName")]
-        public string? BranchName { get; set; }
-
-        /// <summary>
-        /// Whether the branch was auto-generated.<br/>
-        /// Example: true
-        /// </summary>
-        /// <example>true</example>
-        [global::System.Text.Json.Serialization.JsonPropertyName("autoGenerateBranch")]
-        public bool? AutoGenerateBranch { get; set; }
+        /// <example>false</example>
+        [global::System.Text.Json.Serialization.JsonPropertyName("workOnCurrentBranch")]
+        public bool? WorkOnCurrentBranch { get; set; }
 
         /// <summary>
         /// Whether Cursor opens a pull request when the run completes.<br/>
@@ -45,6 +37,12 @@ namespace CursorAgents
         public bool? SkipReviewerRequest { get; set; }
 
         /// <summary>
+        /// Custom subagents defined at create time. Omitted when none were provided.
+        /// </summary>
+        [global::System.Text.Json.Serialization.JsonPropertyName("customSubagents")]
+        public global::System.Collections.Generic.IList<global::CursorAgents.CustomSubagent>? CustomSubagents { get; set; }
+
+        /// <summary>
         /// Additional properties that are not explicitly defined in the schema
         /// </summary>
         [global::System.Text.Json.Serialization.JsonExtensionData]
@@ -56,13 +54,9 @@ namespace CursorAgents
         /// <param name="repos">
         /// Repository configuration. Empty for no-repo agents.
         /// </param>
-        /// <param name="branchName">
-        /// Branch the agent works on.<br/>
-        /// Example: cursor/add-readme
-        /// </param>
-        /// <param name="autoGenerateBranch">
-        /// Whether the branch was auto-generated.<br/>
-        /// Example: true
+        /// <param name="workOnCurrentBranch">
+        /// When `false` (the default), Cursor pushes commits to a new auto-generated branch. When `true`, commits land on the existing head branch.<br/>
+        /// Example: false
         /// </param>
         /// <param name="autoCreatePR">
         /// Whether Cursor opens a pull request when the run completes.<br/>
@@ -71,21 +65,24 @@ namespace CursorAgents
         /// <param name="skipReviewerRequest">
         /// Whether to skip requesting the user as a reviewer when Cursor opens a PR.
         /// </param>
+        /// <param name="customSubagents">
+        /// Custom subagents defined at create time. Omitted when none were provided.
+        /// </param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
 #endif
         public AgentVariant2(
             global::System.Collections.Generic.IList<global::CursorAgents.RepoConfig>? repos,
-            string? branchName,
-            bool? autoGenerateBranch,
+            bool? workOnCurrentBranch,
             bool? autoCreatePR,
-            bool? skipReviewerRequest)
+            bool? skipReviewerRequest,
+            global::System.Collections.Generic.IList<global::CursorAgents.CustomSubagent>? customSubagents)
         {
             this.Repos = repos;
-            this.BranchName = branchName;
-            this.AutoGenerateBranch = autoGenerateBranch;
+            this.WorkOnCurrentBranch = workOnCurrentBranch;
             this.AutoCreatePR = autoCreatePR;
             this.SkipReviewerRequest = skipReviewerRequest;
+            this.CustomSubagents = customSubagents;
         }
 
         /// <summary>

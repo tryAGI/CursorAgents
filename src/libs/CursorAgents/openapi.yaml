@@ -125,7 +125,7 @@ components:
         startingRef:
           type: string
           minLength: 1
-          description: Branch, tag, or commit hash to use as the starting point. Ignored when `prUrl` is provided.
+          description: Branch name or commit SHA to use as the starting point. Ignored when `prUrl` is provided.
           example: 'main'
         prUrl:
           type: string

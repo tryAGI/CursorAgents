@@ -18,7 +18,7 @@ namespace CursorAgents
         public required string Url { get; set; }
 
         /// <summary>
-        /// Branch, tag, or commit hash to use as the starting point. Ignored when `prUrl` is provided.<br/>
+        /// Branch name or commit SHA to use as the starting point. Ignored when `prUrl` is provided.<br/>
         /// Example: main
         /// </summary>
         /// <example>main</example>
@@ -47,7 +47,7 @@ namespace CursorAgents
         /// Example: https://github.com/your-org/your-repo
         /// </param>
         /// <param name="startingRef">
-        /// Branch, tag, or commit hash to use as the starting point. Ignored when `prUrl` is provided.<br/>
+        /// Branch name or commit SHA to use as the starting point. Ignored when `prUrl` is provided.<br/>
         /// Example: main
         /// </param>
         /// <param name="prUrl">

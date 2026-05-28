@@ -22,7 +22,7 @@ public partial class Tests
                 : throw new AssertInconclusiveException(
                     "CURSORAGENTS_TEST_REPO environment variable is not found.");
 
-        //// Launch a coding agent with a prompt, source repository, and target branch settings.
+        //// Launch a coding agent with a prompt and source repository.
         var response = await client.CreateAgentAsync(
             prompt: new CreateAgentRequestPrompt
             {
@@ -36,7 +36,7 @@ public partial class Tests
                     StartingRef = "main",
                 },
             ],
-            branchName: "cursor/add-contributing",
+            workOnCurrentBranch: false,
             autoCreatePR: true);
 
         //// The response contains the agent ID, name, and initial status.

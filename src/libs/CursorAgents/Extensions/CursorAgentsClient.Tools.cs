@@ -25,6 +25,8 @@ public static class CursorAgentsToolExtensions
         return AIFunctionFactory.Create(
             async (string prompt, string repository, string? branch, string? targetBranch, CancellationToken cancellationToken) =>
             {
+                var startingRef = targetBranch is { Length: > 0 } ? targetBranch : branch;
+
                 var response = await client.CreateAgentAsync(
                     prompt: new CreateAgentRequestPrompt
                     {
@@ -35,17 +37,17 @@ public static class CursorAgentsToolExtensions
                         new RepoConfig
                         {
                             Url = repository,
-                            StartingRef = branch,
+                            StartingRef = startingRef,
                         },
                     ],
-                    branchName: targetBranch,
+                    workOnCurrentBranch: targetBranch is { Length: > 0 },
                     autoCreatePR: autoCreatePr,
                     cancellationToken: cancellationToken).ConfigureAwait(false);
 
                 return FormatCreateAgentResponse(response);
             },
             name: "CreateCodingAgent",
-            description: "Launches an AI coding agent to work autonomously on a GitHub repository. The agent reads the codebase, makes changes, and optionally creates a pull request. Requires a prompt describing the task, the repository URL, and optionally a source branch and target branch name.");
+            description: "Launches an AI coding agent to work autonomously on a GitHub repository. The agent reads the codebase, makes changes, and optionally creates a pull request. Requires a prompt describing the task, the repository URL, and optionally a source branch. When targetBranch is supplied, the agent works directly on that existing branch.");
     }
 
     /// <summary>
@@ -94,7 +96,7 @@ public static class CursorAgentsToolExtensions
                 return FormatGetAgentResponse(response);
             },
             name: "GetCodingAgentStatus",
-            description: "Retrieves the current status and details of a specific cloud coding agent by its ID. Returns the agent's name, status, source repository, target branch, PR URL, and a summary of work completed.");
+            description: "Retrieves the current status and details of a specific cloud coding agent by its ID. Returns the agent's name, status, source repository, PR URL, and a summary of work completed.");
     }
 
     private static string FormatCreateAgentResponse(CreateAgentResponse response)
@@ -112,7 +114,7 @@ public static class CursorAgentsToolExtensions
             $"Created: {response.Run.CreatedAt:u}",
         };
 
-        if (response.Agent.AgentVariant2?.BranchName is { Length: > 0 } branch)
+        if (response.Run.Git?.Branches?.FirstOrDefault()?.Branch is { Length: > 0 } branch)
         {
             parts.Add($"Branch: {branch}");
         }
@@ -172,11 +174,6 @@ public static class CursorAgentsToolExtensions
         if (details?.Repos?.FirstOrDefault()?.StartingRef is { Length: > 0 } sourceRef)
         {
             parts.Add($"Source branch: {sourceRef}");
-        }
-
-        if (details?.BranchName is { Length: > 0 } branch)
-        {
-            parts.Add($"Target branch: {branch}");
         }
 
         if (agent?.Url is { Length: > 0 } url)

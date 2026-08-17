@@ -8,7 +8,7 @@ info:
     agent. Streaming and cancellation are scoped to the active run.
   version: 1.0.0
   contact:
-    email: background-agent-feedback@cursor.com
+    email: hi@cursor.com
 
 servers:
   - url: https://api.cursor.com
@@ -763,6 +763,78 @@ components:
           format: date-time
           description: When the presigned URL expires.
 
+    UsageTokenUsage:
+      type: object
+      required:
+        - inputTokens
+        - outputTokens
+        - cacheWriteTokens
+        - cacheReadTokens
+        - totalTokens
+      properties:
+        inputTokens:
+          type: integer
+          minimum: 0
+          description: Input tokens consumed.
+          example: 6320
+        outputTokens:
+          type: integer
+          minimum: 0
+          description: Output tokens generated.
+          example: 1450
+        cacheWriteTokens:
+          type: integer
+          minimum: 0
+          description: Tokens written to cache.
+          example: 7100
+        cacheReadTokens:
+          type: integer
+          minimum: 0
+          description: Tokens read from cache.
+          example: 21300
+        totalTokens:
+          type: integer
+          minimum: 0
+          description: Sum of the four token counts above.
+          example: 36170
+
+    RunUsage:
+      type: object
+      required:
+        - id
+        - usage
+      properties:
+        id:
+          type: string
+          minLength: 1
+          description: Run identifier.
+          example: 'run-00000000-0000-0000-0000-000000000001'
+        usageUuid:
+          type: string
+          minLength: 1
+          description: Internal usage identifier for the run. Omitted when the run has no recorded usage yet.
+          example: '00000000-0000-0000-0000-000000000001'
+        usage:
+          allOf:
+            - $ref: '#/components/schemas/UsageTokenUsage'
+          description: Token usage for this run. Runs without recorded usage report zeros across all fields.
+
+    AgentUsageResponse:
+      type: object
+      required:
+        - totalUsage
+        - runs
+      properties:
+        totalUsage:
+          allOf:
+            - $ref: '#/components/schemas/UsageTokenUsage'
+          description: Token usage summed across the returned runs.
+        runs:
+          type: array
+          description: Per-run usage, one entry per run (or a single entry when `runId` is set).
+          items:
+            $ref: '#/components/schemas/RunUsage'
+
     ApiKeyInfo:
       type: object
       required:
@@ -1437,6 +1509,49 @@ paths:
           $ref: '#/components/responses/NotFound'
         '409':
           $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/agents/{id}/usage:
+    get:
+      summary: Get agent usage
+      description: |
+        Retrieve token usage for an agent, broken down per run.
+        `totalUsage` sums input, output, and cache token counts across
+        every run on the agent, and `runs` lists the same breakdown for
+        each run. Token usage mirrors the `tokenUsage` shape on the team
+        usage events endpoint.
+
+        This endpoint is in early access. When it isn't enabled for the
+        account it returns `403 feature_unavailable`. An unknown `runId`
+        returns `404 run_not_found`.
+      operationId: getAgentUsage
+      parameters:
+        - $ref: '#/components/parameters/AgentId'
+        - name: runId
+          in: query
+          required: false
+          description: Scope usage to a single run. Omit to return usage for every run on the agent.
+          schema:
+            type: string
+            example: 'run-00000000-0000-0000-0000-000000000001'
+      responses:
+        '200':
+          description: Usage retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentUsageResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
         '429':
           $ref: '#/components/responses/RateLimited'
         '500':

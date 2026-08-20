@@ -19,7 +19,7 @@ namespace CursorAgents
         public required global::CursorAgents.AgentEnvType Type { get; set; }
 
         /// <summary>
-        /// Named Cursor-hosted environment, self-hosted pool, or self-hosted machine name.<br/>
+        /// Named Cursor-hosted environment, self-hosted pool, or self-hosted machine name. For `type: pool`, this is the pool name (defaults to `default` when omitted). Unknown pool names return `400`. Omit `repos` with `type: pool` to target a repo-less pool.<br/>
         /// Example: Release workspace
         /// </summary>
         /// <example>Release workspace</example>
@@ -40,7 +40,7 @@ namespace CursorAgents
         /// Example: cloud
         /// </param>
         /// <param name="name">
-        /// Named Cursor-hosted environment, self-hosted pool, or self-hosted machine name.<br/>
+        /// Named Cursor-hosted environment, self-hosted pool, or self-hosted machine name. For `type: pool`, this is the pool name (defaults to `default` when omitted). Unknown pool names return `400`. Omit `repos` with `type: pool` to target a repo-less pool.<br/>
         /// Example: Release workspace
         /// </param>
 #if NET7_0_OR_GREATER

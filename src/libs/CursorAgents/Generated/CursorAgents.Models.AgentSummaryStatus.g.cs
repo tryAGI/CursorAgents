@@ -9,11 +9,11 @@ namespace CursorAgents
     public enum AgentSummaryStatus
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         Active,
         /// <summary>
-        /// 
+        ///
         /// </summary>
         Archived,
     }

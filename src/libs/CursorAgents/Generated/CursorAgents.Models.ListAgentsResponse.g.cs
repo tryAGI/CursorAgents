@@ -4,7 +4,7 @@
 namespace CursorAgents
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public sealed partial class ListAgentsResponse
     {

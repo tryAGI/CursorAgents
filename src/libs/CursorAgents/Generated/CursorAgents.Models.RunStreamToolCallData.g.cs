@@ -4,7 +4,7 @@
 namespace CursorAgents
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public sealed partial class RunStreamToolCallData
     {
@@ -55,7 +55,7 @@ namespace CursorAgents
         public global::CursorAgents.JsonValue? Result { get; set; }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("truncated")]
         public global::CursorAgents.RunStreamToolCallTruncation? Truncated { get; set; }

@@ -4,7 +4,7 @@
 namespace CursorAgents
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public sealed partial class CustomSubagent
     {
@@ -32,7 +32,7 @@ namespace CursorAgents
         public required string Prompt { get; set; }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("model")]
         [global::System.Text.Json.Serialization.JsonConverter(typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.CustomSubagentModel?, string, global::CursorAgents.ModelRef>))]

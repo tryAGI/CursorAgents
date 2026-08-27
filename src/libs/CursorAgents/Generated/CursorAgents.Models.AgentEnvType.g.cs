@@ -10,15 +10,15 @@ namespace CursorAgents
     public enum AgentEnvType
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         Cloud,
         /// <summary>
-        /// 
+        ///
         /// </summary>
         Machine,
         /// <summary>
-        /// 
+        ///
         /// </summary>
         Pool,
     }

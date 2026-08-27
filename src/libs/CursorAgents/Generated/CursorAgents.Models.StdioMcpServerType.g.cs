@@ -10,7 +10,7 @@ namespace CursorAgents
     public enum StdioMcpServerType
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         Stdio,
     }

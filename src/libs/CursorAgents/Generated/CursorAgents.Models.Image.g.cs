@@ -36,7 +36,7 @@ namespace CursorAgents
         public string? MimeType { get; set; }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("dimension")]
         public global::CursorAgents.ImageDimension? Dimension { get; set; }

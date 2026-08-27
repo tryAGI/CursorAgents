@@ -10,7 +10,7 @@ namespace CursorAgents
     public readonly partial struct JsonValue : global::System.IEquatable<JsonValue>
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
 #if NET6_0_OR_GREATER
         public string? JsonValueVariant1 { get; init; }
@@ -19,7 +19,7 @@ namespace CursorAgents
 #endif
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
 #if NET6_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.MemberNotNullWhen(true, nameof(JsonValueVariant1))]
@@ -27,7 +27,7 @@ namespace CursorAgents
         public bool IsJsonValueVariant1 => JsonValueVariant1 != null;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public bool TryPickJsonValueVariant1(
 #if NET6_0_OR_GREATER
@@ -40,14 +40,14 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public string PickJsonValueVariant1() => IsJsonValueVariant1
             ? JsonValueVariant1!
             : throw new global::System.InvalidOperationException($"Expected union variant 'JsonValueVariant1' but the value was {ToString()}.");
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
 #if NET6_0_OR_GREATER
         public double? JsonValueVariant2 { get; init; }
@@ -56,7 +56,7 @@ namespace CursorAgents
 #endif
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
 #if NET6_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.MemberNotNullWhen(true, nameof(JsonValueVariant2))]
@@ -64,7 +64,7 @@ namespace CursorAgents
         public bool IsJsonValueVariant2 => JsonValueVariant2 != null;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public bool TryPickJsonValueVariant2(
 #if NET6_0_OR_GREATER
@@ -77,14 +77,14 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public double PickJsonValueVariant2() => IsJsonValueVariant2
             ? JsonValueVariant2!.Value
             : throw new global::System.InvalidOperationException($"Expected union variant 'JsonValueVariant2' but the value was {ToString()}.");
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
 #if NET6_0_OR_GREATER
         public bool? JsonValueVariant3 { get; init; }
@@ -93,7 +93,7 @@ namespace CursorAgents
 #endif
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
 #if NET6_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.MemberNotNullWhen(true, nameof(JsonValueVariant3))]
@@ -101,7 +101,7 @@ namespace CursorAgents
         public bool IsJsonValueVariant3 => JsonValueVariant3 != null;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public bool TryPickJsonValueVariant3(
 #if NET6_0_OR_GREATER
@@ -114,14 +114,14 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public bool PickJsonValueVariant3() => IsJsonValueVariant3
             ? JsonValueVariant3!.Value
             : throw new global::System.InvalidOperationException($"Expected union variant 'JsonValueVariant3' but the value was {ToString()}.");
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
 #if NET6_0_OR_GREATER
         public object? JsonValueVariant4 { get; init; }
@@ -130,7 +130,7 @@ namespace CursorAgents
 #endif
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
 #if NET6_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.MemberNotNullWhen(true, nameof(JsonValueVariant4))]
@@ -138,7 +138,7 @@ namespace CursorAgents
         public bool IsJsonValueVariant4 => JsonValueVariant4 != null;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public bool TryPickJsonValueVariant4(
 #if NET6_0_OR_GREATER
@@ -151,14 +151,14 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public object PickJsonValueVariant4() => IsJsonValueVariant4
             ? JsonValueVariant4!
             : throw new global::System.InvalidOperationException($"Expected union variant 'JsonValueVariant4' but the value was {ToString()}.");
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
 #if NET6_0_OR_GREATER
         public global::System.Collections.Generic.IList<object>? JsonValueVariant5 { get; init; }
@@ -167,7 +167,7 @@ namespace CursorAgents
 #endif
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
 #if NET6_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.MemberNotNullWhen(true, nameof(JsonValueVariant5))]
@@ -175,7 +175,7 @@ namespace CursorAgents
         public bool IsJsonValueVariant5 => JsonValueVariant5 != null;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public bool TryPickJsonValueVariant5(
 #if NET6_0_OR_GREATER
@@ -188,23 +188,23 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public global::System.Collections.Generic.IList<object> PickJsonValueVariant5() => IsJsonValueVariant5
             ? JsonValueVariant5!
             : throw new global::System.InvalidOperationException($"Expected union variant 'JsonValueVariant5' but the value was {ToString()}.");
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static implicit operator JsonValue(string value) => new JsonValue((string?)value);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static implicit operator string?(JsonValue @this) => @this.JsonValueVariant1;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public JsonValue(string? value)
         {
@@ -212,22 +212,22 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static JsonValue FromJsonValueVariant1(string? value) => new JsonValue(value);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static implicit operator JsonValue(double value) => new JsonValue((double?)value);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static implicit operator double?(JsonValue @this) => @this.JsonValueVariant2;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public JsonValue(double? value)
         {
@@ -235,22 +235,22 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static JsonValue FromJsonValueVariant2(double? value) => new JsonValue(value);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static implicit operator JsonValue(bool value) => new JsonValue((bool?)value);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static implicit operator bool?(JsonValue @this) => @this.JsonValueVariant3;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public JsonValue(bool? value)
         {
@@ -258,12 +258,12 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static JsonValue FromJsonValueVariant3(bool? value) => new JsonValue(value);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public JsonValue(
             string? jsonValueVariant1,
@@ -281,29 +281,29 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public object? Object =>
             JsonValueVariant5 as object ??
             JsonValueVariant4 as object ??
             JsonValueVariant3 as object ??
             JsonValueVariant2 as object ??
-            JsonValueVariant1 as object 
+            JsonValueVariant1 as object
             ;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public override string? ToString() =>
             JsonValueVariant1?.ToString() ??
             JsonValueVariant2?.ToString() ??
             JsonValueVariant3?.ToString().ToLowerInvariant() ??
             JsonValueVariant4?.ToString() ??
-            JsonValueVariant5?.ToString() 
+            JsonValueVariant5?.ToString()
             ;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public bool Validate()
         {
@@ -311,7 +311,7 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public TResult? Match<TResult>(
             global::System.Func<string, TResult>? jsonValueVariant1 = null,
@@ -351,7 +351,7 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public void Match(
             global::System.Action<string>? jsonValueVariant1 = null,
@@ -393,7 +393,7 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public void Switch(
             global::System.Action<string>? jsonValueVariant1 = null,
@@ -431,7 +431,7 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public override int GetHashCode()
         {
@@ -458,7 +458,7 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public bool Equals(JsonValue other)
         {
@@ -467,12 +467,12 @@ namespace CursorAgents
                 global::System.Collections.Generic.EqualityComparer<double?>.Default.Equals(JsonValueVariant2, other.JsonValueVariant2) &&
                 global::System.Collections.Generic.EqualityComparer<bool?>.Default.Equals(JsonValueVariant3, other.JsonValueVariant3) &&
                 global::System.Collections.Generic.EqualityComparer<object?>.Default.Equals(JsonValueVariant4, other.JsonValueVariant4) &&
-                global::System.Collections.Generic.EqualityComparer<global::System.Collections.Generic.IList<object>?>.Default.Equals(JsonValueVariant5, other.JsonValueVariant5) 
+                global::System.Collections.Generic.EqualityComparer<global::System.Collections.Generic.IList<object>?>.Default.Equals(JsonValueVariant5, other.JsonValueVariant5)
                 ;
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static bool operator ==(JsonValue obj1, JsonValue obj2)
         {
@@ -480,7 +480,7 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static bool operator !=(JsonValue obj1, JsonValue obj2)
         {
@@ -488,7 +488,7 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public override bool Equals(object? obj)
         {

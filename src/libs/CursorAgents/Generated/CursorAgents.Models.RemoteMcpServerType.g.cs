@@ -10,11 +10,11 @@ namespace CursorAgents
     public enum RemoteMcpServerType
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         Http,
         /// <summary>
-        /// 
+        ///
         /// </summary>
         Sse,
     }

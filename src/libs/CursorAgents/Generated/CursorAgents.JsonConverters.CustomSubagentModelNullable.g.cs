@@ -20,7 +20,7 @@ namespace CursorAgents.JsonConverters
                     {
                         return global::CursorAgents.CustomSubagentModelExtensions.ToEnum(stringValue);
                     }
-                    
+
                     break;
                 }
                 case global::System.Text.Json.JsonTokenType.Number:

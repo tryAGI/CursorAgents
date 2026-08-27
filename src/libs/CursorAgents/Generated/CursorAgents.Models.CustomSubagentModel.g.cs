@@ -9,7 +9,7 @@ namespace CursorAgents
     public enum CustomSubagentModel
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         Inherit,
     }

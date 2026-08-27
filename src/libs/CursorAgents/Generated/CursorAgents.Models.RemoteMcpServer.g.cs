@@ -4,7 +4,7 @@
 namespace CursorAgents
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public sealed partial class RemoteMcpServer
     {
@@ -44,7 +44,7 @@ namespace CursorAgents
         public global::System.Collections.Generic.Dictionary<string, string>? Headers { get; set; }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("auth")]
         public global::CursorAgents.McpAuth? Auth { get; set; }

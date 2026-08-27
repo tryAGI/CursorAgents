@@ -10,11 +10,11 @@ namespace CursorAgents
     public enum RunStreamToolCallDataStatus
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         Completed,
         /// <summary>
-        /// 
+        ///
         /// </summary>
         Running,
     }

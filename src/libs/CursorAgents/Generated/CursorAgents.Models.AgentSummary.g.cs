@@ -4,7 +4,7 @@
 namespace CursorAgents
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public sealed partial class AgentSummary
     {
@@ -34,7 +34,7 @@ namespace CursorAgents
         public required global::CursorAgents.AgentSummaryStatus Status { get; set; }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("env")]
         [global::System.Text.Json.Serialization.JsonRequired]

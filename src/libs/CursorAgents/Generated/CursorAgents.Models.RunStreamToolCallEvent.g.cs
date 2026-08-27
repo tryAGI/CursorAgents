@@ -4,12 +4,12 @@
 namespace CursorAgents
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public sealed partial class RunStreamToolCallEvent
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("event")]
         [global::System.Text.Json.Serialization.JsonConverter(typeof(global::CursorAgents.JsonConverters.RunStreamToolCallEventEventJsonConverter))]
@@ -24,7 +24,7 @@ namespace CursorAgents
         public string? Id { get; set; }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("data")]
         [global::System.Text.Json.Serialization.JsonRequired]

@@ -20,7 +20,7 @@ namespace CursorAgents.JsonConverters
                     {
                         return global::CursorAgents.RunStreamToolCallEventEventExtensions.ToEnum(stringValue) ?? default;
                     }
-                    
+
                     break;
                 }
                 case global::System.Text.Json.JsonTokenType.Number:

@@ -4,7 +4,7 @@
 namespace CursorAgents
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public sealed partial class ModelListItem
     {
@@ -27,7 +27,7 @@ namespace CursorAgents
         public required string DisplayName { get; set; }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("description")]
         public string? Description { get; set; }

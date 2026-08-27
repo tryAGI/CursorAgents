@@ -4,12 +4,12 @@
 namespace CursorAgents
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public enum RunStreamToolCallEventEvent
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         ToolCall,
     }

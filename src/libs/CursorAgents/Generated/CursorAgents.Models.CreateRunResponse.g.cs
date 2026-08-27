@@ -4,12 +4,12 @@
 namespace CursorAgents
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public sealed partial class CreateRunResponse
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("run")]
         [global::System.Text.Json.Serialization.JsonRequired]

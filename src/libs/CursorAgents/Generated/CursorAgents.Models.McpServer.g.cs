@@ -5,12 +5,12 @@
 namespace CursorAgents
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public readonly partial struct McpServer : global::System.IEquatable<McpServer>
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
 #if NET6_0_OR_GREATER
         public global::CursorAgents.StdioMcpServer? Stdio { get; init; }
@@ -19,7 +19,7 @@ namespace CursorAgents
 #endif
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
 #if NET6_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.MemberNotNullWhen(true, nameof(Stdio))]
@@ -27,7 +27,7 @@ namespace CursorAgents
         public bool IsStdio => Stdio != null;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public bool TryPickStdio(
 #if NET6_0_OR_GREATER
@@ -40,14 +40,14 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public global::CursorAgents.StdioMcpServer PickStdio() => IsStdio
             ? Stdio!
             : throw new global::System.InvalidOperationException($"Expected union variant 'Stdio' but the value was {ToString()}.");
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
 #if NET6_0_OR_GREATER
         public global::CursorAgents.RemoteMcpServer? Remote { get; init; }
@@ -56,7 +56,7 @@ namespace CursorAgents
 #endif
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
 #if NET6_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.MemberNotNullWhen(true, nameof(Remote))]
@@ -64,7 +64,7 @@ namespace CursorAgents
         public bool IsRemote => Remote != null;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public bool TryPickRemote(
 #if NET6_0_OR_GREATER
@@ -77,23 +77,23 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public global::CursorAgents.RemoteMcpServer PickRemote() => IsRemote
             ? Remote!
             : throw new global::System.InvalidOperationException($"Expected union variant 'Remote' but the value was {ToString()}.");
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static implicit operator McpServer(global::CursorAgents.StdioMcpServer value) => new McpServer((global::CursorAgents.StdioMcpServer?)value);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static implicit operator global::CursorAgents.StdioMcpServer?(McpServer @this) => @this.Stdio;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public McpServer(global::CursorAgents.StdioMcpServer? value)
         {
@@ -101,22 +101,22 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static McpServer FromStdio(global::CursorAgents.StdioMcpServer? value) => new McpServer(value);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static implicit operator McpServer(global::CursorAgents.RemoteMcpServer value) => new McpServer((global::CursorAgents.RemoteMcpServer?)value);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static implicit operator global::CursorAgents.RemoteMcpServer?(McpServer @this) => @this.Remote;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public McpServer(global::CursorAgents.RemoteMcpServer? value)
         {
@@ -124,12 +124,12 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static McpServer FromRemote(global::CursorAgents.RemoteMcpServer? value) => new McpServer(value);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public McpServer(
             global::CursorAgents.StdioMcpServer? stdio,
@@ -141,23 +141,23 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public object? Object =>
             Remote as object ??
-            Stdio as object 
+            Stdio as object
             ;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public override string? ToString() =>
             Stdio?.ToString() ??
-            Remote?.ToString() 
+            Remote?.ToString()
             ;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public bool Validate()
         {
@@ -165,7 +165,7 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public TResult? Match<TResult>(
             global::System.Func<global::CursorAgents.StdioMcpServer, TResult>? stdio = null,
@@ -190,7 +190,7 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public void Match(
             global::System.Action<global::CursorAgents.StdioMcpServer>? stdio = null,
@@ -214,7 +214,7 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public void Switch(
             global::System.Action<global::CursorAgents.StdioMcpServer>? stdio = null,
@@ -237,7 +237,7 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public override int GetHashCode()
         {
@@ -258,18 +258,18 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public bool Equals(McpServer other)
         {
             return
                 global::System.Collections.Generic.EqualityComparer<global::CursorAgents.StdioMcpServer?>.Default.Equals(Stdio, other.Stdio) &&
-                global::System.Collections.Generic.EqualityComparer<global::CursorAgents.RemoteMcpServer?>.Default.Equals(Remote, other.Remote) 
+                global::System.Collections.Generic.EqualityComparer<global::CursorAgents.RemoteMcpServer?>.Default.Equals(Remote, other.Remote)
                 ;
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static bool operator ==(McpServer obj1, McpServer obj2)
         {
@@ -277,7 +277,7 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static bool operator !=(McpServer obj1, McpServer obj2)
         {
@@ -285,7 +285,7 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public override bool Equals(object? obj)
         {

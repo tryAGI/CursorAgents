@@ -9,11 +9,11 @@ namespace CursorAgents
     public enum AgentMode
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         Agent,
         /// <summary>
-        /// 
+        ///
         /// </summary>
         Plan,
     }

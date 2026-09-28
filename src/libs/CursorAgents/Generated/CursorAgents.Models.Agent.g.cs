@@ -42,8 +42,8 @@ namespace CursorAgents
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.AgentSummary PickSummary() => IsSummary
-            ? Summary!
+        public global::CursorAgents.AgentSummary PickSummary() => Summary is { } value
+            ? value
             : throw new global::System.InvalidOperationException($"Expected union variant 'Summary' but the value was {ToString()}.");
 
         /// <summary>
@@ -79,8 +79,8 @@ namespace CursorAgents
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.AgentVariant2 PickAgentVariant2() => IsAgentVariant2
-            ? AgentVariant2!
+        public global::CursorAgents.AgentVariant2 PickAgentVariant2() => AgentVariant2 is { } value
+            ? value
             : throw new global::System.InvalidOperationException($"Expected union variant 'AgentVariant2' but the value was {ToString()}.");
         /// <summary>
         ///
@@ -177,13 +177,13 @@ namespace CursorAgents
                 Validate();
             }
 
-            if (IsSummary && summary != null)
+            if (Summary is { } __value0 && summary != null)
             {
-                return summary(Summary!);
+                return summary(__value0);
             }
-            else if (IsAgentVariant2 && agentVariant2 != null)
+            else if (AgentVariant2 is { } __value1 && agentVariant2 != null)
             {
-                return agentVariant2(AgentVariant2!);
+                return agentVariant2(__value1);
             }
 
             return default(TResult);
@@ -203,13 +203,13 @@ namespace CursorAgents
                 Validate();
             }
 
-            if (IsSummary)
+            if (Summary is { } __value0)
             {
-                summary?.Invoke(Summary!);
+                summary?.Invoke(__value0);
             }
-            else if (IsAgentVariant2)
+            else if (AgentVariant2 is { } __value1)
             {
-                agentVariant2?.Invoke(AgentVariant2!);
+                agentVariant2?.Invoke(__value1);
             }
         }
 
@@ -226,13 +226,13 @@ namespace CursorAgents
                 Validate();
             }
 
-            if (IsSummary)
+            if (Summary is { } __value0)
             {
-                summary?.Invoke(Summary!);
+                summary?.Invoke(__value0);
             }
-            else if (IsAgentVariant2)
+            else if (AgentVariant2 is { } __value1)
             {
-                agentVariant2?.Invoke(AgentVariant2!);
+                agentVariant2?.Invoke(__value1);
             }
         }
 

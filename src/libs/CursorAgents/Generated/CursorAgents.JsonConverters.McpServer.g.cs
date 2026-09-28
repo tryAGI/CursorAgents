@@ -146,13 +146,13 @@ namespace CursorAgents.JsonConverters
             {
                 var typeInfo = typeInfoResolver.GetTypeInfo(typeof(global::CursorAgents.StdioMcpServer), options) as global::System.Text.Json.Serialization.Metadata.JsonTypeInfo<global::CursorAgents.StdioMcpServer?> ??
                                throw new global::System.InvalidOperationException($"Cannot get type info for {typeof(global::CursorAgents.StdioMcpServer).Name}");
-                global::System.Text.Json.JsonSerializer.Serialize(writer, value.Stdio!, typeInfo);
+                global::System.Text.Json.JsonSerializer.Serialize(writer, value.PickStdio(), typeInfo);
             }
             else if (value.IsRemote)
             {
                 var typeInfo = typeInfoResolver.GetTypeInfo(typeof(global::CursorAgents.RemoteMcpServer), options) as global::System.Text.Json.Serialization.Metadata.JsonTypeInfo<global::CursorAgents.RemoteMcpServer?> ??
                                throw new global::System.InvalidOperationException($"Cannot get type info for {typeof(global::CursorAgents.RemoteMcpServer).Name}");
-                global::System.Text.Json.JsonSerializer.Serialize(writer, value.Remote!, typeInfo);
+                global::System.Text.Json.JsonSerializer.Serialize(writer, value.PickRemote(), typeInfo);
             }
         }
     }

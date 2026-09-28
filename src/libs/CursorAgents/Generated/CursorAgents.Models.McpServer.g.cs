@@ -42,8 +42,8 @@ namespace CursorAgents
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.StdioMcpServer PickStdio() => IsStdio
-            ? Stdio!
+        public global::CursorAgents.StdioMcpServer PickStdio() => Stdio is { } value
+            ? value
             : throw new global::System.InvalidOperationException($"Expected union variant 'Stdio' but the value was {ToString()}.");
 
         /// <summary>
@@ -79,8 +79,8 @@ namespace CursorAgents
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.RemoteMcpServer PickRemote() => IsRemote
-            ? Remote!
+        public global::CursorAgents.RemoteMcpServer PickRemote() => Remote is { } value
+            ? value
             : throw new global::System.InvalidOperationException($"Expected union variant 'Remote' but the value was {ToString()}.");
         /// <summary>
         ///
@@ -177,13 +177,13 @@ namespace CursorAgents
                 Validate();
             }
 
-            if (IsStdio && stdio != null)
+            if (Stdio is { } __value0 && stdio != null)
             {
-                return stdio(Stdio!);
+                return stdio(__value0);
             }
-            else if (IsRemote && remote != null)
+            else if (Remote is { } __value1 && remote != null)
             {
-                return remote(Remote!);
+                return remote(__value1);
             }
 
             return default(TResult);
@@ -203,13 +203,13 @@ namespace CursorAgents
                 Validate();
             }
 
-            if (IsStdio)
+            if (Stdio is { } __value0)
             {
-                stdio?.Invoke(Stdio!);
+                stdio?.Invoke(__value0);
             }
-            else if (IsRemote)
+            else if (Remote is { } __value1)
             {
-                remote?.Invoke(Remote!);
+                remote?.Invoke(__value1);
             }
         }
 
@@ -226,13 +226,13 @@ namespace CursorAgents
                 Validate();
             }
 
-            if (IsStdio)
+            if (Stdio is { } __value0)
             {
-                stdio?.Invoke(Stdio!);
+                stdio?.Invoke(__value0);
             }
-            else if (IsRemote)
+            else if (Remote is { } __value1)
             {
-                remote?.Invoke(Remote!);
+                remote?.Invoke(__value1);
             }
         }
 

@@ -52,7 +52,7 @@ namespace CursorAgents
         /// </param>
         /// <param name="env"></param>
         /// <param name="repos">
-        /// Repository configuration. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` (or pass `repos: []`) to start a no-repo agent.
+        /// Repository configuration. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` (or pass `repos: []`) to start a no-repo agent. On self-hosted targets, only a named any-repo pool takes more than one entry. `machine`, the `default` pool, and repo-backed pools take one and return `400` for more.
         /// </param>
         /// <param name="workOnCurrentBranch">
         /// When `false` (the default), Cursor pushes commits to a new<br/>

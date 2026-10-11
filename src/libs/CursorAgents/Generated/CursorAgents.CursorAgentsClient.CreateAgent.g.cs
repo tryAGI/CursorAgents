@@ -378,24 +378,24 @@ namespace CursorAgents
                                         h => h.Key,
                                         h => h.Value));
                             }
-                            // Invalid or missing API key.
+                            // Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level `code` and `message` instead of an `error` object.
                             if ((int)__response.StatusCode == 401)
                             {
                                 string? __content_401 = null;
                                 global::System.Exception? __exception_401 = null;
-                                global::CursorAgents.Error? __value_401 = null;
+                                global::CursorAgents.OneOf<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>? __value_401 = null;
                                 try
                                 {
                                     if (__effectiveReadResponseAsString)
                                     {
                                         __content_401 = await __response.Content.ReadAsStringAsync(__effectiveCancellationToken).ConfigureAwait(false);
-                                        __value_401 = global::CursorAgents.Error.FromJson(__content_401, JsonSerializerContext);
+                                        __value_401 = global::CursorAgents.OneOf<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>.FromJson(__content_401, JsonSerializerContext);
                                     }
                                     else
                                     {
                                         __content_401 = await __response.Content.ReadAsStringAsync(__effectiveCancellationToken).ConfigureAwait(false);
 
-                                        __value_401 = global::CursorAgents.Error.FromJson(__content_401, JsonSerializerContext);
+                                        __value_401 = global::CursorAgents.OneOf<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>.FromJson(__content_401, JsonSerializerContext);
                                     }
                                 }
                                 catch (global::System.Exception __ex)
@@ -404,7 +404,7 @@ namespace CursorAgents
                                 }
 
 
-                                throw global::CursorAgents.ApiException<global::CursorAgents.Error>.Create(
+                                throw global::CursorAgents.ApiException<global::CursorAgents.OneOf<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>?>.Create(
                                     statusCode: __response.StatusCode,
                                     message: __content_401 ?? __response.ReasonPhrase ?? string.Empty,
                                     innerException: __exception_401,
@@ -452,7 +452,7 @@ namespace CursorAgents
                                         h => h.Key,
                                         h => h.Value));
                             }
-                            // Resource state conflict (`agent_busy`, `agent_archived`, `agent_id_conflict`, or `run_not_cancellable`).
+                            // Resource state conflict (`agent_busy`, `agent_archived`, `agent_id_conflict`, `run_not_cancellable`, or `environment_name_conflict`).
                             if ((int)__response.StatusCode == 409)
                             {
                                 string? __content_409 = null;

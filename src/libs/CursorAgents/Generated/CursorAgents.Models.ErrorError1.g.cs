@@ -17,7 +17,9 @@ namespace CursorAgents
         /// `repository_required`, `repository_access`,<br/>
         /// `pr_resolution_failed`, `artifact_not_found`,<br/>
         /// `service_account_required`, `agent_not_found`,<br/>
-        /// `run_not_found`, `agent_busy`, `agent_archived`,<br/>
+        /// `run_not_found`, `environment_not_found`, `build_not_found`,<br/>
+        /// `team_admin_required`, `environment_name_conflict`,<br/>
+        /// `duplicate_json_key`, `agent_busy`, `agent_archived`,<br/>
         /// `agent_id_conflict`, `run_not_cancellable`,<br/>
         /// `rate_limit_exceeded`, `usage_limit_exceeded`,<br/>
         /// `stream_expired`, `stream_unavailable`,<br/>
@@ -49,6 +51,14 @@ namespace CursorAgents
         public string? Provider { get; set; }
 
         /// <summary>
+        /// ID of the existing environment with the requested name, when an `environment_name_conflict` error returns it.<br/>
+        /// Example: 8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c
+        /// </summary>
+        /// <example>8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c</example>
+        [global::System.Text.Json.Serialization.JsonPropertyName("environmentId")]
+        public global::System.Guid? EnvironmentId { get; set; }
+
+        /// <summary>
         /// Additional properties that are not explicitly defined in the schema
         /// </summary>
         [global::System.Text.Json.Serialization.JsonExtensionData]
@@ -66,7 +76,9 @@ namespace CursorAgents
         /// `repository_required`, `repository_access`,<br/>
         /// `pr_resolution_failed`, `artifact_not_found`,<br/>
         /// `service_account_required`, `agent_not_found`,<br/>
-        /// `run_not_found`, `agent_busy`, `agent_archived`,<br/>
+        /// `run_not_found`, `environment_not_found`, `build_not_found`,<br/>
+        /// `team_admin_required`, `environment_name_conflict`,<br/>
+        /// `duplicate_json_key`, `agent_busy`, `agent_archived`,<br/>
         /// `agent_id_conflict`, `run_not_cancellable`,<br/>
         /// `rate_limit_exceeded`, `usage_limit_exceeded`,<br/>
         /// `stream_expired`, `stream_unavailable`,<br/>
@@ -83,6 +95,10 @@ namespace CursorAgents
         /// <param name="provider">
         /// Optional provider identifier. Populated for codes like `integration_not_connected`.
         /// </param>
+        /// <param name="environmentId">
+        /// ID of the existing environment with the requested name, when an `environment_name_conflict` error returns it.<br/>
+        /// Example: 8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c
+        /// </param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
 #endif
@@ -90,12 +106,14 @@ namespace CursorAgents
             string code,
             string message,
             string? helpUrl,
-            string? provider)
+            string? provider,
+            global::System.Guid? environmentId)
         {
             this.Code = code ?? throw new global::System.ArgumentNullException(nameof(code));
             this.Message = message ?? throw new global::System.ArgumentNullException(nameof(message));
             this.HelpUrl = helpUrl;
             this.Provider = provider;
+            this.EnvironmentId = environmentId;
         }
 
         /// <summary>

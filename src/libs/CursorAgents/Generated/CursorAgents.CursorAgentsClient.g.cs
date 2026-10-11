@@ -8,6 +8,7 @@ namespace CursorAgents
     /// autonomously on your repositories. v1 separates a durable agent<br/>
     /// from one or more runs: each prompt submission creates a run on the<br/>
     /// agent. Streaming and cancellation are scoped to the active run.<br/>
+    /// Environment endpoints manage the saved environments agents run in.<br/>
     /// If no httpClient is provided, a new one will be created.<br/>
     /// If no baseUri is provided, the default baseUri from OpenAPI spec will be used.
     /// </summary>

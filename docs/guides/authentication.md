@@ -7,7 +7,7 @@ The CursorAgents SDK uses Bearer token authentication. The SDK automatically con
 ```csharp
 using CursorAgents;
 
-var client = new CursorAgentsClient(apiKey: Environment.GetEnvironmentVariable("CURSORAGENTS_API_KEY")!);
+var client = new CursorAgentsClient(apiKey: System.Environment.GetEnvironmentVariable("CURSORAGENTS_API_KEY")!);
 ```
 
 You do not need to handle the Basic Auth conversion yourself -- the SDK does it automatically.

@@ -17,7 +17,7 @@ public partial class Tests
         using var client = GetAuthenticatedClient();
 
         var agentId =
-            Environment.GetEnvironmentVariable("CURSORAGENTS_TEST_AGENT_ID") is { Length: > 0 } idValue
+            global::System.Environment.GetEnvironmentVariable("CURSORAGENTS_TEST_AGENT_ID") is { Length: > 0 } idValue
                 ? idValue
                 : throw new AssertInconclusiveException(
                     "CURSORAGENTS_TEST_AGENT_ID environment variable is not found.");

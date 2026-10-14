@@ -6,6 +6,7 @@ info:
     autonomously on your repositories. v1 separates a durable agent
     from one or more runs: each prompt submission creates a run on the
     agent. Streaming and cancellation are scoped to the active run.
+    Environment endpoints manage the saved environments agents run in.
   version: 1.0.0
   contact:
     email: hi@cursor.com
@@ -835,6 +836,346 @@ components:
           items:
             $ref: '#/components/schemas/RunUsage'
 
+    EnvironmentRepo:
+      type: object
+      additionalProperties: false
+      required:
+        - url
+      properties:
+        url:
+          type: string
+          minLength: 1
+          description: "Repository URL."
+          example: 'https://github.com/your-org/your-repo'
+
+    EnvironmentRepoFile:
+      type: object
+      additionalProperties: false
+      description: "The file in a repository that an environment reads its configuration from."
+      required:
+        - url
+        - path
+      properties:
+        url:
+          type: string
+          minLength: 1
+          description: "URL of the repository that holds the configuration file."
+          example: 'https://github.com/your-org/your-repo'
+        path:
+          type: string
+          minLength: 1
+          description: "Path of the configuration file in the repository."
+          example: '.cursor/environment.json'
+
+    Environment:
+      type: object
+      required:
+        - id
+        - owner
+        - repos
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: "Unique environment identifier."
+          example: '8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c'
+        name:
+          type: string
+          minLength: 1
+          description: "Display name. Omitted when the environment has no name."
+          example: 'Web app'
+        owner:
+          type: string
+          enum: ['personal', 'team']
+          description: '`personal` for an environment that belongs to one user, or `team` for an environment shared with the team.'
+        repos:
+          type: array
+          description: "Repositories in the environment."
+          items:
+            $ref: '#/components/schemas/EnvironmentRepo'
+        createdAt:
+          type: string
+          format: date-time
+          description: "When the environment was created."
+        updatedAt:
+          type: string
+          format: date-time
+          description: "When the environment was last updated."
+
+    CreateEnvironmentResponse:
+      allOf:
+        - $ref: '#/components/schemas/Environment'
+        - type: object
+          required:
+            - name
+
+    GetEnvironmentResponse:
+      allOf:
+        - $ref: '#/components/schemas/Environment'
+        - type: object
+          properties:
+            repoFile:
+              $ref: '#/components/schemas/EnvironmentRepoFile'
+            environmentJson:
+              type: string
+              description: "The environment's latest saved configuration, its `environment.json`, as a JSON-encoded string."
+              example: '{"install": "pnpm install", "start": "sudo service docker start"}'
+            versionId:
+              type: string
+              minLength: 1
+              description: "ID of the latest saved environment version. Omitted when no version has been saved."
+              example: 'c9f0f895-fb98-4b91-8f3e-2a1b0c9d8e7f'
+
+    ListEnvironmentsResponse:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          description: "Environments, most recently updated first. List items omit `environmentJson` and `versionId`."
+          items:
+            allOf:
+              - $ref: '#/components/schemas/Environment'
+              - type: object
+                properties:
+                  repoFile:
+                    $ref: '#/components/schemas/EnvironmentRepoFile'
+        nextCursor:
+          type: string
+          minLength: 1
+          description: "Cursor for fetching the next page of results. A page can hold fewer items than `limit`, so keep paging until it's absent. Omitted (not `null`) when there are no more pages."
+
+    CreateEnvironmentRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - owner
+        - name
+        - repos
+        - environmentJson
+      properties:
+        owner:
+          type: string
+          enum: ['personal', 'team']
+          description: '`personal` creates an environment for the API key''s user, and `team` creates one for the team.'
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: "Display name. It must differ from the names of the owner's other environments; a name the owner already uses returns `409 environment_name_conflict`."
+          example: 'Web app'
+        repos:
+          type: array
+          maxItems: 100
+          description: "Repositories for the environment, or an empty array for an environment without repositories. Cursor must be able to reach each one through your source control integration; otherwise the request returns `400 repository_access`."
+          items:
+            $ref: '#/components/schemas/EnvironmentRepo'
+        environmentJson:
+          type: string
+          minLength: 1
+          description: "The environment's `environment.json`, as a JSON-encoded string, using the same schema as a `.cursor/environment.json` file. An invalid configuration returns `400 validation_error`."
+          example: '{"install": "pnpm install", "start": "sudo service docker start"}'
+
+    UpdateEnvironmentRequest:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      description: "Send `name`, `environmentJson`, or both. A request with both applies them together, so either both change or neither does."
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: "New display name. It must differ from the names of the owner's other environments; a name the owner already uses returns `409 environment_name_conflict`."
+          example: 'Web app (staging)'
+        environmentJson:
+          type: string
+          description: "Replacement `environment.json`, as a JSON-encoded string, using the same schema as a `.cursor/environment.json` file. It replaces the whole configuration. An invalid configuration returns `400 validation_error`."
+          example: '{"install": "pnpm install --frozen-lockfile", "start": "sudo service docker start"}'
+
+    EnvironmentBuildId:
+      type: string
+      pattern: '^[bB][lL][dD]-[0-9]{8}-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      description: "Unique build identifier, in the form `bld-YYYYMMDD-<uuid>`."
+      example: 'bld-20260930-3c59dc04-8a1d-4b6e-9f2a-7e5d1c0b9a8f'
+
+    EnvironmentBuildFailure:
+      type: object
+      additionalProperties: false
+      description: "Why a failed build failed."
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          enum: ['INSTALL_FAILED', 'TERMINAL_FAILURE']
+          description: '`INSTALL_FAILED` when the `install` command failed, or `TERMINAL_FAILURE` for other failures.'
+        code:
+          type: string
+          minLength: 1
+          description: "Machine-readable cause of the failure, when there is one."
+          example: 'environment_json_invalid'
+
+    EnvironmentBuild:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - environmentId
+        - status
+        - trigger
+        - draft
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          $ref: '#/components/schemas/EnvironmentBuildId'
+        environmentId:
+          type: string
+          format: uuid
+          description: "ID of the environment the build belongs to."
+          example: '8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c'
+        status:
+          type: string
+          enum: ['IN_PROGRESS', 'SUCCEEDED', 'FAILED', 'CANCELLED', 'SKIPPED']
+          description: "Build status. A skipped build found nothing to rebuild."
+        trigger:
+          type: string
+          enum: ['RECURRING', 'CONFIG_CHANGE', 'MANUAL']
+          description: "What started the build. `RECURRING` for a scheduled build, `CONFIG_CHANGE` after a configuration or secrets change, or `MANUAL` for one started on request."
+        draft:
+          type: boolean
+          description: '`true` for a draft build. Agents don''t start from a draft build until it''s activated.'
+        failure:
+          $ref: '#/components/schemas/EnvironmentBuildFailure'
+        createdAt:
+          type: string
+          format: date-time
+          description: "When the build was created."
+        updatedAt:
+          type: string
+          format: date-time
+          description: "When the build was last updated."
+        completedAt:
+          type: string
+          format: date-time
+          description: "When the build finished. Omitted while it's in progress."
+
+    ListEnvironmentBuildsResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          maxItems: 10
+          description: "Up to 10 builds for this environment, newest first."
+          items:
+            $ref: '#/components/schemas/EnvironmentBuild'
+        nextCursor:
+          type: string
+          minLength: 1
+          description: "Cursor for fetching the next page of results. Omitted (not `null`) when there are no more pages."
+
+    EnvironmentActiveBuild:
+      description: "What an agent you start on this environment boots from, one of its builds or Cursor's default image."
+      oneOf:
+        - $ref: '#/components/schemas/EnvironmentActiveBuildFromBuild'
+        - $ref: '#/components/schemas/EnvironmentActiveBuildFromUniversalImage'
+      discriminator:
+        propertyName: type
+        mapping:
+          build: '#/components/schemas/EnvironmentActiveBuildFromBuild'
+          universal_image: '#/components/schemas/EnvironmentActiveBuildFromUniversalImage'
+
+    EnvironmentActiveBuildFromBuild:
+      type: object
+      additionalProperties: false
+      description: "The agent starts from one of the environment's builds."
+      required:
+        - type
+        - buildId
+      properties:
+        type:
+          type: string
+          enum: ['build']
+        buildId:
+          $ref: '#/components/schemas/EnvironmentBuildId'
+
+    EnvironmentActiveBuildFromUniversalImage:
+      type: object
+      additionalProperties: false
+      description: "The agent starts on Cursor's default image."
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          enum: ['universal_image']
+
+    EnvironmentHistoryEvent:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - createdAt
+        - kind
+        - title
+        - description
+        - current
+      properties:
+        id:
+          type: string
+          minLength: 1
+          description: "Unique event identifier."
+          example: '3b7e1f2a-9c4d-4e8b-a1f6-5d2c8e9b0a17'
+        createdAt:
+          type: string
+          format: date-time
+          description: "When the change was made."
+        kind:
+          type: string
+          enum: ['created', 'updated', 'deleted', 'backfilled', 'changed']
+        title:
+          type: string
+          description: "The event's summary, as the History tab shows it."
+          example: 'Team environment updated'
+        description:
+          type: string
+          description: "The event's details, as the History tab shows them."
+          example: 'Install script changed.'
+        source:
+          type: string
+          enum: ['dashboard', 'setup_flow', 'restore', 'api', 'agent_run', 'repo_file', 'request_override']
+          description: "Where the change came from."
+        current:
+          type: boolean
+          description: '`true` for the event that saved the environment''s current configuration.'
+        environmentJson:
+          type: string
+          description: "The `environment.json` the event saved, as a JSON-encoded string."
+          example: '{"install": "pnpm install", "start": "sudo service docker start"}'
+
+    ListEnvironmentHistoryResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          description: "History events, newest first."
+          items:
+            $ref: '#/components/schemas/EnvironmentHistoryEvent'
+        nextCursor:
+          type: string
+          minLength: 1
+          description: "Cursor for fetching the next page of results. Omitted (not `null`) when there are no more pages."
+
     ApiKeyInfo:
       type: object
       required:
@@ -989,6 +1330,60 @@ components:
           items:
             $ref: '#/components/schemas/ModelListItem'
 
+    SecretVersion:
+      type: object
+      description: |
+        One version of a Cloud Agents secret. A name can have several
+        versions in one environment or team, each for repositories the
+        others don't cover. Responses never include a secret's value.
+      required:
+        - name
+        - type
+        - repos
+      properties:
+        id:
+          type: string
+          pattern: '^secv_[A-Za-z0-9_-]{22}$'
+          description: |
+            Opaque version ID. A version keeps its `id` through changes to
+            its value, type, or repositories. Always present in lists; a
+            `201` from a `PUT` leaves it out when the new version isn't
+            readable yet.
+          example: 'secv_3qKx9mT2bV7nR1cW5yZ8aQ'
+        name:
+          type: string
+          description: "Environment variable name agents see."
+          example: 'NPM_TOKEN'
+        type:
+          type: string
+          enum:
+            - runtime_secret
+            - environment_variable
+            - build_secret
+          description: |
+            `runtime_secret` for a Runtime Secret, `environment_variable`
+            for an Environment Variable, or `build_secret` for a Build
+            Secret, which only the Docker build gets.
+          example: 'runtime_secret'
+        repos:
+          type: array
+          items:
+            type: string
+          description: |
+            The only repositories that get this version, lowercase and
+            sorted, with repository URLs reduced to `host/owner/repo`.
+            Empty when every repository gets it.
+          example:
+            - 'github.com/acme/api'
+        createdAt:
+          type: string
+          format: date-time
+          description: |
+            When the version was created. Always present in lists; a
+            `201` from a `PUT` leaves it out when the new version isn't
+            readable yet.
+          example: '2026-10-01T09:15:42.000Z'
+
     Repository:
       type: object
       required:
@@ -1000,6 +1395,135 @@ components:
           description: "GitHub repository URL."
           example: 'https://github.com/your-org/your-repo'
 
+    ListSecretsResponse:
+      type: object
+      required:
+        - items
+        - nextCursor
+      properties:
+        items:
+          type: array
+          description: |
+            Secret versions, sorted by name. A name with versions for
+            different repositories appears once per version.
+          items:
+            allOf:
+              - $ref: '#/components/schemas/SecretVersion'
+              - type: object
+                required:
+                  - id
+                  - createdAt
+        nextCursor:
+          type: string
+          nullable: true
+          description: |
+            Cursor for the next page. Always `null` for now, because the
+            list isn't paginated yet.
+          example: null
+
+    SecretInventoryOwner:
+      type: object
+      description: |
+        Who holds a secret version: `team` for the team the API key works
+        in, `user` for a user's personal secrets, or `environment` for an
+        environment's secrets.
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          enum:
+            - team
+            - user
+            - environment
+          example: 'environment'
+        environmentId:
+          type: string
+          format: uuid
+          description: "The environment, for an `environment` owner."
+          example: '8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c'
+        user:
+          type: object
+          description: |
+            The user who owns the secrets, for a `user` owner and a personal
+            environment. Absent for the team and its environments.
+          required:
+            - email
+          properties:
+            email:
+              type: string
+              nullable: true
+              description: "The user's email, or `null` when the user has none on file."
+              example: 'ada@acme.com'
+
+    InventorySecretVersion:
+      type: object
+      description: |
+        A secret version with the owner that holds it. Responses never
+        include a secret's value.
+      required:
+        - id
+        - name
+        - type
+        - repos
+        - createdAt
+        - owner
+      properties:
+        id:
+          type: string
+          pattern: '^secv_[A-Za-z0-9_-]{22}$'
+          description: "The version ID its owner's own list shows."
+          example: 'secv_3qKx9mT2bV7nR1cW5yZ8aQ'
+        name:
+          type: string
+          description: "Environment variable name agents see."
+          example: 'NPM_TOKEN'
+        type:
+          type: string
+          enum:
+            - runtime_secret
+            - environment_variable
+            - build_secret
+          example: 'runtime_secret'
+        repos:
+          type: array
+          items:
+            type: string
+          description: |
+            The only repositories that get this version, or empty when every
+            repository gets it. Every version has it, including other
+            members' versions in a team admin's list.
+          example:
+            - 'github.com/acme/api'
+        createdAt:
+          type: string
+          format: date-time
+          description: "When the version was created."
+          example: '2026-10-01T09:15:42.000Z'
+        owner:
+          $ref: '#/components/schemas/SecretInventoryOwner'
+
+    ListSecretInventoryResponse:
+      type: object
+      required:
+        - items
+        - nextCursor
+      properties:
+        items:
+          type: array
+          description: |
+            Secret versions with their owners, not sorted by name. Other
+            members' versions come after the rest.
+          items:
+            $ref: '#/components/schemas/InventorySecretVersion'
+        nextCursor:
+          type: string
+          nullable: true
+          description: |
+            Cursor for the next page, or `null` on the last page. A page can
+            hold fewer than `limit` items, or none, and still have one.
+          example: null
+
     ListRepositoriesResponse:
       type: object
       required:
@@ -1009,6 +1533,87 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Repository'
+
+    SetSecretRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - value
+      properties:
+        value:
+          type: string
+          minLength: 1
+          description: |
+            The secret's value, 1 to 4,096 bytes of UTF-8 text. No
+            response or error message includes it.
+          example: 'npm_example_token'
+        type:
+          type: string
+          enum:
+            - runtime_secret
+            - environment_variable
+          description: |
+            A new version defaults to `runtime_secret`. A change without
+            `type` keeps the version's type. Build Secrets can't be set
+            through the API yet.
+          example: 'runtime_secret'
+        repos:
+          type: array
+          maxItems: 100
+          items:
+            type: string
+            minLength: 1
+          description: |
+            The only repositories that get this version, such as
+            `acme/api`, `https://github.com/acme/api.git`, or
+            `gitlab.com/group/subgroup/project`. An empty array, or
+            omitting `repos` on a new version, gives it every repository.
+            A change without `repos` keeps the version's repositories.
+          example:
+            - 'github.com/acme/api'
+
+    SecretVersionSummary:
+      type: object
+      required:
+        - id
+        - repos
+      properties:
+        id:
+          type: string
+          description: "The version's `id`. Pass it as `?id=` to pick this version."
+          example: 'secv_3qKx9mT2bV7nR1cW5yZ8aQ'
+        repos:
+          type: array
+          items:
+            type: string
+          description: "The only repositories that get this version."
+          example:
+            - 'github.com/acme/api'
+
+    SecretNameAmbiguousError:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - code
+            - message
+            - versions
+          properties:
+            code:
+              type: string
+              enum:
+                - secret_name_ambiguous
+            message:
+              type: string
+              example: 'NPM_TOKEN has 2 versions, each for different repos. Pass the id of one as ?id= to pick it.'
+            versions:
+              type: array
+              description: "Every version of the name, in list order."
+              items:
+                $ref: '#/components/schemas/SecretVersionSummary'
 
     CreateSubTokenRequest:
       type: object
@@ -1032,6 +1637,16 @@ components:
         - required: [forUserId]
           not:
             required: [forUserEmail]
+
+    DeleteSecretResponse:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: "Name of the deleted secret."
+          example: 'NPM_TOKEN'
 
     CreateSubTokenResponse:
       type: object
@@ -1060,6 +1675,22 @@ components:
           description: "Numeric ID of the service account's team."
           example: 456
 
+    AuthenticationError:
+      type: object
+      description: "Body of a `401` response when the API key fails authentication."
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: "Error category, such as `error`."
+          example: 'error'
+        message:
+          type: string
+          description: "Human-readable error message."
+          example: 'Invalid User API Key'
+
     Error:
       type: object
       required:
@@ -1082,7 +1713,9 @@ components:
                 `repository_required`, `repository_access`,
                 `pr_resolution_failed`, `artifact_not_found`,
                 `service_account_required`, `agent_not_found`,
-                `run_not_found`, `agent_busy`, `agent_archived`,
+                `run_not_found`, `environment_not_found`, `build_not_found`,
+                `team_admin_required`, `environment_name_conflict`,
+                `duplicate_json_key`, `agent_busy`, `agent_archived`,
                 `agent_id_conflict`, `run_not_cancellable`,
                 `rate_limit_exceeded`, `usage_limit_exceeded`,
                 `stream_expired`, `stream_unavailable`,
@@ -1100,6 +1733,11 @@ components:
               type: string
               minLength: 1
               description: "Optional provider identifier. Populated for codes like `integration_not_connected`."
+            environmentId:
+              type: string
+              format: uuid
+              description: "ID of the existing environment with the requested name, when an `environment_name_conflict` error returns it."
+              example: '8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c'
 
   parameters:
     AgentId:
@@ -1118,6 +1756,22 @@ components:
       schema:
         type: string
         example: 'run-00000000-0000-0000-0000-000000000001'
+    EnvironmentId:
+      name: id
+      in: path
+      required: true
+      description: "Unique identifier for the environment."
+      schema:
+        type: string
+        format: uuid
+        example: '8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c'
+    EnvironmentBuildId:
+      name: buildId
+      in: path
+      required: true
+      description: "Unique identifier for the build."
+      schema:
+        $ref: '#/components/schemas/EnvironmentBuildId'
 
   responses:
     BadRequest:
@@ -1127,11 +1781,13 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
     Unauthorized:
-      description: "Invalid or missing API key."
+      description: "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level `code` and `message` instead of an `error` object."
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            oneOf:
+              - $ref: '#/components/schemas/AuthenticationError'
+              - $ref: '#/components/schemas/Error'
     Forbidden:
       description: "Authenticated but insufficient permissions, plan required, or feature unavailable."
       content:
@@ -1139,13 +1795,13 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
     NotFound:
-      description: "Agent or run not found."
+      description: "Resource not found."
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
     Conflict:
-      description: "Resource state conflict (`agent_busy`, `agent_archived`, `agent_id_conflict`, or `run_not_cancellable`)."
+      description: "Resource state conflict (`agent_busy`, `agent_archived`, `agent_id_conflict`, `run_not_cancellable`, or `environment_name_conflict`)."
       content:
         application/json:
           schema:
@@ -1674,6 +2330,319 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
 
+  /v1/environments:
+    get:
+      summary: List environments
+      description: |
+        List the saved environments the API key can access, most recently
+        updated first: the user's personal environments and the team's
+        environments. Team admins don't see members' personal environments
+        here.
+
+        Team admins and service account API keys see every team
+        environment. Other callers see a team environment only when they
+        can access all of its repositories. When those checks run out of
+        time, a response can leave out team environments it hasn't
+        verified yet, or stop before the end of the list; they show up in
+        later requests. A service account API key limited to specific
+        repositories, and user-scoped tokens minted with it, only list
+        environments that have repositories, all within that limit. Drafts
+        and deleted environments aren't included.
+
+        An environment that changes during a walk moves to the front, so a
+        later page can leave it out and repeat another. List items omit
+        `environmentJson` and `versionId`; call GET /v1/environments/{id}
+        to load an environment's configuration.
+      operationId: listEnvironments
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          description: "Number of environments to return."
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: cursor
+          in: query
+          required: false
+          description: "Pagination cursor from the previous response."
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        '200':
+          description: "Environments retrieved successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListEnvironmentsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      summary: Create an environment
+      description: "Create a saved environment. The `201` response is the new environment."
+      operationId: createEnvironment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEnvironmentRequest'
+      responses:
+        '201':
+          description: "Environment created."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateEnvironmentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          description: "Cursor couldn't reach your source control provider to check a repository (`upstream_error`). Retry after the number of seconds in `Retry-After`."
+          headers:
+            Retry-After:
+              description: "Seconds to wait before retrying."
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /v1/environments/{id}:
+    get:
+      summary: Get an environment
+      description: "Retrieve a saved environment and its latest saved configuration. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`."
+      operationId: getEnvironment
+      parameters:
+        - $ref: '#/components/parameters/EnvironmentId'
+      responses:
+        '200':
+          description: "Environment retrieved successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEnvironmentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    patch:
+      summary: Update an environment
+      description: "Rename an environment, replace its configuration, or both. A request with both fields applies them together, so either both change or neither does. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`."
+      operationId: updateEnvironment
+      parameters:
+        - $ref: '#/components/parameters/EnvironmentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEnvironmentRequest'
+      responses:
+        '204':
+          description: "Environment updated. The response has no body."
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    delete:
+      summary: Delete an environment
+      description: "Permanently delete a saved environment. This action is irreversible."
+      operationId: deleteEnvironment
+      parameters:
+        - $ref: '#/components/parameters/EnvironmentId'
+      responses:
+        '200':
+          description: "Environment deleted."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/environments/{id}/history:
+    get:
+      summary: List environment history
+      description: "List the changes to an environment, newest first, as its History tab in the dashboard shows them. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`."
+      operationId: listEnvironmentHistory
+      parameters:
+        - $ref: '#/components/parameters/EnvironmentId'
+        - name: limit
+          in: query
+          required: false
+          description: "Number of events to return."
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: cursor
+          in: query
+          required: false
+          description: "Pagination cursor from `nextCursor` on the previous response."
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        '200':
+          description: "History retrieved successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListEnvironmentHistoryResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/environments/{id}/builds:
+    get:
+      summary: List environment builds
+      description: "List an environment's builds, newest first, up to 10 per page. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`."
+      operationId: listEnvironmentBuilds
+      parameters:
+        - $ref: '#/components/parameters/EnvironmentId'
+        - name: cursor
+          in: query
+          required: false
+          description: "Pagination cursor from `nextCursor` on the previous response."
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 512
+      responses:
+        '200':
+          description: "Builds retrieved successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListEnvironmentBuildsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/environments/{id}/builds/active:
+    get:
+      summary: Get the active build
+      description: "Find out what an agent you start on this environment boots from, one of its builds or Cursor's default image. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`."
+      operationId: getActiveEnvironmentBuild
+      parameters:
+        - $ref: '#/components/parameters/EnvironmentId'
+      responses:
+        '200':
+          description: "Active build retrieved successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentActiveBuild'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/environments/{id}/builds/{buildId}:
+    get:
+      summary: Get an environment build
+      description: "Retrieve one of an environment's builds. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`, and a build ID that isn't one of the environment's builds returns `404 build_not_found`."
+      operationId: getEnvironmentBuild
+      parameters:
+        - $ref: '#/components/parameters/EnvironmentId'
+        - $ref: '#/components/parameters/EnvironmentBuildId'
+      responses:
+        '200':
+          description: "Build retrieved successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentBuild'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
   /v1/me:
     get:
       summary: API key info
@@ -1688,6 +2657,62 @@ paths:
                 $ref: '#/components/schemas/ApiKeyInfo'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/environments/{id}/secrets:
+    get:
+      summary: List environment secrets
+      description: |
+        List an environment's Cloud Agents secrets, one item per version,
+        sorted by name. No item includes a value. The list isn't paginated
+        yet, so `nextCursor` is always `null`.
+
+        A service account API key can list its team's environments, and
+        a user API key or user-scoped token its user's personal
+        environments too. An API key limited to certain repositories can
+        list only environments whose repositories all sit inside its
+        limit. Every other environment returns `404 environment_not_found`.
+
+        See https://cursor.com/docs/cloud-agent/api/endpoints#list-environment-secrets.
+      operationId: listEnvironmentSecrets
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Environment ID."
+          schema:
+            type: string
+            format: uuid
+            example: '8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c'
+      responses:
+        '200':
+          description: "The environment's secret versions."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListSecretsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: |
+            Plan or role not allowed, the environments API isn't enabled for
+            your account (`feature_unavailable`), or a `grok_` API key
+            (`key_not_supported`).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: "The environment doesn't exist or your API key can't list its secrets, including an environment outside its repository limit (`environment_not_found`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '429':
           $ref: '#/components/responses/RateLimited'
         '500':
@@ -1715,7 +2740,130 @@ paths:
           $ref: '#/components/responses/RateLimited'
         '500':
           $ref: '#/components/responses/InternalError'
+  /v1/environments/{id}/secrets/{name}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: "Environment ID."
+        schema:
+          type: string
+          format: uuid
+          example: '8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c'
+      - name: name
+        in: path
+        required: true
+        description: "Secret name, such as `NPM_TOKEN`."
+        schema:
+          type: string
+          example: 'NPM_TOKEN'
+    put:
+      summary: Set an environment secret
+      description: |
+        Create an environment secret, rotate its value, or change its type or repositories. With `?id=`, the request changes that version. Without `?id=`, a name with no version gets one (`201`), a name with one version has it changed in place (`200`), and a name with several versions returns `409 secret_name_ambiguous`. A `PUT` never adds a second version to a name that has one, and an omitted `type` or `repos` keeps the current one. Build Secrets can't be set or changed through the API yet. See https://cursor.com/docs/cloud-agent/api/endpoints#set-an-environment-secret.
+      operationId: setEnvironmentSecret
+      parameters:
+        - name: id
+          in: query
+          required: false
+          description: "The `id` of the version to change."
+          schema:
+            type: string
+            example: 'secv_3qKx9mT2bV7nR1cW5yZ8aQ'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetSecretRequest'
+      responses:
+        '200':
+          description: "The version was changed."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecretVersion'
+        '201':
+          description: "The version was created. `id` and `createdAt` are left out when the new version isn't readable yet."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecretVersion'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: "Plan or role not allowed, the environments API isn't enabled for your account (`feature_unavailable`), a `grok_` API key (`key_not_supported`), or a team that lets only admins change secrets (`team_admin_required`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: "The environment doesn't exist or your API key can't change its secrets, including an environment outside its repository limit (`environment_not_found`), or `?id=` isn't a version of this name here (`secret_not_found`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: "The name has several versions and no `?id=` (`secret_name_ambiguous`, with `versions`), differs from an existing name only in case (`secret_name_conflict`), overlaps another version's repositories (`secret_scope_conflict`), the environment has 1,000 secrets (`secret_limit_reached`), or another request changed the secret at the same moment (`secret_changed`)."
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/SecretNameAmbiguousError'
+                  - $ref: '#/components/schemas/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
 
+    delete:
+      summary: Delete an environment secret
+      description: |
+        Delete one version of an environment secret. This action is irreversible. With `?id=`, the request deletes that version. Without `?id=`, a name with one version has it deleted, a name with no version returns `404 secret_not_found`, and a name with several versions returns `409 secret_name_ambiguous` and deletes nothing. `{name}` must match a listed name exactly, letter case included. Every type can be deleted, Build Secrets included. See https://cursor.com/docs/cloud-agent/api/endpoints#delete-an-environment-secret.
+      operationId: deleteEnvironmentSecret
+      parameters:
+        - name: id
+          in: query
+          required: false
+          description: "The `id` of the version to delete."
+          schema:
+            type: string
+            example: 'secv_3qKx9mT2bV7nR1cW5yZ8aQ'
+      responses:
+        '200':
+          description: "The version was deleted."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteSecretResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: "Plan or role not allowed, the environments API isn't enabled for your account (`feature_unavailable`), a `grok_` API key (`key_not_supported`), or a team that lets only admins change secrets (`team_admin_required`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: "The environment doesn't exist or your API key can't change its secrets, including an environment outside its repository limit (`environment_not_found`), or the name or `?id=` isn't a version here (`secret_not_found`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: "The name has several versions and no `?id=` (`secret_name_ambiguous`, with `versions`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecretNameAmbiguousError'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
   /v1/repositories:
     get:
       summary: List GitHub repositories
@@ -1741,7 +2889,122 @@ paths:
           $ref: '#/components/responses/RateLimited'
         '500':
           $ref: '#/components/responses/InternalError'
+  /v1/team/secrets/{name}:
+    parameters:
+      - name: name
+        in: path
+        required: true
+        description: "Secret name, such as `NPM_TOKEN`."
+        schema:
+          type: string
+          example: 'NPM_TOKEN'
+    put:
+      summary: Set a team secret
+      description: |
+        Create a secret for the team the API key works in, rotate its value, or change its type or repositories. With `?id=`, the request changes that version. Without `?id=`, a name with no version gets one (`201`), a name with one version has it changed in place (`200`), and a name with several versions returns `409 secret_name_ambiguous`. A `PUT` never adds a second version to a name that has one, and an omitted `type` or `repos` keeps the current one. Build Secrets can't be set or changed through the API yet. See https://cursor.com/docs/cloud-agent/api/endpoints#set-a-team-secret.
+      operationId: setTeamSecret
+      parameters:
+        - name: id
+          in: query
+          required: false
+          description: "The `id` of the version to change, from the team's secrets list."
+          schema:
+            type: string
+            example: 'secv_Ub4rJ7nD2kX9qM5wL1sE8Q'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetSecretRequest'
+      responses:
+        '200':
+          description: "The version was changed."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecretVersion'
+        '201':
+          description: "The version was created. `id` and `createdAt` are left out when the new version isn't readable yet."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecretVersion'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: "Plan or role not allowed, the environments API isn't enabled for your account (`feature_unavailable`), a `grok_` API key (`key_not_supported`), an API key limited to certain repositories (`repository_access`), a team that lets only admins change secrets (`team_admin_required`), or an API key that isn't working in a team or whose user isn't a team member (`team_membership_required`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: '`?id=` isn''t a version of this name in the team (`secret_not_found`).'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: "The name has several versions and no `?id=` (`secret_name_ambiguous`, with `versions`), differs from an existing name only in case (`secret_name_conflict`), overlaps another version's repositories (`secret_scope_conflict`), the team has 1,000 secrets (`secret_limit_reached`), or another request changed the secret at the same moment (`secret_changed`)."
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/SecretNameAmbiguousError'
+                  - $ref: '#/components/schemas/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
 
+    delete:
+      summary: Delete a team secret
+      description: |
+        Delete one version of a secret from the team the API key works in. This action is irreversible. With `?id=`, the request deletes that version. Without `?id=`, a name with one version has it deleted, a name with no version returns `404 secret_not_found`, and a name with several versions returns `409 secret_name_ambiguous` and deletes nothing. `{name}` must match a listed name exactly, letter case included. Every type can be deleted, Build Secrets included. See https://cursor.com/docs/cloud-agent/api/endpoints#delete-a-team-secret.
+      operationId: deleteTeamSecret
+      parameters:
+        - name: id
+          in: query
+          required: false
+          description: "The `id` of the version to delete, from the team's secrets list."
+          schema:
+            type: string
+            example: 'secv_Ub4rJ7nD2kX9qM5wL1sE8Q'
+      responses:
+        '200':
+          description: "The version was deleted."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteSecretResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: "Plan or role not allowed, the environments API isn't enabled for your account (`feature_unavailable`), a `grok_` API key (`key_not_supported`), an API key limited to certain repositories (`repository_access`), a team that lets only admins change secrets (`team_admin_required`), or an API key that isn't working in a team or whose user isn't a team member (`team_membership_required`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: "The name or `?id=` isn't a version in the team (`secret_not_found`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: "The name has several versions and no `?id=` (`secret_name_ambiguous`, with `versions`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecretNameAmbiguousError'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
   /v1/sub-tokens:
     post:
       summary: Create A User-Scoped Worker Token
@@ -1785,6 +3048,169 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/team/secrets:
+    get:
+      summary: List team secrets
+      description: |
+        List the Cloud Agents secrets of the team the API key works in, one
+        item per version, sorted by name. No item includes a value. The
+        list isn't paginated yet, so `nextCursor` is always `null`.
+
+        Any team member can list, as can the team's service account API
+        keys. An API key limited to certain repositories gets
+        `403 repository_access`, because team secrets reach every
+        repository.
+
+        See https://cursor.com/docs/cloud-agent/api/endpoints#list-team-secrets.
+      operationId: listTeamSecrets
+      responses:
+        '200':
+          description: "The team's secret versions."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListSecretsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: |
+            Plan or role not allowed, the environments API isn't enabled for
+            your account (`feature_unavailable`), a `grok_` API key
+            (`key_not_supported`), an API key limited to certain
+            repositories (`repository_access`), or an API key that isn't
+            working in a team or whose user isn't a team member
+            (`team_membership_required`).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/secrets:
+    get:
+      summary: List secrets
+      description: |
+        List every Cloud Agents secret the API key can list, one item per
+        version, with the owner that holds it. No item includes a value.
+
+        Without `scope` or `environmentId`, the list includes the team's
+        secrets and the user's personal secrets for an API key with no
+        repository limit, and the secrets of the environments the key can
+        list. A team admin using their own user API key without `repo` also
+        gets the other members' personal secrets and their personal
+        environments' secrets, with their `repos`.
+
+        Keep paging until `nextCursor` is `null`, and send the same filters
+        with each `cursor`.
+
+        See https://cursor.com/docs/cloud-agent/api/endpoints#list-secrets.
+      operationId: listSecrets
+      parameters:
+        - name: scope
+          in: query
+          required: false
+          description: |
+            `team` lists only the team's secrets, `user` only the user's
+            personal secrets, and `environment` only environment secrets.
+            `members` lists the user's personal secrets and, for an explicit
+            team admin using their own user API key or session, every other
+            current member's personal secrets after them, but none of their
+            personal environments' secrets. For everyone else it returns the
+            same response or refusal as `user`.
+          schema:
+            type: string
+            enum:
+              - team
+              - user
+              - members
+              - environment
+        - name: environmentId
+          in: query
+          required: false
+          description: |
+            List only this environment's secrets. Combining it with
+            `scope=team`, `scope=user`, or `scope=members` returns
+            `400 validation_error`.
+          schema:
+            type: string
+            format: uuid
+            example: '8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c'
+        - name: name
+          in: query
+          required: false
+          description: "Only versions with this name, ignoring case."
+          schema:
+            type: string
+            minLength: 1
+            example: 'NPM_TOKEN'
+        - name: repo
+          in: query
+          required: false
+          description: |
+            Only the versions an agent on this repository gets: versions for
+            that repository and versions for every repository. Combining it
+            with `scope=members` returns `400 validation_error`.
+          schema:
+            type: string
+            example: 'github.com/acme/api'
+        - name: limit
+          in: query
+          required: false
+          description: "Maximum items per page."
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 100
+        - name: cursor
+          in: query
+          required: false
+          description: '`nextCursor` from the previous page.'
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        '200':
+          description: "A page of secret versions."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListSecretInventoryResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: |
+            Plan or role not allowed, the environments API isn't enabled for
+            your account (`feature_unavailable`), or a `grok_` API key
+            (`key_not_supported`). With `scope=team`, an API key limited to
+            certain repositories (`repository_access`) or one that isn't
+            working in a team or whose user isn't a team member
+            (`team_membership_required`). With `scope=user` or
+            `scope=members`, an API key limited to certain repositories
+            (`repository_access`) or one that doesn't act for a user
+            (`user_required`).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: '`environmentId` names an environment that doesn''t exist or that your API key can''t list (`environment_not_found`).'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '429':
           $ref: '#/components/responses/RateLimited'
         '500':

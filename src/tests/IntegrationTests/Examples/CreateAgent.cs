@@ -17,7 +17,7 @@ public partial class Tests
         using var client = GetAuthenticatedClient();
 
         var repositoryUrl =
-            Environment.GetEnvironmentVariable("CURSORAGENTS_TEST_REPO") is { Length: > 0 } repoValue
+            global::System.Environment.GetEnvironmentVariable("CURSORAGENTS_TEST_REPO") is { Length: > 0 } repoValue
                 ? repoValue
                 : throw new AssertInconclusiveException(
                     "CURSORAGENTS_TEST_REPO environment variable is not found.");

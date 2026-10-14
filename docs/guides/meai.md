@@ -21,7 +21,7 @@ using CursorAgents;
 
 // Create the CursorAgents tool
 var cursorClient = new CursorAgentsClient(
-    apiKey: Environment.GetEnvironmentVariable("CURSORAGENTS_API_KEY")!);
+    apiKey: System.Environment.GetEnvironmentVariable("CURSORAGENTS_API_KEY")!);
 
 AIFunction createAgentTool = cursorClient.AsCreateAgentTool(
     autoCreatePr: true);
@@ -67,7 +67,7 @@ using Microsoft.Extensions.AI;
 using CursorAgents;
 
 var cursorClient = new CursorAgentsClient(
-    apiKey: Environment.GetEnvironmentVariable("CURSORAGENTS_API_KEY")!);
+    apiKey: System.Environment.GetEnvironmentVariable("CURSORAGENTS_API_KEY")!);
 
 AIFunction listAgentsTool = cursorClient.AsListAgentsTool(limit: 10);
 
@@ -94,7 +94,7 @@ using Microsoft.Extensions.AI;
 using CursorAgents;
 
 var cursorClient = new CursorAgentsClient(
-    apiKey: Environment.GetEnvironmentVariable("CURSORAGENTS_API_KEY")!);
+    apiKey: System.Environment.GetEnvironmentVariable("CURSORAGENTS_API_KEY")!);
 
 AIFunction getAgentTool = cursorClient.AsGetAgentTool();
 
@@ -121,7 +121,7 @@ using Microsoft.Extensions.AI;
 using CursorAgents;
 
 var cursorClient = new CursorAgentsClient(
-    apiKey: Environment.GetEnvironmentVariable("CURSORAGENTS_API_KEY")!);
+    apiKey: System.Environment.GetEnvironmentVariable("CURSORAGENTS_API_KEY")!);
 
 var options = new ChatOptions
 {

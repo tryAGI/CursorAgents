@@ -554,7 +554,7 @@ components:
           $ref: '#/components/schemas/AgentEnv'
         repos:
           type: array
-          maxItems: 20
+          maxItems: 300
           description: 'Repository configuration. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` (or pass `repos: []`) to start a no-repo agent. On self-hosted targets, only a named any-repo pool takes more than one entry. `machine`, the `default` pool, and repo-backed pools take one and return `400` for more.'
           items:
             $ref: '#/components/schemas/RepoConfig'
@@ -969,7 +969,7 @@ components:
           example: 'Web app'
         repos:
           type: array
-          maxItems: 100
+          maxItems: 300
           description: "Repositories for the environment, or an empty array for an environment without repositories. Cursor must be able to reach each one through your source control integration; otherwise the request returns `400 repository_access`."
           items:
             $ref: '#/components/schemas/EnvironmentRepo'

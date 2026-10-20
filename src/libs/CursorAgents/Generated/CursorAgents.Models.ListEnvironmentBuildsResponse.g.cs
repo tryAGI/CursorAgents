@@ -9,7 +9,7 @@ namespace CursorAgents
     public sealed partial class ListEnvironmentBuildsResponse
     {
         /// <summary>
-        /// Up to 10 builds for this environment, newest first.
+        /// Up to `limit` builds for this environment, newest first.
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("items")]
         [global::System.Text.Json.Serialization.JsonRequired]
@@ -31,7 +31,7 @@ namespace CursorAgents
         /// Initializes a new instance of the <see cref="ListEnvironmentBuildsResponse" /> class.
         /// </summary>
         /// <param name="items">
-        /// Up to 10 builds for this environment, newest first.
+        /// Up to `limit` builds for this environment, newest first.
         /// </param>
         /// <param name="nextCursor">
         /// Cursor for fetching the next page of results. Omitted (not `null`) when there are no more pages.

@@ -28,11 +28,19 @@ namespace CursorAgents
         partial void PrepareListEnvironmentBuildsArguments(
             global::System.Net.Http.HttpClient httpClient,
             ref global::System.Guid id,
+            ref global::CursorAgents.ListEnvironmentBuildsStatus? status,
+            ref global::System.DateTime? createdAfter,
+            ref global::System.DateTime? createdBefore,
+            ref int? limit,
             ref string? cursor);
         partial void PrepareListEnvironmentBuildsRequest(
             global::System.Net.Http.HttpClient httpClient,
             global::System.Net.Http.HttpRequestMessage httpRequestMessage,
             global::System.Guid id,
+            global::CursorAgents.ListEnvironmentBuildsStatus? status,
+            global::System.DateTime? createdAfter,
+            global::System.DateTime? createdBefore,
+            int? limit,
             string? cursor);
         partial void ProcessListEnvironmentBuildsResponse(
             global::System.Net.Http.HttpClient httpClient,
@@ -45,10 +53,20 @@ namespace CursorAgents
 
         /// <summary>
         /// List environment builds<br/>
-        /// List an environment's builds, newest first, up to 10 per page. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
+        /// List an environment's builds, newest first. Filter them by status or creation time. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
         /// </summary>
         /// <param name="id">
         /// Example: 8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c
+        /// </param>
+        /// <param name="status"></param>
+        /// <param name="createdAfter">
+        /// Example: 2026-09-29T00:00:00Z
+        /// </param>
+        /// <param name="createdBefore">
+        /// Example: 2026-10-01T00:00:00Z
+        /// </param>
+        /// <param name="limit">
+        /// Default Value: 10
         /// </param>
         /// <param name="cursor"></param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
@@ -56,12 +74,20 @@ namespace CursorAgents
         /// <exception cref="global::CursorAgents.ApiException"></exception>
         public async global::System.Threading.Tasks.Task<global::CursorAgents.ListEnvironmentBuildsResponse> ListEnvironmentBuildsAsync(
             global::System.Guid id,
+            global::CursorAgents.ListEnvironmentBuildsStatus? status = default,
+            global::System.DateTime? createdAfter = default,
+            global::System.DateTime? createdBefore = default,
+            int? limit = default,
             string? cursor = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default)
         {
             var __response = await ListEnvironmentBuildsAsResponseAsync(
                 id: id,
+                status: status,
+                createdAfter: createdAfter,
+                createdBefore: createdBefore,
+                limit: limit,
                 cursor: cursor,
                 requestOptions: requestOptions,
                 cancellationToken: cancellationToken
@@ -71,10 +97,20 @@ namespace CursorAgents
         }
         /// <summary>
         /// List environment builds<br/>
-        /// List an environment's builds, newest first, up to 10 per page. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
+        /// List an environment's builds, newest first. Filter them by status or creation time. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
         /// </summary>
         /// <param name="id">
         /// Example: 8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c
+        /// </param>
+        /// <param name="status"></param>
+        /// <param name="createdAfter">
+        /// Example: 2026-09-29T00:00:00Z
+        /// </param>
+        /// <param name="createdBefore">
+        /// Example: 2026-10-01T00:00:00Z
+        /// </param>
+        /// <param name="limit">
+        /// Default Value: 10
         /// </param>
         /// <param name="cursor"></param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
@@ -82,6 +118,10 @@ namespace CursorAgents
         /// <exception cref="global::CursorAgents.ApiException"></exception>
         public async global::System.Threading.Tasks.Task<global::CursorAgents.AutoSDKHttpResponse<global::CursorAgents.ListEnvironmentBuildsResponse>> ListEnvironmentBuildsAsResponseAsync(
             global::System.Guid id,
+            global::CursorAgents.ListEnvironmentBuildsStatus? status = default,
+            global::System.DateTime? createdAfter = default,
+            global::System.DateTime? createdBefore = default,
+            int? limit = default,
             string? cursor = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default)
@@ -91,6 +131,10 @@ namespace CursorAgents
             PrepareListEnvironmentBuildsArguments(
                 httpClient: HttpClient,
                 id: ref id,
+                status: ref status,
+                createdAfter: ref createdAfter,
+                createdBefore: ref createdBefore,
+                limit: ref limit,
                 cursor: ref cursor);
 
 
@@ -120,6 +164,10 @@ namespace CursorAgents
                                 path: $"/v1/environments/{id}/builds",
                                 baseUri: HttpClient.BaseAddress);
                             __pathBuilder
+                                .AddOptionalParameter("status", status?.ToValueString())
+                                .AddOptionalParameter("createdAfter", createdAfter?.ToString("yyyy-MM-ddTHH:mm:ssZ"))
+                                .AddOptionalParameter("createdBefore", createdBefore?.ToString("yyyy-MM-ddTHH:mm:ssZ"))
+                                .AddOptionalParameter("limit", limit?.ToString())
                                 .AddOptionalParameter("cursor", cursor)
                                 ;
                             var __path = __pathBuilder.ToString();
@@ -163,6 +211,10 @@ namespace CursorAgents
                     httpClient: HttpClient,
                     httpRequestMessage: __httpRequest,
                     id: id,
+                    status: status,
+                    createdAfter: createdAfter,
+                    createdBefore: createdBefore,
+                    limit: limit,
                     cursor: cursor);
 
                 return __httpRequest;

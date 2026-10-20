@@ -27,11 +27,19 @@ namespace CursorAgents
             };
         partial void PrepareListEnvironmentsArguments(
             global::System.Net.Http.HttpClient httpClient,
+            ref string? query,
+            ref global::CursorAgents.ListEnvironmentsOwner? owner,
+            ref bool? named,
+            global::System.Collections.Generic.IList<string>? repo,
             ref int? limit,
             ref string? cursor);
         partial void PrepareListEnvironmentsRequest(
             global::System.Net.Http.HttpClient httpClient,
             global::System.Net.Http.HttpRequestMessage httpRequestMessage,
+            string? query,
+            global::CursorAgents.ListEnvironmentsOwner? owner,
+            bool? named,
+            global::System.Collections.Generic.IList<string>? repo,
             int? limit,
             string? cursor);
         partial void ProcessListEnvironmentsResponse(
@@ -58,11 +66,18 @@ namespace CursorAgents
         /// repositories, and user-scoped tokens minted with it, only list<br/>
         /// environments that have repositories, all within that limit. Drafts<br/>
         /// and deleted environments aren't included.<br/>
+        /// Filters combine: the list keeps only environments that match every<br/>
+        /// filter in the request. An invalid filter value returns<br/>
+        /// `400 validation_error`.<br/>
         /// An environment that changes during a walk moves to the front, so a<br/>
         /// later page can leave it out and repeat another. List items omit<br/>
         /// `environmentJson` and `versionId`; call GET /v1/environments/{id}<br/>
         /// to load an environment's configuration.
         /// </summary>
+        /// <param name="query"></param>
+        /// <param name="owner"></param>
+        /// <param name="named"></param>
+        /// <param name="repo"></param>
         /// <param name="limit">
         /// Default Value: 20
         /// </param>
@@ -71,12 +86,20 @@ namespace CursorAgents
         /// <param name="cancellationToken">The token to cancel the operation with</param>
         /// <exception cref="global::CursorAgents.ApiException"></exception>
         public async global::System.Threading.Tasks.Task<global::CursorAgents.ListEnvironmentsResponse> ListEnvironmentsAsync(
+            string? query = default,
+            global::CursorAgents.ListEnvironmentsOwner? owner = default,
+            bool? named = default,
+            global::System.Collections.Generic.IList<string>? repo = default,
             int? limit = default,
             string? cursor = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default)
         {
             var __response = await ListEnvironmentsAsResponseAsync(
+                query: query,
+                owner: owner,
+                named: named,
+                repo: repo,
                 limit: limit,
                 cursor: cursor,
                 requestOptions: requestOptions,
@@ -100,11 +123,18 @@ namespace CursorAgents
         /// repositories, and user-scoped tokens minted with it, only list<br/>
         /// environments that have repositories, all within that limit. Drafts<br/>
         /// and deleted environments aren't included.<br/>
+        /// Filters combine: the list keeps only environments that match every<br/>
+        /// filter in the request. An invalid filter value returns<br/>
+        /// `400 validation_error`.<br/>
         /// An environment that changes during a walk moves to the front, so a<br/>
         /// later page can leave it out and repeat another. List items omit<br/>
         /// `environmentJson` and `versionId`; call GET /v1/environments/{id}<br/>
         /// to load an environment's configuration.
         /// </summary>
+        /// <param name="query"></param>
+        /// <param name="owner"></param>
+        /// <param name="named"></param>
+        /// <param name="repo"></param>
         /// <param name="limit">
         /// Default Value: 20
         /// </param>
@@ -113,6 +143,10 @@ namespace CursorAgents
         /// <param name="cancellationToken">The token to cancel the operation with</param>
         /// <exception cref="global::CursorAgents.ApiException"></exception>
         public async global::System.Threading.Tasks.Task<global::CursorAgents.AutoSDKHttpResponse<global::CursorAgents.ListEnvironmentsResponse>> ListEnvironmentsAsResponseAsync(
+            string? query = default,
+            global::CursorAgents.ListEnvironmentsOwner? owner = default,
+            bool? named = default,
+            global::System.Collections.Generic.IList<string>? repo = default,
             int? limit = default,
             string? cursor = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
@@ -122,6 +156,10 @@ namespace CursorAgents
                 client: HttpClient);
             PrepareListEnvironmentsArguments(
                 httpClient: HttpClient,
+                query: ref query,
+                owner: ref owner,
+                named: ref named,
+                repo: repo,
                 limit: ref limit,
                 cursor: ref cursor);
 
@@ -152,6 +190,10 @@ namespace CursorAgents
                                 path: "/v1/environments",
                                 baseUri: HttpClient.BaseAddress);
                             __pathBuilder
+                                .AddOptionalParameter("query", query)
+                                .AddOptionalParameter("owner", owner?.ToValueString())
+                                .AddOptionalParameter("named", named?.ToString().ToLowerInvariant())
+                                .AddOptionalParameter("repo", repo, delimiter: ",", explode: true)
                                 .AddOptionalParameter("limit", limit?.ToString())
                                 .AddOptionalParameter("cursor", cursor)
                                 ;
@@ -195,6 +237,10 @@ namespace CursorAgents
                 PrepareListEnvironmentsRequest(
                     httpClient: HttpClient,
                     httpRequestMessage: __httpRequest,
+                    query: query,
+                    owner: owner,
+                    named: named,
+                    repo: repo,
                     limit: limit,
                     cursor: cursor);
 

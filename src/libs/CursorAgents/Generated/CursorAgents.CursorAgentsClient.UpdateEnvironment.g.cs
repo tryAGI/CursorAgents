@@ -40,7 +40,7 @@ namespace CursorAgents
 
         /// <summary>
         /// Update an environment<br/>
-        /// Rename an environment, replace its configuration, or both. A request with both fields applies them together, so either both change or neither does. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
+        /// Rename an environment, replace its configuration, replace its repositories, or any combination. A request applies every field it sends together, so either all of them change or none do. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
         /// </summary>
         /// <param name="id">
         /// Example: 8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c
@@ -66,7 +66,7 @@ namespace CursorAgents
         }
         /// <summary>
         /// Update an environment<br/>
-        /// Rename an environment, replace its configuration, or both. A request with both fields applies them together, so either both change or neither does. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
+        /// Rename an environment, replace its configuration, replace its repositories, or any combination. A request applies every field it sends together, so either all of them change or none do. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
         /// </summary>
         /// <param name="id">
         /// Example: 8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c
@@ -343,7 +343,7 @@ namespace CursorAgents
                                 retryReason: global::System.String.Empty,
                                 cancellationToken: __effectiveCancellationToken)).ConfigureAwait(false);
                 }
-                            // Validation error or malformed request body.
+                            // Validation error or malformed request body (`validation_error`), a repository Cursor can't reach (`repository_access`), or stored repositories Cursor can't read when the request sends `repos` (`stored_repos_unreadable`).
                             if ((int)__response.StatusCode == 400)
                             {
                                 string? __content_400 = null;
@@ -491,7 +491,7 @@ namespace CursorAgents
                                         h => h.Key,
                                         h => h.Value));
                             }
-                            // Resource state conflict (`agent_busy`, `agent_archived`, `agent_id_conflict`, `run_not_cancellable`, or `environment_name_conflict`).
+                            // The name is taken (`environment_name_conflict`), the environment can't make this repository change (`environment_repo_edit_blocked`), `repos` leaves out the repository that holds the configuration file (`repo_file_repo_removed`), or the environment is locked to its configuration file (`repo_file_environment_locked`).
                             if ((int)__response.StatusCode == 409)
                             {
                                 string? __content_409 = null;
@@ -602,6 +602,43 @@ namespace CursorAgents
                                         h => h.Key,
                                         h => h.Value));
                             }
+                            // Cursor couldn't reach your source control provider to check a repository (`upstream_error`). Retry after the number of seconds in `Retry-After`.
+                            if ((int)__response.StatusCode == 503)
+                            {
+                                string? __content_503 = null;
+                                global::System.Exception? __exception_503 = null;
+                                global::CursorAgents.Error? __value_503 = null;
+                                try
+                                {
+                                    if (__effectiveReadResponseAsString)
+                                    {
+                                        __content_503 = await __response.Content.ReadAsStringAsync(__effectiveCancellationToken).ConfigureAwait(false);
+                                        __value_503 = global::CursorAgents.Error.FromJson(__content_503, JsonSerializerContext);
+                                    }
+                                    else
+                                    {
+                                        __content_503 = await __response.Content.ReadAsStringAsync(__effectiveCancellationToken).ConfigureAwait(false);
+
+                                        __value_503 = global::CursorAgents.Error.FromJson(__content_503, JsonSerializerContext);
+                                    }
+                                }
+                                catch (global::System.Exception __ex)
+                                {
+                                    __exception_503 = __ex;
+                                }
+
+
+                                throw global::CursorAgents.ApiException<global::CursorAgents.Error>.Create(
+                                    statusCode: __response.StatusCode,
+                                    message: __content_503 ?? __response.ReasonPhrase ?? string.Empty,
+                                    innerException: __exception_503,
+                                    responseBody: __content_503,
+                                    responseObject: __value_503,
+                                    responseHeaders: global::System.Linq.Enumerable.ToDictionary(
+                                        __response.Headers,
+                                        h => h.Key,
+                                        h => h.Value));
+                            }
 
                             if (__effectiveReadResponseAsString)
                             {
@@ -684,7 +721,7 @@ namespace CursorAgents
         }
         /// <summary>
         /// Update an environment<br/>
-        /// Rename an environment, replace its configuration, or both. A request with both fields applies them together, so either both change or neither does. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
+        /// Rename an environment, replace its configuration, replace its repositories, or any combination. A request applies every field it sends together, so either all of them change or none do. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
         /// </summary>
         /// <param name="id">
         /// Example: 8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c
@@ -697,6 +734,33 @@ namespace CursorAgents
         /// Replacement `environment.json`, as a JSON-encoded string, using the same schema as a `.cursor/environment.json` file. It replaces the whole configuration. An invalid configuration returns `400 validation_error`.<br/>
         /// Example: {"install": "pnpm install --frozen-lockfile", "start": "sudo service docker start"}
         /// </param>
+        /// <param name="repos">
+        /// The environment's full list of repositories, replacing the<br/>
+        /// current list. It follows the same rules as `repos` on<br/>
+        /// POST /v1/environments. Send `environmentJson` with it, because a<br/>
+        /// repository change saves the whole configuration; `repos` without<br/>
+        /// `environmentJson` returns `400 validation_error`. To keep the<br/>
+        /// current configuration, send the `environmentJson` from<br/>
+        /// GET /v1/environments/{id}.<br/>
+        /// Only environments with two or more repositories can change them,<br/>
+        /// and they must keep at least two. Sending the current list<br/>
+        /// unchanged doesn't count as a change. Otherwise an environment<br/>
+        /// without repositories, a single-repository environment, or a list<br/>
+        /// with fewer than two returns `409 environment_repo_edit_blocked`.<br/>
+        /// When the environment reads its configuration from a repository<br/>
+        /// file (`repoFile` on GET /v1/environments/{id}), the file stays the<br/>
+        /// configuration source. The list must keep the `repoFile.url`<br/>
+        /// repository, or the request returns `409 repo_file_repo_removed`.<br/>
+        /// Repositories are compared by identity, so a trailing `.git` or<br/>
+        /// slash, a missing scheme, a leading `www.`, or GitHub letter case<br/>
+        /// still match. When the list names that repository in several forms,<br/>
+        /// the first entry is kept and the others dropped. For Bitbucket<br/>
+        /// Server, send the URL GET returns. An environment whose<br/>
+        /// only repository holds its configuration file returns<br/>
+        /// `409 repo_file_environment_locked` for any `repos`. Stored<br/>
+        /// repositories Cursor can't read return<br/>
+        /// `400 stored_repos_unreadable`.
+        /// </param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
         /// <param name="cancellationToken">The token to cancel the operation with</param>
         /// <exception cref="global::System.InvalidOperationException"></exception>
@@ -704,6 +768,7 @@ namespace CursorAgents
             global::System.Guid id,
             string? name = default,
             string? environmentJson = default,
+            global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentRepo>? repos = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default)
         {
@@ -711,6 +776,7 @@ namespace CursorAgents
             {
                 Name = name,
                 EnvironmentJson = environmentJson,
+                Repos = repos,
             };
 
             await UpdateEnvironmentAsync(

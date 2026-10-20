@@ -983,7 +983,7 @@ components:
       type: object
       additionalProperties: false
       minProperties: 1
-      description: "Send `name`, `environmentJson`, or both. A request with both applies them together, so either both change or neither does."
+      description: "Send `name`, `environmentJson`, `repos`, or any combination. `repos` requires `environmentJson`. A request applies every field it sends together, so either all of them change or none do."
       properties:
         name:
           type: string
@@ -995,6 +995,39 @@ components:
           type: string
           description: "Replacement `environment.json`, as a JSON-encoded string, using the same schema as a `.cursor/environment.json` file. It replaces the whole configuration. An invalid configuration returns `400 validation_error`."
           example: '{"install": "pnpm install --frozen-lockfile", "start": "sudo service docker start"}'
+        repos:
+          type: array
+          maxItems: 500
+          description: |
+            The environment's full list of repositories, replacing the
+            current list. It follows the same rules as `repos` on
+            POST /v1/environments. Send `environmentJson` with it, because a
+            repository change saves the whole configuration; `repos` without
+            `environmentJson` returns `400 validation_error`. To keep the
+            current configuration, send the `environmentJson` from
+            GET /v1/environments/{id}.
+
+            Only environments with two or more repositories can change them,
+            and they must keep at least two. Sending the current list
+            unchanged doesn't count as a change. Otherwise an environment
+            without repositories, a single-repository environment, or a list
+            with fewer than two returns `409 environment_repo_edit_blocked`.
+
+            When the environment reads its configuration from a repository
+            file (`repoFile` on GET /v1/environments/{id}), the file stays the
+            configuration source. The list must keep the `repoFile.url`
+            repository, or the request returns `409 repo_file_repo_removed`.
+            Repositories are compared by identity, so a trailing `.git` or
+            slash, a missing scheme, a leading `www.`, or GitHub letter case
+            still match. When the list names that repository in several forms,
+            the first entry is kept and the others dropped. For Bitbucket
+            Server, send the URL GET returns. An environment whose
+            only repository holds its configuration file returns
+            `409 repo_file_environment_locked` for any `repos`. Stored
+            repositories Cursor can't read return
+            `400 stored_repos_unreadable`.
+          items:
+            $ref: '#/components/schemas/EnvironmentRepo'
 
     EnvironmentBuildId:
       type: string
@@ -1715,6 +1748,8 @@ components:
                 `service_account_required`, `agent_not_found`,
                 `run_not_found`, `environment_not_found`, `build_not_found`,
                 `team_admin_required`, `environment_name_conflict`,
+                `environment_repo_edit_blocked`, `repo_file_repo_removed`,
+                `repo_file_environment_locked`, `stored_repos_unreadable`,
                 `duplicate_json_key`, `agent_busy`, `agent_archived`,
                 `agent_id_conflict`, `run_not_cancellable`,
                 `rate_limit_exceeded`, `usage_limit_exceeded`,
@@ -2457,7 +2492,7 @@ paths:
           $ref: '#/components/responses/InternalError'
     patch:
       summary: Update an environment
-      description: "Rename an environment, replace its configuration, or both. A request with both fields applies them together, so either both change or neither does. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`."
+      description: "Rename an environment, replace its configuration, replace its repositories, or any combination. A request applies every field it sends together, so either all of them change or none do. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`."
       operationId: updateEnvironment
       parameters:
         - $ref: '#/components/parameters/EnvironmentId'
@@ -2471,7 +2506,11 @@ paths:
         '204':
           description: "Environment updated. The response has no body."
         '400':
-          $ref: '#/components/responses/BadRequest'
+          description: "Validation error or malformed request body (`validation_error`), a repository Cursor can't reach (`repository_access`), or stored repositories Cursor can't read when the request sends `repos` (`stored_repos_unreadable`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -2479,11 +2518,26 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
         '409':
-          $ref: '#/components/responses/Conflict'
+          description: "The name is taken (`environment_name_conflict`), the environment can't make this repository change (`environment_repo_edit_blocked`), `repos` leaves out the repository that holds the configuration file (`repo_file_repo_removed`), or the environment is locked to its configuration file (`repo_file_environment_locked`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '429':
           $ref: '#/components/responses/RateLimited'
         '500':
           $ref: '#/components/responses/InternalError'
+        '503':
+          description: "Cursor couldn't reach your source control provider to check a repository (`upstream_error`). Retry after the number of seconds in `Retry-After`."
+          headers:
+            Retry-After:
+              description: "Seconds to wait before retrying."
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     delete:
       summary: Delete an environment
       description: "Permanently delete a saved environment. This action is irreversible."

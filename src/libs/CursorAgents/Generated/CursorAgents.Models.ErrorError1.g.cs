@@ -19,6 +19,8 @@ namespace CursorAgents
         /// `service_account_required`, `agent_not_found`,<br/>
         /// `run_not_found`, `environment_not_found`, `build_not_found`,<br/>
         /// `team_admin_required`, `environment_name_conflict`,<br/>
+        /// `environment_repo_edit_blocked`, `repo_file_repo_removed`,<br/>
+        /// `repo_file_environment_locked`, `stored_repos_unreadable`,<br/>
         /// `duplicate_json_key`, `agent_busy`, `agent_archived`,<br/>
         /// `agent_id_conflict`, `run_not_cancellable`,<br/>
         /// `rate_limit_exceeded`, `usage_limit_exceeded`,<br/>
@@ -78,6 +80,8 @@ namespace CursorAgents
         /// `service_account_required`, `agent_not_found`,<br/>
         /// `run_not_found`, `environment_not_found`, `build_not_found`,<br/>
         /// `team_admin_required`, `environment_name_conflict`,<br/>
+        /// `environment_repo_edit_blocked`, `repo_file_repo_removed`,<br/>
+        /// `repo_file_environment_locked`, `stored_repos_unreadable`,<br/>
         /// `duplicate_json_key`, `agent_busy`, `agent_archived`,<br/>
         /// `agent_id_conflict`, `run_not_cancellable`,<br/>
         /// `rate_limit_exceeded`, `usage_limit_exceeded`,<br/>

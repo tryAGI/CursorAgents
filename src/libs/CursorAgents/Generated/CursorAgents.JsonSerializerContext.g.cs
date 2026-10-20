@@ -107,6 +107,14 @@ namespace CursorAgents
 
             typeof(global::CursorAgents.JsonConverters.SecretNameAmbiguousErrorErrorCodeNullableJsonConverter),
 
+            typeof(global::CursorAgents.JsonConverters.ListEnvironmentsOwnerJsonConverter),
+
+            typeof(global::CursorAgents.JsonConverters.ListEnvironmentsOwnerNullableJsonConverter),
+
+            typeof(global::CursorAgents.JsonConverters.ListEnvironmentBuildsStatusJsonConverter),
+
+            typeof(global::CursorAgents.JsonConverters.ListEnvironmentBuildsStatusNullableJsonConverter),
+
             typeof(global::CursorAgents.JsonConverters.ListSecretsScopeJsonConverter),
 
             typeof(global::CursorAgents.JsonConverters.ListSecretsScopeNullableJsonConverter),
@@ -347,6 +355,8 @@ namespace CursorAgents
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.AuthenticationError))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.Error))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ErrorError1))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ListEnvironmentsOwner), TypeInfoPropertyName = "ListEnvironmentsOwner2")]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ListEnvironmentBuildsStatus), TypeInfoPropertyName = "ListEnvironmentBuildsStatus2")]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ListSecretsScope), TypeInfoPropertyName = "ListSecretsScope2")]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.OneOf<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>), TypeInfoPropertyName = "OneOfAuthenticationErrorError2")]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.OneOf<global::CursorAgents.SecretNameAmbiguousError, global::CursorAgents.Error>), TypeInfoPropertyName = "OneOfSecretNameAmbiguousErrorError2")]

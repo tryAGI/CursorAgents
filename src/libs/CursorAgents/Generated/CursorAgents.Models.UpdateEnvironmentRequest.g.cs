@@ -17,7 +17,7 @@ namespace CursorAgents
         public string? Name { get; set; }
 
         /// <summary>
-        /// Replacement `environment.json`, as a JSON-encoded string, using the same schema as a `.cursor/environment.json` file. It replaces the whole configuration. An invalid configuration returns `400 validation_error`.<br/>
+        /// Replacement `environment.json`, as a JSON-encoded string, using the same schema as a `.cursor/environment.json` file. It replaces the whole configuration. An invalid configuration returns `400 validation_error`. If the environment reads its configuration from a file in its only repository, the request returns `409 repo_file_environment_locked`.<br/>
         /// Example: {"install": "pnpm install --frozen-lockfile", "start": "sudo service docker start"}
         /// </summary>
         /// <example>{"install": "pnpm install --frozen-lockfile", "start": "sudo service docker start"}</example>
@@ -68,7 +68,7 @@ namespace CursorAgents
         /// Example: Web app (staging)
         /// </param>
         /// <param name="environmentJson">
-        /// Replacement `environment.json`, as a JSON-encoded string, using the same schema as a `.cursor/environment.json` file. It replaces the whole configuration. An invalid configuration returns `400 validation_error`.<br/>
+        /// Replacement `environment.json`, as a JSON-encoded string, using the same schema as a `.cursor/environment.json` file. It replaces the whole configuration. An invalid configuration returns `400 validation_error`. If the environment reads its configuration from a file in its only repository, the request returns `409 repo_file_environment_locked`.<br/>
         /// Example: {"install": "pnpm install --frozen-lockfile", "start": "sudo service docker start"}
         /// </param>
         /// <param name="repos">

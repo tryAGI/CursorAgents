@@ -19,11 +19,18 @@ namespace CursorAgents
         /// repositories, and user-scoped tokens minted with it, only list<br/>
         /// environments that have repositories, all within that limit. Drafts<br/>
         /// and deleted environments aren't included.<br/>
+        /// Filters combine: the list keeps only environments that match every<br/>
+        /// filter in the request. An invalid filter value returns<br/>
+        /// `400 validation_error`.<br/>
         /// An environment that changes during a walk moves to the front, so a<br/>
         /// later page can leave it out and repeat another. List items omit<br/>
         /// `environmentJson` and `versionId`; call GET /v1/environments/{id}<br/>
         /// to load an environment's configuration.
         /// </summary>
+        /// <param name="query"></param>
+        /// <param name="owner"></param>
+        /// <param name="named"></param>
+        /// <param name="repo"></param>
         /// <param name="limit">
         /// Default Value: 20
         /// </param>
@@ -32,6 +39,10 @@ namespace CursorAgents
         /// <param name="cancellationToken">The token to cancel the operation with</param>
         /// <exception cref="global::CursorAgents.ApiException"></exception>
         global::System.Threading.Tasks.Task<global::CursorAgents.ListEnvironmentsResponse> ListEnvironmentsAsync(
+            string? query = default,
+            global::CursorAgents.ListEnvironmentsOwner? owner = default,
+            bool? named = default,
+            global::System.Collections.Generic.IList<string>? repo = default,
             int? limit = default,
             string? cursor = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
@@ -51,11 +62,18 @@ namespace CursorAgents
         /// repositories, and user-scoped tokens minted with it, only list<br/>
         /// environments that have repositories, all within that limit. Drafts<br/>
         /// and deleted environments aren't included.<br/>
+        /// Filters combine: the list keeps only environments that match every<br/>
+        /// filter in the request. An invalid filter value returns<br/>
+        /// `400 validation_error`.<br/>
         /// An environment that changes during a walk moves to the front, so a<br/>
         /// later page can leave it out and repeat another. List items omit<br/>
         /// `environmentJson` and `versionId`; call GET /v1/environments/{id}<br/>
         /// to load an environment's configuration.
         /// </summary>
+        /// <param name="query"></param>
+        /// <param name="owner"></param>
+        /// <param name="named"></param>
+        /// <param name="repo"></param>
         /// <param name="limit">
         /// Default Value: 20
         /// </param>
@@ -64,6 +82,10 @@ namespace CursorAgents
         /// <param name="cancellationToken">The token to cancel the operation with</param>
         /// <exception cref="global::CursorAgents.ApiException"></exception>
         global::System.Threading.Tasks.Task<global::CursorAgents.AutoSDKHttpResponse<global::CursorAgents.ListEnvironmentsResponse>> ListEnvironmentsAsResponseAsync(
+            string? query = default,
+            global::CursorAgents.ListEnvironmentsOwner? owner = default,
+            bool? named = default,
+            global::System.Collections.Generic.IList<string>? repo = default,
             int? limit = default,
             string? cursor = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,

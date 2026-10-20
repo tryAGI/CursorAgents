@@ -993,7 +993,7 @@ components:
           example: 'Web app (staging)'
         environmentJson:
           type: string
-          description: "Replacement `environment.json`, as a JSON-encoded string, using the same schema as a `.cursor/environment.json` file. It replaces the whole configuration. An invalid configuration returns `400 validation_error`."
+          description: "Replacement `environment.json`, as a JSON-encoded string, using the same schema as a `.cursor/environment.json` file. It replaces the whole configuration. An invalid configuration returns `400 validation_error`. If the environment reads its configuration from a file in its only repository, the request returns `409 repo_file_environment_locked`."
           example: '{"install": "pnpm install --frozen-lockfile", "start": "sudo service docker start"}'
         repos:
           type: array
@@ -1105,8 +1105,8 @@ components:
       properties:
         items:
           type: array
-          maxItems: 10
-          description: "Up to 10 builds for this environment, newest first."
+          maxItems: 100
+          description: "Up to `limit` builds for this environment, newest first."
           items:
             $ref: '#/components/schemas/EnvironmentBuild'
         nextCursor:
@@ -2384,12 +2384,53 @@ paths:
         environments that have repositories, all within that limit. Drafts
         and deleted environments aren't included.
 
+        Filters combine: the list keeps only environments that match every
+        filter in the request. An invalid filter value returns
+        `400 validation_error`.
+
         An environment that changes during a walk moves to the front, so a
         later page can leave it out and repeat another. List items omit
         `environmentJson` and `versionId`; call GET /v1/environments/{id}
         to load an environment's configuration.
       operationId: listEnvironments
       parameters:
+        - name: query
+          in: query
+          required: false
+          description: "Only environments whose name contains this text, ignoring case."
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 255
+        - name: owner
+          in: query
+          required: false
+          description: "Only environments with this `owner`."
+          schema:
+            type: string
+            enum: ['personal', 'team']
+        - name: named
+          in: query
+          required: false
+          description: '`true` for only environments with a `name`, or `false` for only environments without one.'
+          schema:
+            type: boolean
+        - name: repo
+          in: query
+          required: false
+          description: |
+            Only environments that include this repository. Repeat it, up to
+            100 times, to list environments that include any of the
+            repositories.
+          style: form
+          explode: true
+          schema:
+            type: array
+            maxItems: 100
+            items:
+              type: string
+              minLength: 1
+              example: 'github.com/acme/api'
         - name: limit
           in: query
           required: false
@@ -2402,7 +2443,7 @@ paths:
         - name: cursor
           in: query
           required: false
-          description: "Pagination cursor from the previous response."
+          description: "Pagination cursor from the previous response. Send the same filters with each `cursor`."
           schema:
             type: string
             minLength: 1
@@ -2610,14 +2651,46 @@ paths:
   /v1/environments/{id}/builds:
     get:
       summary: List environment builds
-      description: "List an environment's builds, newest first, up to 10 per page. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`."
+      description: "List an environment's builds, newest first. Filter them by status or creation time. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`."
       operationId: listEnvironmentBuilds
       parameters:
         - $ref: '#/components/parameters/EnvironmentId'
+        - name: status
+          in: query
+          required: false
+          description: "Only builds with this status."
+          schema:
+            type: string
+            enum: ['IN_PROGRESS', 'SUCCEEDED', 'FAILED', 'CANCELLED', 'SKIPPED']
+        - name: createdAfter
+          in: query
+          required: false
+          description: "Only builds created at or after this time. Use an ISO 8601 timestamp with `Z` or a UTC offset and at most millisecond precision."
+          schema:
+            type: string
+            format: date-time
+            example: '2026-09-29T00:00:00Z'
+        - name: createdBefore
+          in: query
+          required: false
+          description: "Only builds created before this time, in the same format as `createdAfter`. It must be later than `createdAfter`."
+          schema:
+            type: string
+            format: date-time
+            example: '2026-10-01T00:00:00Z'
+        - name: limit
+          in: query
+          required: false
+          description: "Number of builds to return."
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
         - name: cursor
           in: query
           required: false
-          description: "Pagination cursor from `nextCursor` on the previous response."
+          description: "Pagination cursor from `nextCursor` on the previous response. Send the same filters with it."
           schema:
             type: string
             minLength: 1

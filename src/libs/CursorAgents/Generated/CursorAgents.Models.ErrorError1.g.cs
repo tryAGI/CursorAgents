@@ -11,7 +11,7 @@ namespace CursorAgents
         /// <summary>
         /// Machine-readable error code. Possible values include<br/>
         /// `unauthorized`, `api_key_not_found`, `plan_required`,<br/>
-        /// `role_forbidden`, `feature_unavailable`,<br/>
+        /// `role_forbidden`, `feature_unavailable`, `key_not_supported`,<br/>
         /// `integration_not_connected`, `validation_error`,<br/>
         /// `missing_body`, `invalid_model`, `invalid_branch_name`,<br/>
         /// `repository_required`, `repository_access`,<br/>
@@ -72,7 +72,7 @@ namespace CursorAgents
         /// <param name="code">
         /// Machine-readable error code. Possible values include<br/>
         /// `unauthorized`, `api_key_not_found`, `plan_required`,<br/>
-        /// `role_forbidden`, `feature_unavailable`,<br/>
+        /// `role_forbidden`, `feature_unavailable`, `key_not_supported`,<br/>
         /// `integration_not_connected`, `validation_error`,<br/>
         /// `missing_body`, `invalid_model`, `invalid_branch_name`,<br/>
         /// `repository_required`, `repository_access`,<br/>

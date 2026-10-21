@@ -1035,6 +1035,56 @@ components:
       description: "Unique build identifier, in the form `bld-YYYYMMDD-<uuid>`."
       example: 'bld-20260930-3c59dc04-8a1d-4b6e-9f2a-7e5d1c0b9a8f'
 
+    StartEnvironmentBuildRequest:
+      type: object
+      additionalProperties: false
+      description: "Send no body, or `{}`, for a non-draft build of every repository's default branch."
+      properties:
+        draft:
+          type: boolean
+          default: false
+          description: '`true` for a draft build, which agents don''t start from until it''s activated. A non-draft build is what agents start from once it succeeds.'
+        refs:
+          type: array
+          description: "Branches to build instead of the default branches. Repositories without an entry build their default branch, and a ref that names the default branch counts as no entry. Any other branch requires `draft` set to `true`; without it, and for a repository that isn't in the environment or a second ref for the same repository, the request returns `400 validation_error`. Cursor doesn't check that the branch exists, so a missing branch fails the build, not the request."
+          items:
+            $ref: '#/components/schemas/StartEnvironmentBuildRef'
+
+    StartEnvironmentBuildRef:
+      type: object
+      additionalProperties: false
+      required:
+        - repoUrl
+        - ref
+      properties:
+        repoUrl:
+          type: string
+          minLength: 1
+          pattern: '\S'
+          description: "One of the environment's repositories."
+          example: 'https://github.com/your-org/your-web-app'
+        ref:
+          type: string
+          minLength: 1
+          pattern: '\S'
+          description: "Branch name to build the repository from."
+          example: 'feature/new-checkout'
+
+    StartEnvironmentBuildResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - environmentId
+      properties:
+        id:
+          $ref: '#/components/schemas/EnvironmentBuildId'
+        environmentId:
+          type: string
+          format: uuid
+          description: "Environment ID."
+          example: '8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c'
+
     EnvironmentBuildFailure:
       type: object
       additionalProperties: false
@@ -1740,7 +1790,7 @@ components:
               description: |
                 Machine-readable error code. Possible values include
                 `unauthorized`, `api_key_not_found`, `plan_required`,
-                `role_forbidden`, `feature_unavailable`,
+                `role_forbidden`, `feature_unavailable`, `key_not_supported`,
                 `integration_not_connected`, `validation_error`,
                 `missing_body`, `invalid_model`, `invalid_branch_name`,
                 `repository_required`, `repository_access`,
@@ -2714,6 +2764,55 @@ paths:
           $ref: '#/components/responses/RateLimited'
         '500':
           $ref: '#/components/responses/InternalError'
+    post:
+      summary: Start an environment build
+      description: "Start a build of the environment. Access follows PATCH /v1/environments/{id}, except that a draft build on a team environment needs only read access, and service account API keys and repository-limited tokens are refused. Service account API keys get `403 key_not_supported`. A user-scoped token minted by an API key limited to certain repositories gets `404 environment_not_found` when the environment has no repositories or any repository outside the limit, and `403 key_not_supported` otherwise. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`. Reading the new build right away can briefly return `404`."
+      operationId: startEnvironmentBuild
+      parameters:
+        - $ref: '#/components/parameters/EnvironmentId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartEnvironmentBuildRequest'
+      responses:
+        '202':
+          description: "Build started."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StartEnvironmentBuildResponse'
+        '400':
+          description: "An environment ID that isn't a UUID, a body with fields other than `draft` and `refs` or values of the wrong type, a non-default branch without `draft` set to `true`, a repository that isn't in the environment, two refs for one repository, or a team that requires self-hosted workers (`validation_error`). Duplicate JSON keys return `duplicate_json_key`."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: "Plan or role not allowed, Cloud Agents API access isn't available for your account (`feature_unavailable`), a service account API key (`key_not_supported`), a user-scoped token minted by an API key limited to certain repositories on an environment whose repositories are all inside that limit (`key_not_supported`), or a non-draft build on a team environment when the team lets only admins edit environments (`team_admin_required`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          description: "Too many requests, or too many builds already in progress for this environment (`rate_limit_exceeded`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          description: "Cursor couldn't confirm whether the build started (`upstream_error`). Don't retry automatically, because another request can start a second build. Check the environment's builds before deciding what to do."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /v1/environments/{id}/builds/active:
     get:

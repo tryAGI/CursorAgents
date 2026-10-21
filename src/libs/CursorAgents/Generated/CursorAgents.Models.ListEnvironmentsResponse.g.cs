@@ -9,7 +9,7 @@ namespace CursorAgents
     public sealed partial class ListEnvironmentsResponse
     {
         /// <summary>
-        /// Environments, most recently updated first. List items omit `environmentJson` and `versionId`.
+        /// Environments, most recently updated first. List items omit `environmentJson`, `versionId`, and `buildSettings`.
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("items")]
         [global::System.Text.Json.Serialization.JsonRequired]
@@ -31,7 +31,7 @@ namespace CursorAgents
         /// Initializes a new instance of the <see cref="ListEnvironmentsResponse" /> class.
         /// </summary>
         /// <param name="items">
-        /// Environments, most recently updated first. List items omit `environmentJson` and `versionId`.
+        /// Environments, most recently updated first. List items omit `environmentJson`, `versionId`, and `buildSettings`.
         /// </param>
         /// <param name="nextCursor">
         /// Cursor for fetching the next page of results. A page can hold fewer items than `limit`, so keep paging until it's absent. Omitted (not `null`) when there are no more pages.

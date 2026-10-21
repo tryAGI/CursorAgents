@@ -31,6 +31,13 @@ namespace CursorAgents
         public string? VersionId { get; set; }
 
         /// <summary>
+        /// The environment's build settings. Whether agents pull the latest code when they start, and how long a build's install step can run.
+        /// </summary>
+        [global::System.Text.Json.Serialization.JsonPropertyName("buildSettings")]
+        [global::System.Text.Json.Serialization.JsonRequired]
+        public required global::CursorAgents.EnvironmentBuildSettings BuildSettings { get; set; }
+
+        /// <summary>
         /// Additional properties that are not explicitly defined in the schema
         /// </summary>
         [global::System.Text.Json.Serialization.JsonExtensionData]
@@ -39,6 +46,9 @@ namespace CursorAgents
         /// <summary>
         /// Initializes a new instance of the <see cref="GetEnvironmentResponseVariant2" /> class.
         /// </summary>
+        /// <param name="buildSettings">
+        /// The environment's build settings. Whether agents pull the latest code when they start, and how long a build's install step can run.
+        /// </param>
         /// <param name="repoFile">
         /// The file in a repository that an environment reads its configuration from.
         /// </param>
@@ -54,6 +64,7 @@ namespace CursorAgents
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
 #endif
         public GetEnvironmentResponseVariant2(
+            global::CursorAgents.EnvironmentBuildSettings buildSettings,
             global::CursorAgents.EnvironmentRepoFile? repoFile,
             string? environmentJson,
             string? versionId)
@@ -61,6 +72,7 @@ namespace CursorAgents
             this.RepoFile = repoFile;
             this.EnvironmentJson = environmentJson;
             this.VersionId = versionId;
+            this.BuildSettings = buildSettings ?? throw new global::System.ArgumentNullException(nameof(buildSettings));
         }
 
         /// <summary>

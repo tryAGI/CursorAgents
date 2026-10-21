@@ -5,8 +5,9 @@ namespace CursorAgents
 {
     /// <summary>
     /// One version of a Cloud Agents secret. A name can have several<br/>
-    /// versions in one environment or team, each for repositories the<br/>
-    /// others don't cover. Responses never include a secret's value.
+    /// versions in one environment, team, or user's personal secrets,<br/>
+    /// each for repositories the others don't cover. Responses never<br/>
+    /// include a secret's value.
     /// </summary>
     public sealed partial class SecretVersion
     {

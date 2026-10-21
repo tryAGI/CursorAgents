@@ -867,6 +867,60 @@ components:
           description: "Path of the configuration file in the repository."
           example: '.cursor/environment.json'
 
+    EnvironmentBuildSettings:
+      type: object
+      additionalProperties: false
+      description: "The environment's build settings. Whether agents pull the latest code when they start, and how long a build's install step can run."
+      required:
+        - pullLatestCode
+        - stalenessThresholdHours
+        - installTimeoutMinutes
+      properties:
+        pullLatestCode:
+          type: string
+          enum: ['when_stale', 'never', 'always']
+          description: "Whether agents that start on the default branch pull its latest code. `when_stale`, the default, pulls when the active build is older than `stalenessThresholdHours`. `never` uses the commit the build recorded. `always` is a legacy value you can read but not set."
+        stalenessThresholdHours:
+          type: integer
+          nullable: true
+          minimum: 0
+          maximum: 8760
+          description: "Hours before the active build counts as stale. `0` pulls on every start. `null` means the default, 24."
+          example: 24
+        installTimeoutMinutes:
+          type: integer
+          nullable: true
+          minimum: 5
+          maximum: 300
+          description: "Minutes a build's install step can run. `null` means the default, 90."
+          example: 90
+
+    UpdateEnvironmentBuildSettings:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      description: "New values for any of the build settings GET /v1/environments/{id} returns. Fields you leave out stay unchanged, and `null` resets a field to its default."
+      properties:
+        pullLatestCode:
+          type: string
+          nullable: true
+          enum: ['when_stale', 'never', null]
+          description: '`when_stale` (the default) or `never`. Setting the legacy `always` returns `400 validation_error`. To move an environment off `always`, send `when_stale` with `stalenessThresholdHours`.'
+        stalenessThresholdHours:
+          type: integer
+          nullable: true
+          minimum: 0
+          maximum: 8760
+          description: "Hours before the active build counts as stale. Default 24."
+          example: 12
+        installTimeoutMinutes:
+          type: integer
+          nullable: true
+          minimum: 5
+          maximum: 300
+          description: "Minutes a build's install step can run. Default 90."
+          example: 120
+
     Environment:
       type: object
       required:
@@ -915,6 +969,8 @@ components:
       allOf:
         - $ref: '#/components/schemas/Environment'
         - type: object
+          required:
+            - buildSettings
           properties:
             repoFile:
               $ref: '#/components/schemas/EnvironmentRepoFile'
@@ -927,6 +983,8 @@ components:
               minLength: 1
               description: "ID of the latest saved environment version. Omitted when no version has been saved."
               example: 'c9f0f895-fb98-4b91-8f3e-2a1b0c9d8e7f'
+            buildSettings:
+              $ref: '#/components/schemas/EnvironmentBuildSettings'
 
     ListEnvironmentsResponse:
       type: object
@@ -935,7 +993,7 @@ components:
       properties:
         items:
           type: array
-          description: "Environments, most recently updated first. List items omit `environmentJson` and `versionId`."
+          description: "Environments, most recently updated first. List items omit `environmentJson`, `versionId`, and `buildSettings`."
           items:
             allOf:
               - $ref: '#/components/schemas/Environment'
@@ -983,7 +1041,7 @@ components:
       type: object
       additionalProperties: false
       minProperties: 1
-      description: "Send `name`, `environmentJson`, `repos`, or any combination. `repos` requires `environmentJson`. A request applies every field it sends together, so either all of them change or none do."
+      description: "Send `name`, `environmentJson`, `repos`, or any combination. `repos` requires `environmentJson`. A request applies every field it sends together, so either all of them change or none do. Send `buildSettings` on its own; a request that also sends `name`, `environmentJson`, or `repos` returns `400 validation_error`."
       properties:
         name:
           type: string
@@ -1028,6 +1086,8 @@ components:
             `400 stored_repos_unreadable`.
           items:
             $ref: '#/components/schemas/EnvironmentRepo'
+        buildSettings:
+          $ref: '#/components/schemas/UpdateEnvironmentBuildSettings'
 
     EnvironmentBuildId:
       type: string
@@ -1102,6 +1162,44 @@ components:
           description: "Machine-readable cause of the failure, when there is one."
           example: 'environment_json_invalid'
 
+    EnvironmentBuildRequestedRef:
+      type: object
+      additionalProperties: false
+      description: "The branch, tag, or commit a build was asked to use for one repository."
+      required:
+        - repoUrl
+        - ref
+      properties:
+        repoUrl:
+          type: string
+          minLength: 1
+          description: "Repository URL."
+          example: 'https://github.com/your-org/your-web-app'
+        ref:
+          type: string
+          minLength: 1
+          description: "Branch, tag, or commit SHA the build was asked to use instead of the repository's default branch."
+          example: 'feature/new-checkout'
+
+    EnvironmentBuildRepoCommit:
+      type: object
+      additionalProperties: false
+      description: "The commit a build checked out for one repository."
+      required:
+        - repoUrl
+        - commitSha
+      properties:
+        repoUrl:
+          type: string
+          minLength: 1
+          description: "Repository URL."
+          example: 'https://github.com/your-org/your-web-app'
+        commitSha:
+          type: string
+          minLength: 1
+          description: "SHA of the commit the build checked out."
+          example: '06b7d943cd0e7ea353ca932d5cdea8987b8e8105'
+
     EnvironmentBuild:
       type: object
       additionalProperties: false
@@ -1110,7 +1208,10 @@ components:
         - environmentId
         - status
         - trigger
+        - source
         - draft
+        - requestedRefs
+        - repoCommits
         - createdAt
         - updatedAt
       properties:
@@ -1129,11 +1230,29 @@ components:
           type: string
           enum: ['RECURRING', 'CONFIG_CHANGE', 'MANUAL']
           description: "What started the build. `RECURRING` for a scheduled build, `CONFIG_CHANGE` after a configuration or secrets change, or `MANUAL` for one started on request."
+        source:
+          type: string
+          enum: ['SYSTEM', 'WEBSITE', 'API', 'AGENT']
+          description: "Where the build was started from. `SYSTEM` (Cursor on its own), `WEBSITE` (the dashboard), `API`, or `AGENT` (a cloud agent)."
         draft:
           type: boolean
           description: '`true` for a draft build. Agents don''t start from a draft build until it''s activated.'
         failure:
           $ref: '#/components/schemas/EnvironmentBuildFailure'
+        requestedRefs:
+          type: array
+          description: "Branches, tags, or commits the build was asked to use instead of a repository's default branch. Repositories without an entry use their default branch. An API key limited to certain repositories sees only entries for repositories inside its limit."
+          items:
+            $ref: '#/components/schemas/EnvironmentBuildRequestedRef'
+        repoCommits:
+          type: array
+          description: "Repository commits returned for the build, when available. An API key limited to certain repositories sees only entries inside its limit."
+          items:
+            $ref: '#/components/schemas/EnvironmentBuildRepoCommit'
+        snapshotState:
+          type: string
+          enum: ['ACTIVE', 'REAP_REQUESTED', 'DELETED']
+          description: "State of the build's snapshot. Omitted if the build didn't create a snapshot."
         createdAt:
           type: string
           format: date-time
@@ -1417,8 +1536,9 @@ components:
       type: object
       description: |
         One version of a Cloud Agents secret. A name can have several
-        versions in one environment or team, each for repositories the
-        others don't cover. Responses never include a secret's value.
+        versions in one environment, team, or user's personal secrets,
+        each for repositories the others don't cover. Responses never
+        include a secret's value.
       required:
         - name
         - type
@@ -2440,8 +2560,8 @@ paths:
 
         An environment that changes during a walk moves to the front, so a
         later page can leave it out and repeat another. List items omit
-        `environmentJson` and `versionId`; call GET /v1/environments/{id}
-        to load an environment's configuration.
+        `environmentJson`, `versionId`, and `buildSettings`; call
+        GET /v1/environments/{id} to load them.
       operationId: listEnvironments
       parameters:
         - name: query
@@ -2558,7 +2678,7 @@ paths:
   /v1/environments/{id}:
     get:
       summary: Get an environment
-      description: "Retrieve a saved environment and its latest saved configuration. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`."
+      description: "Retrieve a saved environment, its latest saved configuration, and its build settings. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`."
       operationId: getEnvironment
       parameters:
         - $ref: '#/components/parameters/EnvironmentId'
@@ -2583,7 +2703,7 @@ paths:
           $ref: '#/components/responses/InternalError'
     patch:
       summary: Update an environment
-      description: "Rename an environment, replace its configuration, replace its repositories, or any combination. A request applies every field it sends together, so either all of them change or none do. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`."
+      description: "Rename an environment, replace its configuration, replace its repositories, or any combination. A request applies every field it sends together, so either all of them change or none do. Change build settings with `buildSettings` in a request of its own. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`."
       operationId: updateEnvironment
       parameters:
         - $ref: '#/components/parameters/EnvironmentId'
@@ -3217,6 +3337,122 @@ paths:
                 $ref: '#/components/schemas/Error'
         '404':
           description: "The name or `?id=` isn't a version in the team (`secret_not_found`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: "The name has several versions and no `?id=` (`secret_name_ambiguous`, with `versions`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecretNameAmbiguousError'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /v1/me/secrets/{name}:
+    parameters:
+      - name: name
+        in: path
+        required: true
+        description: "Secret name, such as `NPM_TOKEN`."
+        schema:
+          type: string
+          example: 'NPM_TOKEN'
+    put:
+      summary: Set a personal secret
+      description: |
+        Create a personal secret for the user the API key acts for, rotate its value, or change its type or repositories. With `?id=`, the request changes that version. Without `?id=`, a name with no version gets one (`201`), a name with one version has it changed in place (`200`), and a name with several versions returns `409 secret_name_ambiguous`. A `PUT` never adds a second version to a name that has one, and an omitted `type` or `repos` keeps the current one. Build Secrets can't be set or changed; either returns `400 validation_error`. `DELETE` can remove one. See https://cursor.com/docs/cloud-agent/api/endpoints#set-a-personal-secret.
+      operationId: setPersonalSecret
+      parameters:
+        - name: id
+          in: query
+          required: false
+          description: "The `id` of the version to change, from the user's personal secrets list."
+          schema:
+            type: string
+            example: 'secv_Pk6nV3yH8rT1wQ4zM9cX2b'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetSecretRequest'
+      responses:
+        '200':
+          description: "The version was changed."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecretVersion'
+        '201':
+          description: "The version was created. It can leave out `id` and `createdAt`."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecretVersion'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: "Plan or role not allowed, Cloud Agents API access isn't available for your account (`feature_unavailable`), a `grok_` API key (`key_not_supported`), an API key that doesn't act for a user, such as a service account API key (`user_required`), a user-scoped token minted by an API key limited to certain repositories (`repository_access`), or a team that has turned off personal secrets (`personal_secrets_disabled`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: '`?id=` isn''t a version of this name among the user''s personal secrets (`secret_not_found`).'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: "The name has several versions and no `?id=` (`secret_name_ambiguous`, with `versions`), differs from an existing name only in case (`secret_name_conflict`), overlaps another version's repositories (`secret_scope_conflict`), the user has 1,000 personal secrets (`secret_limit_reached`), or another request changed the secret at the same moment (`secret_changed`)."
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/SecretNameAmbiguousError'
+                  - $ref: '#/components/schemas/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    delete:
+      summary: Delete a personal secret
+      description: |
+        Delete one version of a personal secret of the user the API key acts for. This action is irreversible. With `?id=`, the request deletes that version. Without `?id=`, a name with one version has it deleted, a name with no version returns `404 secret_not_found`, and a name with several versions returns `409 secret_name_ambiguous` and deletes nothing. `{name}` must match a listed name exactly, letter case included. See https://cursor.com/docs/cloud-agent/api/endpoints#delete-a-personal-secret.
+      operationId: deletePersonalSecret
+      parameters:
+        - name: id
+          in: query
+          required: false
+          description: "The `id` of the version to delete, from the user's personal secrets list."
+          schema:
+            type: string
+            example: 'secv_Pk6nV3yH8rT1wQ4zM9cX2b'
+      responses:
+        '200':
+          description: "The version was deleted."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteSecretResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: "Plan or role not allowed, Cloud Agents API access isn't available for your account (`feature_unavailable`), a `grok_` API key (`key_not_supported`), an API key that doesn't act for a user, such as a service account API key (`user_required`), or a user-scoped token minted by an API key limited to certain repositories (`repository_access`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: "The name or `?id=` isn't a version among the user's personal secrets (`secret_not_found`)."
           content:
             application/json:
               schema:

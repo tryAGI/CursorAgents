@@ -47,6 +47,14 @@ namespace CursorAgents
 
             typeof(global::CursorAgents.JsonConverters.AgentModeNullableJsonConverter),
 
+            typeof(global::CursorAgents.JsonConverters.EnvironmentBuildSettingsPullLatestCodeJsonConverter),
+
+            typeof(global::CursorAgents.JsonConverters.EnvironmentBuildSettingsPullLatestCodeNullableJsonConverter),
+
+            typeof(global::CursorAgents.JsonConverters.UpdateEnvironmentBuildSettingsPullLatestCodeJsonConverter),
+
+            typeof(global::CursorAgents.JsonConverters.UpdateEnvironmentBuildSettingsPullLatestCodeNullableJsonConverter),
+
             typeof(global::CursorAgents.JsonConverters.EnvironmentOwnerJsonConverter),
 
             typeof(global::CursorAgents.JsonConverters.EnvironmentOwnerNullableJsonConverter),
@@ -66,6 +74,14 @@ namespace CursorAgents
             typeof(global::CursorAgents.JsonConverters.EnvironmentBuildTriggerJsonConverter),
 
             typeof(global::CursorAgents.JsonConverters.EnvironmentBuildTriggerNullableJsonConverter),
+
+            typeof(global::CursorAgents.JsonConverters.EnvironmentBuildSourceJsonConverter),
+
+            typeof(global::CursorAgents.JsonConverters.EnvironmentBuildSourceNullableJsonConverter),
+
+            typeof(global::CursorAgents.JsonConverters.EnvironmentBuildSnapshotStateJsonConverter),
+
+            typeof(global::CursorAgents.JsonConverters.EnvironmentBuildSnapshotStateNullableJsonConverter),
 
             typeof(global::CursorAgents.JsonConverters.EnvironmentActiveBuildDiscriminatorTypeJsonConverter),
 
@@ -207,6 +223,12 @@ namespace CursorAgents
 
             typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>),
 
+            typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.SecretNameAmbiguousError, global::CursorAgents.Error>),
+
+            typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>),
+
+            typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>),
+
             typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>),
 
             typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>),
@@ -284,6 +306,10 @@ namespace CursorAgents
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.RunUsage>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentRepo))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentRepoFile))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentBuildSettings))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentBuildSettingsPullLatestCode), TypeInfoPropertyName = "EnvironmentBuildSettingsPullLatestCode2")]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.UpdateEnvironmentBuildSettings))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.UpdateEnvironmentBuildSettingsPullLatestCode), TypeInfoPropertyName = "UpdateEnvironmentBuildSettingsPullLatestCode2")]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.Environment))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Guid))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentOwner), TypeInfoPropertyName = "EnvironmentOwner2")]
@@ -304,9 +330,15 @@ namespace CursorAgents
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.StartEnvironmentBuildResponse))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentBuildFailure))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentBuildFailureType), TypeInfoPropertyName = "EnvironmentBuildFailureType2")]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentBuildRequestedRef))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentBuildRepoCommit))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentBuild))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentBuildStatus), TypeInfoPropertyName = "EnvironmentBuildStatus2")]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentBuildTrigger), TypeInfoPropertyName = "EnvironmentBuildTrigger2")]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentBuildSource), TypeInfoPropertyName = "EnvironmentBuildSource2")]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentBuildRequestedRef>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentBuildRepoCommit>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentBuildSnapshotState), TypeInfoPropertyName = "EnvironmentBuildSnapshotState2")]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ListEnvironmentBuildsResponse))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentBuild>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentActiveBuild), TypeInfoPropertyName = "EnvironmentActiveBuild2")]
@@ -380,6 +412,8 @@ namespace CursorAgents
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.EnvironmentRepo>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.AllOf<global::CursorAgents.Environment, global::CursorAgents.ListEnvironmentsResponseItem>>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.StartEnvironmentBuildRef>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.EnvironmentBuildRequestedRef>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.EnvironmentBuildRepoCommit>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.EnvironmentBuild>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.EnvironmentHistoryEvent>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.ModelParameterValueDefinition>))]

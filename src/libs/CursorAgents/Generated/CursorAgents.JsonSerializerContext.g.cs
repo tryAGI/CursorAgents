@@ -191,6 +191,8 @@ namespace CursorAgents
 
             typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>),
 
+            typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>),
+
             typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.SecretNameAmbiguousError, global::CursorAgents.Error>),
 
             typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>),
@@ -296,6 +298,10 @@ namespace CursorAgents
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.CreateEnvironmentRequest))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.CreateEnvironmentRequestOwner), TypeInfoPropertyName = "CreateEnvironmentRequestOwner2")]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.UpdateEnvironmentRequest))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.StartEnvironmentBuildRequest))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.StartEnvironmentBuildRef>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.StartEnvironmentBuildRef))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.StartEnvironmentBuildResponse))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentBuildFailure))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentBuildFailureType), TypeInfoPropertyName = "EnvironmentBuildFailureType2")]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentBuild))]
@@ -373,6 +379,7 @@ namespace CursorAgents
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.RunUsage>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.EnvironmentRepo>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.AllOf<global::CursorAgents.Environment, global::CursorAgents.ListEnvironmentsResponseItem>>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.StartEnvironmentBuildRef>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.EnvironmentBuild>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.EnvironmentHistoryEvent>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.ModelParameterValueDefinition>))]

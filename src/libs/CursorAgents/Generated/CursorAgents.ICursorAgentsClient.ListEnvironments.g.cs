@@ -24,8 +24,8 @@ namespace CursorAgents
         /// `400 validation_error`.<br/>
         /// An environment that changes during a walk moves to the front, so a<br/>
         /// later page can leave it out and repeat another. List items omit<br/>
-        /// `environmentJson` and `versionId`; call GET /v1/environments/{id}<br/>
-        /// to load an environment's configuration.
+        /// `environmentJson`, `versionId`, and `buildSettings`; call<br/>
+        /// GET /v1/environments/{id} to load them.
         /// </summary>
         /// <param name="query"></param>
         /// <param name="owner"></param>
@@ -67,8 +67,8 @@ namespace CursorAgents
         /// `400 validation_error`.<br/>
         /// An environment that changes during a walk moves to the front, so a<br/>
         /// later page can leave it out and repeat another. List items omit<br/>
-        /// `environmentJson` and `versionId`; call GET /v1/environments/{id}<br/>
-        /// to load an environment's configuration.
+        /// `environmentJson`, `versionId`, and `buildSettings`; call<br/>
+        /// GET /v1/environments/{id} to load them.
         /// </summary>
         /// <param name="query"></param>
         /// <param name="owner"></param>

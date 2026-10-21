@@ -4,7 +4,7 @@
 namespace CursorAgents
 {
     /// <summary>
-    /// Send `name`, `environmentJson`, `repos`, or any combination. `repos` requires `environmentJson`. A request applies every field it sends together, so either all of them change or none do.
+    /// Send `name`, `environmentJson`, `repos`, or any combination. `repos` requires `environmentJson`. A request applies every field it sends together, so either all of them change or none do. Send `buildSettings` on its own; a request that also sends `name`, `environmentJson`, or `repos` returns `400 validation_error`.
     /// </summary>
     public sealed partial class UpdateEnvironmentRequest
     {
@@ -55,6 +55,12 @@ namespace CursorAgents
         public global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentRepo>? Repos { get; set; }
 
         /// <summary>
+        /// New values for any of the build settings GET /v1/environments/{id} returns. Fields you leave out stay unchanged, and `null` resets a field to its default.
+        /// </summary>
+        [global::System.Text.Json.Serialization.JsonPropertyName("buildSettings")]
+        public global::CursorAgents.UpdateEnvironmentBuildSettings? BuildSettings { get; set; }
+
+        /// <summary>
         /// Additional properties that are not explicitly defined in the schema
         /// </summary>
         [global::System.Text.Json.Serialization.JsonExtensionData]
@@ -98,17 +104,22 @@ namespace CursorAgents
         /// repositories Cursor can't read return<br/>
         /// `400 stored_repos_unreadable`.
         /// </param>
+        /// <param name="buildSettings">
+        /// New values for any of the build settings GET /v1/environments/{id} returns. Fields you leave out stay unchanged, and `null` resets a field to its default.
+        /// </param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
 #endif
         public UpdateEnvironmentRequest(
             string? name,
             string? environmentJson,
-            global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentRepo>? repos)
+            global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentRepo>? repos,
+            global::CursorAgents.UpdateEnvironmentBuildSettings? buildSettings)
         {
             this.Name = name;
             this.EnvironmentJson = environmentJson;
             this.Repos = repos;
+            this.BuildSettings = buildSettings;
         }
 
         /// <summary>

@@ -6,7 +6,7 @@ namespace CursorAgents
     {
         /// <summary>
         /// Get an environment<br/>
-        /// Retrieve a saved environment and its latest saved configuration. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
+        /// Retrieve a saved environment, its latest saved configuration, and its build settings. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
         /// </summary>
         /// <param name="id">
         /// Example: 8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c
@@ -20,7 +20,7 @@ namespace CursorAgents
             global::System.Threading.CancellationToken cancellationToken = default);
         /// <summary>
         /// Get an environment<br/>
-        /// Retrieve a saved environment and its latest saved configuration. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
+        /// Retrieve a saved environment, its latest saved configuration, and its build settings. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
         /// </summary>
         /// <param name="id">
         /// Example: 8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c

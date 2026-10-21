@@ -40,7 +40,7 @@ namespace CursorAgents
 
         /// <summary>
         /// Update an environment<br/>
-        /// Rename an environment, replace its configuration, replace its repositories, or any combination. A request applies every field it sends together, so either all of them change or none do. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
+        /// Rename an environment, replace its configuration, replace its repositories, or any combination. A request applies every field it sends together, so either all of them change or none do. Change build settings with `buildSettings` in a request of its own. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
         /// </summary>
         /// <param name="id">
         /// Example: 8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c
@@ -66,7 +66,7 @@ namespace CursorAgents
         }
         /// <summary>
         /// Update an environment<br/>
-        /// Rename an environment, replace its configuration, replace its repositories, or any combination. A request applies every field it sends together, so either all of them change or none do. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
+        /// Rename an environment, replace its configuration, replace its repositories, or any combination. A request applies every field it sends together, so either all of them change or none do. Change build settings with `buildSettings` in a request of its own. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
         /// </summary>
         /// <param name="id">
         /// Example: 8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c
@@ -721,7 +721,7 @@ namespace CursorAgents
         }
         /// <summary>
         /// Update an environment<br/>
-        /// Rename an environment, replace its configuration, replace its repositories, or any combination. A request applies every field it sends together, so either all of them change or none do. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
+        /// Rename an environment, replace its configuration, replace its repositories, or any combination. A request applies every field it sends together, so either all of them change or none do. Change build settings with `buildSettings` in a request of its own. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
         /// </summary>
         /// <param name="id">
         /// Example: 8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c
@@ -761,6 +761,9 @@ namespace CursorAgents
         /// repositories Cursor can't read return<br/>
         /// `400 stored_repos_unreadable`.
         /// </param>
+        /// <param name="buildSettings">
+        /// New values for any of the build settings GET /v1/environments/{id} returns. Fields you leave out stay unchanged, and `null` resets a field to its default.
+        /// </param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
         /// <param name="cancellationToken">The token to cancel the operation with</param>
         /// <exception cref="global::System.InvalidOperationException"></exception>
@@ -769,6 +772,7 @@ namespace CursorAgents
             string? name = default,
             string? environmentJson = default,
             global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentRepo>? repos = default,
+            global::CursorAgents.UpdateEnvironmentBuildSettings? buildSettings = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default)
         {
@@ -777,6 +781,7 @@ namespace CursorAgents
                 Name = name,
                 EnvironmentJson = environmentJson,
                 Repos = repos,
+                BuildSettings = buildSettings,
             };
 
             await UpdateEnvironmentAsync(

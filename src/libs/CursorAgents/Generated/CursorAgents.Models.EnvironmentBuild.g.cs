@@ -43,6 +43,14 @@ namespace CursorAgents
         public required global::CursorAgents.EnvironmentBuildTrigger Trigger { get; set; }
 
         /// <summary>
+        /// Where the build was started from. `SYSTEM` (Cursor on its own), `WEBSITE` (the dashboard), `API`, or `AGENT` (a cloud agent).
+        /// </summary>
+        [global::System.Text.Json.Serialization.JsonPropertyName("source")]
+        [global::System.Text.Json.Serialization.JsonConverter(typeof(global::CursorAgents.JsonConverters.EnvironmentBuildSourceJsonConverter))]
+        [global::System.Text.Json.Serialization.JsonRequired]
+        public required global::CursorAgents.EnvironmentBuildSource Source { get; set; }
+
+        /// <summary>
         /// `true` for a draft build. Agents don't start from a draft build until it's activated.
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("draft")]
@@ -54,6 +62,27 @@ namespace CursorAgents
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("failure")]
         public global::CursorAgents.EnvironmentBuildFailure? Failure { get; set; }
+
+        /// <summary>
+        /// Branches, tags, or commits the build was asked to use instead of a repository's default branch. Repositories without an entry use their default branch. An API key limited to certain repositories sees only entries for repositories inside its limit.
+        /// </summary>
+        [global::System.Text.Json.Serialization.JsonPropertyName("requestedRefs")]
+        [global::System.Text.Json.Serialization.JsonRequired]
+        public required global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentBuildRequestedRef> RequestedRefs { get; set; }
+
+        /// <summary>
+        /// Repository commits returned for the build, when available. An API key limited to certain repositories sees only entries inside its limit.
+        /// </summary>
+        [global::System.Text.Json.Serialization.JsonPropertyName("repoCommits")]
+        [global::System.Text.Json.Serialization.JsonRequired]
+        public required global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentBuildRepoCommit> RepoCommits { get; set; }
+
+        /// <summary>
+        /// State of the build's snapshot. Omitted if the build didn't create a snapshot.
+        /// </summary>
+        [global::System.Text.Json.Serialization.JsonPropertyName("snapshotState")]
+        [global::System.Text.Json.Serialization.JsonConverter(typeof(global::CursorAgents.JsonConverters.EnvironmentBuildSnapshotStateJsonConverter))]
+        public global::CursorAgents.EnvironmentBuildSnapshotState? SnapshotState { get; set; }
 
         /// <summary>
         /// When the build was created.
@@ -98,8 +127,17 @@ namespace CursorAgents
         /// <param name="trigger">
         /// What started the build. `RECURRING` for a scheduled build, `CONFIG_CHANGE` after a configuration or secrets change, or `MANUAL` for one started on request.
         /// </param>
+        /// <param name="source">
+        /// Where the build was started from. `SYSTEM` (Cursor on its own), `WEBSITE` (the dashboard), `API`, or `AGENT` (a cloud agent).
+        /// </param>
         /// <param name="draft">
         /// `true` for a draft build. Agents don't start from a draft build until it's activated.
+        /// </param>
+        /// <param name="requestedRefs">
+        /// Branches, tags, or commits the build was asked to use instead of a repository's default branch. Repositories without an entry use their default branch. An API key limited to certain repositories sees only entries for repositories inside its limit.
+        /// </param>
+        /// <param name="repoCommits">
+        /// Repository commits returned for the build, when available. An API key limited to certain repositories sees only entries inside its limit.
         /// </param>
         /// <param name="createdAt">
         /// When the build was created.
@@ -109,6 +147,9 @@ namespace CursorAgents
         /// </param>
         /// <param name="failure">
         /// Why a failed build failed.
+        /// </param>
+        /// <param name="snapshotState">
+        /// State of the build's snapshot. Omitted if the build didn't create a snapshot.
         /// </param>
         /// <param name="completedAt">
         /// When the build finished. Omitted while it's in progress.
@@ -121,18 +162,26 @@ namespace CursorAgents
             global::System.Guid environmentId,
             global::CursorAgents.EnvironmentBuildStatus status,
             global::CursorAgents.EnvironmentBuildTrigger trigger,
+            global::CursorAgents.EnvironmentBuildSource source,
             bool draft,
+            global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentBuildRequestedRef> requestedRefs,
+            global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentBuildRepoCommit> repoCommits,
             global::System.DateTime createdAt,
             global::System.DateTime updatedAt,
             global::CursorAgents.EnvironmentBuildFailure? failure,
+            global::CursorAgents.EnvironmentBuildSnapshotState? snapshotState,
             global::System.DateTime? completedAt)
         {
             this.Id = id ?? throw new global::System.ArgumentNullException(nameof(id));
             this.EnvironmentId = environmentId;
             this.Status = status;
             this.Trigger = trigger;
+            this.Source = source;
             this.Draft = draft;
             this.Failure = failure;
+            this.RequestedRefs = requestedRefs ?? throw new global::System.ArgumentNullException(nameof(requestedRefs));
+            this.RepoCommits = repoCommits ?? throw new global::System.ArgumentNullException(nameof(repoCommits));
+            this.SnapshotState = snapshotState;
             this.CreatedAt = createdAt;
             this.UpdatedAt = updatedAt;
             this.CompletedAt = completedAt;

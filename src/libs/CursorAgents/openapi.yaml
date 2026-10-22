@@ -1004,7 +1004,7 @@ components:
         nextCursor:
           type: string
           minLength: 1
-          description: "Cursor for fetching the next page of results. A page can hold fewer items than `limit`, so keep paging until it's absent. Omitted (not `null`) when there are no more pages."
+          description: "Cursor for fetching the next page of results. A page can hold fewer items than `limit`, even none, so keep paging until it's absent. Omitted (not `null`) when there are no more pages."
 
     CreateEnvironmentRequest:
       type: object
@@ -2540,9 +2540,10 @@ paths:
       summary: List environments
       description: |
         List the saved environments the API key can access, most recently
-        updated first: the user's personal environments and the team's
-        environments. Team admins don't see members' personal environments
-        here.
+        updated first. Without `userId`, the list includes the user's
+        personal environments and the team's environments. Team admins can
+        list another current member's personal environments only by passing
+        that member's `userId`.
 
         Team admins and service account API keys see every team
         environment. Other callers see a team environment only when they
@@ -2601,6 +2602,23 @@ paths:
               type: string
               minLength: 1
               example: 'github.com/acme/api'
+        - name: userId
+          in: query
+          required: false
+          description: |
+            Only one user's personal environments, by the numeric `userId`
+            from GET /v1/me or the `user_` ID from the Admin API's team
+            members list. Your own ID lists your personal environments. A
+            team admin's user API key can also pass a current team member's
+            ID, and gets that member's personal environments that have at
+            least one repository, all of which the admin can read. A valid ID
+            for a user you aren't allowed to list returns `items: []` with no
+            `nextCursor`, not an error. Combining `userId` with `owner=team`
+            returns `400 validation_error`.
+          schema:
+            type: string
+            minLength: 1
+            example: 'user_PDSPmvukpYgZEDXsoNirw3CFhy'
         - name: limit
           in: query
           required: false

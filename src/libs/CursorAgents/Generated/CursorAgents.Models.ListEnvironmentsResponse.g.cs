@@ -16,7 +16,7 @@ namespace CursorAgents
         public required global::System.Collections.Generic.IList<global::CursorAgents.AllOf<global::CursorAgents.Environment, global::CursorAgents.ListEnvironmentsResponseItem>> Items { get; set; }
 
         /// <summary>
-        /// Cursor for fetching the next page of results. A page can hold fewer items than `limit`, so keep paging until it's absent. Omitted (not `null`) when there are no more pages.
+        /// Cursor for fetching the next page of results. A page can hold fewer items than `limit`, even none, so keep paging until it's absent. Omitted (not `null`) when there are no more pages.
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("nextCursor")]
         public string? NextCursor { get; set; }
@@ -34,7 +34,7 @@ namespace CursorAgents
         /// Environments, most recently updated first. List items omit `environmentJson`, `versionId`, and `buildSettings`.
         /// </param>
         /// <param name="nextCursor">
-        /// Cursor for fetching the next page of results. A page can hold fewer items than `limit`, so keep paging until it's absent. Omitted (not `null`) when there are no more pages.
+        /// Cursor for fetching the next page of results. A page can hold fewer items than `limit`, even none, so keep paging until it's absent. Omitted (not `null`) when there are no more pages.
         /// </param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]

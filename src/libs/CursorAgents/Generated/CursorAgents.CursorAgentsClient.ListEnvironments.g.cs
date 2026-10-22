@@ -31,6 +31,7 @@ namespace CursorAgents
             ref global::CursorAgents.ListEnvironmentsOwner? owner,
             ref bool? named,
             global::System.Collections.Generic.IList<string>? repo,
+            ref string? userId,
             ref int? limit,
             ref string? cursor);
         partial void PrepareListEnvironmentsRequest(
@@ -40,6 +41,7 @@ namespace CursorAgents
             global::CursorAgents.ListEnvironmentsOwner? owner,
             bool? named,
             global::System.Collections.Generic.IList<string>? repo,
+            string? userId,
             int? limit,
             string? cursor);
         partial void ProcessListEnvironmentsResponse(
@@ -54,9 +56,10 @@ namespace CursorAgents
         /// <summary>
         /// List environments<br/>
         /// List the saved environments the API key can access, most recently<br/>
-        /// updated first: the user's personal environments and the team's<br/>
-        /// environments. Team admins don't see members' personal environments<br/>
-        /// here.<br/>
+        /// updated first. Without `userId`, the list includes the user's<br/>
+        /// personal environments and the team's environments. Team admins can<br/>
+        /// list another current member's personal environments only by passing<br/>
+        /// that member's `userId`.<br/>
         /// Team admins and service account API keys see every team<br/>
         /// environment. Other callers see a team environment only when they<br/>
         /// can access all of its repositories. When those checks run out of<br/>
@@ -78,6 +81,9 @@ namespace CursorAgents
         /// <param name="owner"></param>
         /// <param name="named"></param>
         /// <param name="repo"></param>
+        /// <param name="userId">
+        /// Example: user_PDSPmvukpYgZEDXsoNirw3CFhy
+        /// </param>
         /// <param name="limit">
         /// Default Value: 20
         /// </param>
@@ -90,6 +96,7 @@ namespace CursorAgents
             global::CursorAgents.ListEnvironmentsOwner? owner = default,
             bool? named = default,
             global::System.Collections.Generic.IList<string>? repo = default,
+            string? userId = default,
             int? limit = default,
             string? cursor = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
@@ -100,6 +107,7 @@ namespace CursorAgents
                 owner: owner,
                 named: named,
                 repo: repo,
+                userId: userId,
                 limit: limit,
                 cursor: cursor,
                 requestOptions: requestOptions,
@@ -111,9 +119,10 @@ namespace CursorAgents
         /// <summary>
         /// List environments<br/>
         /// List the saved environments the API key can access, most recently<br/>
-        /// updated first: the user's personal environments and the team's<br/>
-        /// environments. Team admins don't see members' personal environments<br/>
-        /// here.<br/>
+        /// updated first. Without `userId`, the list includes the user's<br/>
+        /// personal environments and the team's environments. Team admins can<br/>
+        /// list another current member's personal environments only by passing<br/>
+        /// that member's `userId`.<br/>
         /// Team admins and service account API keys see every team<br/>
         /// environment. Other callers see a team environment only when they<br/>
         /// can access all of its repositories. When those checks run out of<br/>
@@ -135,6 +144,9 @@ namespace CursorAgents
         /// <param name="owner"></param>
         /// <param name="named"></param>
         /// <param name="repo"></param>
+        /// <param name="userId">
+        /// Example: user_PDSPmvukpYgZEDXsoNirw3CFhy
+        /// </param>
         /// <param name="limit">
         /// Default Value: 20
         /// </param>
@@ -147,6 +159,7 @@ namespace CursorAgents
             global::CursorAgents.ListEnvironmentsOwner? owner = default,
             bool? named = default,
             global::System.Collections.Generic.IList<string>? repo = default,
+            string? userId = default,
             int? limit = default,
             string? cursor = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
@@ -160,6 +173,7 @@ namespace CursorAgents
                 owner: ref owner,
                 named: ref named,
                 repo: repo,
+                userId: ref userId,
                 limit: ref limit,
                 cursor: ref cursor);
 
@@ -194,6 +208,7 @@ namespace CursorAgents
                                 .AddOptionalParameter("owner", owner?.ToValueString())
                                 .AddOptionalParameter("named", named?.ToString().ToLowerInvariant())
                                 .AddOptionalParameter("repo", repo, delimiter: ",", explode: true)
+                                .AddOptionalParameter("userId", userId)
                                 .AddOptionalParameter("limit", limit?.ToString())
                                 .AddOptionalParameter("cursor", cursor)
                                 ;
@@ -241,6 +256,7 @@ namespace CursorAgents
                     owner: owner,
                     named: named,
                     repo: repo,
+                    userId: userId,
                     limit: limit,
                     cursor: cursor);
 

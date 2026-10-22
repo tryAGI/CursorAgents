@@ -7,9 +7,10 @@ namespace CursorAgents
         /// <summary>
         /// List environments<br/>
         /// List the saved environments the API key can access, most recently<br/>
-        /// updated first: the user's personal environments and the team's<br/>
-        /// environments. Team admins don't see members' personal environments<br/>
-        /// here.<br/>
+        /// updated first. Without `userId`, the list includes the user's<br/>
+        /// personal environments and the team's environments. Team admins can<br/>
+        /// list another current member's personal environments only by passing<br/>
+        /// that member's `userId`.<br/>
         /// Team admins and service account API keys see every team<br/>
         /// environment. Other callers see a team environment only when they<br/>
         /// can access all of its repositories. When those checks run out of<br/>
@@ -31,6 +32,9 @@ namespace CursorAgents
         /// <param name="owner"></param>
         /// <param name="named"></param>
         /// <param name="repo"></param>
+        /// <param name="userId">
+        /// Example: user_PDSPmvukpYgZEDXsoNirw3CFhy
+        /// </param>
         /// <param name="limit">
         /// Default Value: 20
         /// </param>
@@ -43,6 +47,7 @@ namespace CursorAgents
             global::CursorAgents.ListEnvironmentsOwner? owner = default,
             bool? named = default,
             global::System.Collections.Generic.IList<string>? repo = default,
+            string? userId = default,
             int? limit = default,
             string? cursor = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
@@ -50,9 +55,10 @@ namespace CursorAgents
         /// <summary>
         /// List environments<br/>
         /// List the saved environments the API key can access, most recently<br/>
-        /// updated first: the user's personal environments and the team's<br/>
-        /// environments. Team admins don't see members' personal environments<br/>
-        /// here.<br/>
+        /// updated first. Without `userId`, the list includes the user's<br/>
+        /// personal environments and the team's environments. Team admins can<br/>
+        /// list another current member's personal environments only by passing<br/>
+        /// that member's `userId`.<br/>
         /// Team admins and service account API keys see every team<br/>
         /// environment. Other callers see a team environment only when they<br/>
         /// can access all of its repositories. When those checks run out of<br/>
@@ -74,6 +80,9 @@ namespace CursorAgents
         /// <param name="owner"></param>
         /// <param name="named"></param>
         /// <param name="repo"></param>
+        /// <param name="userId">
+        /// Example: user_PDSPmvukpYgZEDXsoNirw3CFhy
+        /// </param>
         /// <param name="limit">
         /// Default Value: 20
         /// </param>
@@ -86,6 +95,7 @@ namespace CursorAgents
             global::CursorAgents.ListEnvironmentsOwner? owner = default,
             bool? named = default,
             global::System.Collections.Generic.IList<string>? repo = default,
+            string? userId = default,
             int? limit = default,
             string? cursor = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,

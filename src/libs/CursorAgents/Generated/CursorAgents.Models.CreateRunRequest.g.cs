@@ -1,68 +1,301 @@
+#pragma warning disable CS0618 // Type or member is obsolete
 
 #nullable enable
 
 namespace CursorAgents
 {
     /// <summary>
-    ///
+    /// An ordinary follow-up, which omits `delivery`, or a steer, which<br/>
+    /// sets `delivery` to `steer`.
     /// </summary>
-    public sealed partial class CreateRunRequest
+    public readonly partial struct CreateRunRequest : global::System.IEquatable<CreateRunRequest>
     {
+        /// <summary>
+        /// An ordinary follow-up. It starts a new run and returns `201`, or<br/>
+        /// returns `409 agent_busy` while another run is active.
+        /// </summary>
+#if NET6_0_OR_GREATER
+        public global::CursorAgents.FollowupRunRequest? Followup { get; init; }
+#else
+        public global::CursorAgents.FollowupRunRequest? Followup { get; }
+#endif
+
         /// <summary>
         ///
         /// </summary>
-        [global::System.Text.Json.Serialization.JsonPropertyName("prompt")]
-        [global::System.Text.Json.Serialization.JsonRequired]
-        public required global::CursorAgents.CreateRunRequestPrompt Prompt { get; set; }
-
-        /// <summary>
-        /// Inline MCP server definitions for this follow-up run. When provided, these definitions replace any create-time inline MCP servers for this run.
-        /// </summary>
-        [global::System.Text.Json.Serialization.JsonPropertyName("mcpServers")]
-        public global::System.Collections.Generic.IList<global::CursorAgents.McpServer>? McpServers { get; set; }
-
-        /// <summary>
-        /// Conversation mode. `plan` explores and drafts a plan before coding; `agent` implements changes directly. On follow-up runs, omit to keep the conversation's current mode; set explicitly to switch modes for that run.
-        /// </summary>
-        [global::System.Text.Json.Serialization.JsonPropertyName("mode")]
-        [global::System.Text.Json.Serialization.JsonConverter(typeof(global::CursorAgents.JsonConverters.AgentModeJsonConverter))]
-        public global::CursorAgents.AgentMode? Mode { get; set; }
-
-        /// <summary>
-        /// Additional properties that are not explicitly defined in the schema
-        /// </summary>
-        [global::System.Text.Json.Serialization.JsonExtensionData]
-        public global::System.Collections.Generic.IDictionary<string, object> AdditionalProperties { get; set; } = new global::System.Collections.Generic.Dictionary<string, object>();
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CreateRunRequest" /> class.
-        /// </summary>
-        /// <param name="prompt"></param>
-        /// <param name="mcpServers">
-        /// Inline MCP server definitions for this follow-up run. When provided, these definitions replace any create-time inline MCP servers for this run.
-        /// </param>
-        /// <param name="mode">
-        /// Conversation mode. `plan` explores and drafts a plan before coding; `agent` implements changes directly. On follow-up runs, omit to keep the conversation's current mode; set explicitly to switch modes for that run.
-        /// </param>
-#if NET7_0_OR_GREATER
-        [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
+#if NET6_0_OR_GREATER
+        [global::System.Diagnostics.CodeAnalysis.MemberNotNullWhen(true, nameof(Followup))]
 #endif
-        public CreateRunRequest(
-            global::CursorAgents.CreateRunRequestPrompt prompt,
-            global::System.Collections.Generic.IList<global::CursorAgents.McpServer>? mcpServers,
-            global::CursorAgents.AgentMode? mode)
+        public bool IsFollowup => Followup != null;
+
+        /// <summary>
+        ///
+        /// </summary>
+        public bool TryPickFollowup(
+#if NET6_0_OR_GREATER
+            [global::System.Diagnostics.CodeAnalysis.NotNullWhen(true)]
+#endif
+            out global::CursorAgents.FollowupRunRequest? value)
         {
-            this.Prompt = prompt ?? throw new global::System.ArgumentNullException(nameof(prompt));
-            this.McpServers = mcpServers;
-            this.Mode = mode;
+            value = Followup;
+            return IsFollowup;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreateRunRequest" /> class.
+        ///
         /// </summary>
-        public CreateRunRequest()
+        public global::CursorAgents.FollowupRunRequest PickFollowup() => Followup is { } value
+            ? value
+            : throw new global::System.InvalidOperationException($"Expected union variant 'Followup' but the value was {ToString()}.");
+
+        /// <summary>
+        /// A steer sends the prompt into the agent's running turn instead of<br/>
+        /// starting a new run, and returns `202` with a `SteerRunResponse`.<br/>
+        /// It requires `prompt` and `delivery` and accepts no other top-level<br/>
+        /// fields, so `model`, `mcpServers`, `envVars`, or `mode` returns<br/>
+        /// `400 validation_error`.
+        /// </summary>
+#if NET6_0_OR_GREATER
+        public global::CursorAgents.SteerRunRequest? Steer { get; init; }
+#else
+        public global::CursorAgents.SteerRunRequest? Steer { get; }
+#endif
+
+        /// <summary>
+        ///
+        /// </summary>
+#if NET6_0_OR_GREATER
+        [global::System.Diagnostics.CodeAnalysis.MemberNotNullWhen(true, nameof(Steer))]
+#endif
+        public bool IsSteer => Steer != null;
+
+        /// <summary>
+        ///
+        /// </summary>
+        public bool TryPickSteer(
+#if NET6_0_OR_GREATER
+            [global::System.Diagnostics.CodeAnalysis.NotNullWhen(true)]
+#endif
+            out global::CursorAgents.SteerRunRequest? value)
         {
+            value = Steer;
+            return IsSteer;
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        public global::CursorAgents.SteerRunRequest PickSteer() => Steer is { } value
+            ? value
+            : throw new global::System.InvalidOperationException($"Expected union variant 'Steer' but the value was {ToString()}.");
+        /// <summary>
+        ///
+        /// </summary>
+        public static implicit operator CreateRunRequest(global::CursorAgents.FollowupRunRequest value) => new CreateRunRequest((global::CursorAgents.FollowupRunRequest?)value);
+
+        /// <summary>
+        ///
+        /// </summary>
+        public static implicit operator global::CursorAgents.FollowupRunRequest?(CreateRunRequest @this) => @this.Followup;
+
+        /// <summary>
+        ///
+        /// </summary>
+        public CreateRunRequest(global::CursorAgents.FollowupRunRequest? value)
+        {
+            Followup = value;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public static CreateRunRequest FromFollowup(global::CursorAgents.FollowupRunRequest? value) => new CreateRunRequest(value);
+
+        /// <summary>
+        ///
+        /// </summary>
+        public static implicit operator CreateRunRequest(global::CursorAgents.SteerRunRequest value) => new CreateRunRequest((global::CursorAgents.SteerRunRequest?)value);
+
+        /// <summary>
+        ///
+        /// </summary>
+        public static implicit operator global::CursorAgents.SteerRunRequest?(CreateRunRequest @this) => @this.Steer;
+
+        /// <summary>
+        ///
+        /// </summary>
+        public CreateRunRequest(global::CursorAgents.SteerRunRequest? value)
+        {
+            Steer = value;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public static CreateRunRequest FromSteer(global::CursorAgents.SteerRunRequest? value) => new CreateRunRequest(value);
+
+        /// <summary>
+        ///
+        /// </summary>
+        public CreateRunRequest(
+            global::CursorAgents.FollowupRunRequest? followup,
+            global::CursorAgents.SteerRunRequest? steer
+            )
+        {
+            Followup = followup;
+            Steer = steer;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public object? Object =>
+            Steer as object ??
+            Followup as object
+            ;
+
+        /// <summary>
+        ///
+        /// </summary>
+        public override string? ToString() =>
+            Followup?.ToString() ??
+            Steer?.ToString()
+            ;
+
+        /// <summary>
+        ///
+        /// </summary>
+        public bool Validate()
+        {
+            return IsFollowup && !IsSteer || !IsFollowup && IsSteer;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public TResult? Match<TResult>(
+            global::System.Func<global::CursorAgents.FollowupRunRequest, TResult>? followup = null,
+            global::System.Func<global::CursorAgents.SteerRunRequest, TResult>? steer = null,
+            bool validate = true)
+        {
+            if (validate)
+            {
+                Validate();
+            }
+
+            if (Followup is { } __value0 && followup != null)
+            {
+                return followup(__value0);
+            }
+            else if (Steer is { } __value1 && steer != null)
+            {
+                return steer(__value1);
+            }
+
+            return default(TResult);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public void Match(
+            global::System.Action<global::CursorAgents.FollowupRunRequest>? followup = null,
+
+            global::System.Action<global::CursorAgents.SteerRunRequest>? steer = null,
+            bool validate = true)
+        {
+            if (validate)
+            {
+                Validate();
+            }
+
+            if (Followup is { } __value0)
+            {
+                followup?.Invoke(__value0);
+            }
+            else if (Steer is { } __value1)
+            {
+                steer?.Invoke(__value1);
+            }
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public void Switch(
+            global::System.Action<global::CursorAgents.FollowupRunRequest>? followup = null,
+            global::System.Action<global::CursorAgents.SteerRunRequest>? steer = null,
+            bool validate = true)
+        {
+            if (validate)
+            {
+                Validate();
+            }
+
+            if (Followup is { } __value0)
+            {
+                followup?.Invoke(__value0);
+            }
+            else if (Steer is { } __value1)
+            {
+                steer?.Invoke(__value1);
+            }
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public override int GetHashCode()
+        {
+            var fields = new object?[]
+            {
+                Followup,
+                typeof(global::CursorAgents.FollowupRunRequest),
+                Steer,
+                typeof(global::CursorAgents.SteerRunRequest),
+            };
+            const int offset = unchecked((int)2166136261);
+            const int prime = 16777619;
+            static int HashCodeAggregator(int hashCode, object? value) => value == null
+                ? (hashCode ^ 0) * prime
+                : (hashCode ^ value.GetHashCode()) * prime;
+
+            return global::System.Linq.Enumerable.Aggregate(fields, offset, HashCodeAggregator);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public bool Equals(CreateRunRequest other)
+        {
+            return
+                global::System.Collections.Generic.EqualityComparer<global::CursorAgents.FollowupRunRequest?>.Default.Equals(Followup, other.Followup) &&
+                global::System.Collections.Generic.EqualityComparer<global::CursorAgents.SteerRunRequest?>.Default.Equals(Steer, other.Steer)
+                ;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public static bool operator ==(CreateRunRequest obj1, CreateRunRequest obj2)
+        {
+            return global::System.Collections.Generic.EqualityComparer<CreateRunRequest>.Default.Equals(obj1, obj2);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public static bool operator !=(CreateRunRequest obj1, CreateRunRequest obj2)
+        {
+            return !(obj1 == obj2);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public override bool Equals(object? obj)
+        {
+            return obj is CreateRunRequest o && Equals(o);
+        }
     }
 }

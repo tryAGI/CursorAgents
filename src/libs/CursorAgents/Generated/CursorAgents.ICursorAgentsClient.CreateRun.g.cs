@@ -6,9 +6,13 @@ namespace CursorAgents
     {
         /// <summary>
         /// Create a run<br/>
-        /// Send a follow-up prompt to an existing active agent. The new<br/>
-        /// run uses the agent's current conversation and workspace state.<br/>
-        /// Only one run can be active per agent at a time.
+        /// Send a follow-up prompt to an existing active agent. Without<br/>
+        /// `delivery`, the prompt starts a new run that uses the agent's<br/>
+        /// current conversation and workspace state, and only one run can<br/>
+        /// be active per agent at a time. With `delivery: steer`, the<br/>
+        /// agent's running turn takes the prompt when it can, and otherwise<br/>
+        /// the prompt becomes the agent's next follow-up. On success, a<br/>
+        /// steer returns `202` without a run object or ID.
         /// </summary>
         /// <param name="id">
         /// Example: bc-00000000-0000-0000-0000-000000000001
@@ -25,9 +29,13 @@ namespace CursorAgents
             global::System.Threading.CancellationToken cancellationToken = default);
         /// <summary>
         /// Create a run<br/>
-        /// Send a follow-up prompt to an existing active agent. The new<br/>
-        /// run uses the agent's current conversation and workspace state.<br/>
-        /// Only one run can be active per agent at a time.
+        /// Send a follow-up prompt to an existing active agent. Without<br/>
+        /// `delivery`, the prompt starts a new run that uses the agent's<br/>
+        /// current conversation and workspace state, and only one run can<br/>
+        /// be active per agent at a time. With `delivery: steer`, the<br/>
+        /// agent's running turn takes the prompt when it can, and otherwise<br/>
+        /// the prompt becomes the agent's next follow-up. On success, a<br/>
+        /// steer returns `202` without a run object or ID.
         /// </summary>
         /// <param name="id">
         /// Example: bc-00000000-0000-0000-0000-000000000001
@@ -44,28 +52,22 @@ namespace CursorAgents
             global::System.Threading.CancellationToken cancellationToken = default);
         /// <summary>
         /// Create a run<br/>
-        /// Send a follow-up prompt to an existing active agent. The new<br/>
-        /// run uses the agent's current conversation and workspace state.<br/>
-        /// Only one run can be active per agent at a time.
+        /// Send a follow-up prompt to an existing active agent. Without<br/>
+        /// `delivery`, the prompt starts a new run that uses the agent's<br/>
+        /// current conversation and workspace state, and only one run can<br/>
+        /// be active per agent at a time. With `delivery: steer`, the<br/>
+        /// agent's running turn takes the prompt when it can, and otherwise<br/>
+        /// the prompt becomes the agent's next follow-up. On success, a<br/>
+        /// steer returns `202` without a run object or ID.
         /// </summary>
         /// <param name="id">
         /// Example: bc-00000000-0000-0000-0000-000000000001
-        /// </param>
-        /// <param name="prompt"></param>
-        /// <param name="mcpServers">
-        /// Inline MCP server definitions for this follow-up run. When provided, these definitions replace any create-time inline MCP servers for this run.
-        /// </param>
-        /// <param name="mode">
-        /// Conversation mode. `plan` explores and drafts a plan before coding; `agent` implements changes directly. On follow-up runs, omit to keep the conversation's current mode; set explicitly to switch modes for that run.
         /// </param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
         /// <param name="cancellationToken">The token to cancel the operation with</param>
         /// <exception cref="global::System.InvalidOperationException"></exception>
         global::System.Threading.Tasks.Task<global::CursorAgents.CreateRunResponse> CreateRunAsync(
             string id,
-            global::CursorAgents.CreateRunRequestPrompt prompt,
-            global::System.Collections.Generic.IList<global::CursorAgents.McpServer>? mcpServers = default,
-            global::CursorAgents.AgentMode? mode = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default);
     }

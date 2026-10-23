@@ -2,7 +2,7 @@
 
 namespace CursorAgents
 {
-    public sealed partial class CreateRunRequest
+    public readonly partial struct CreateRunRequest
     {
         /// <summary>
         /// Serializes the current instance to a JSON string using the provided JsonSerializerContext.
@@ -54,7 +54,7 @@ namespace CursorAgents
             return global::System.Text.Json.JsonSerializer.Deserialize(
                 json,
                 typeof(global::CursorAgents.CreateRunRequest),
-                jsonSerializerContext) as global::CursorAgents.CreateRunRequest;
+                jsonSerializerContext) as global::CursorAgents.CreateRunRequest?;
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace CursorAgents
             return (await global::System.Text.Json.JsonSerializer.DeserializeAsync(
                 jsonStream,
                 typeof(global::CursorAgents.CreateRunRequest),
-                jsonSerializerContext).ConfigureAwait(false)) as global::CursorAgents.CreateRunRequest;
+                jsonSerializerContext).ConfigureAwait(false)) as global::CursorAgents.CreateRunRequest?;
         }
 
         /// <summary>

@@ -6,7 +6,7 @@ namespace CursorAgents
     /// <summary>
     ///
     /// </summary>
-    public sealed partial class CreateRunRequestPrompt
+    public sealed partial class RunPrompt
     {
         /// <summary>
         /// Follow-up instruction text.<br/>
@@ -30,7 +30,7 @@ namespace CursorAgents
         public global::System.Collections.Generic.IDictionary<string, object> AdditionalProperties { get; set; } = new global::System.Collections.Generic.Dictionary<string, object>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreateRunRequestPrompt" /> class.
+        /// Initializes a new instance of the <see cref="RunPrompt" /> class.
         /// </summary>
         /// <param name="text">
         /// Follow-up instruction text.<br/>
@@ -42,7 +42,7 @@ namespace CursorAgents
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
 #endif
-        public CreateRunRequestPrompt(
+        public RunPrompt(
             string text,
             global::System.Collections.Generic.IList<global::CursorAgents.Image>? images)
         {
@@ -51,9 +51,9 @@ namespace CursorAgents
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreateRunRequestPrompt" /> class.
+        /// Initializes a new instance of the <see cref="RunPrompt" /> class.
         /// </summary>
-        public CreateRunRequestPrompt()
+        public RunPrompt()
         {
         }
 

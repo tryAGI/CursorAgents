@@ -45,9 +45,13 @@ namespace CursorAgents
 
         /// <summary>
         /// Create a run<br/>
-        /// Send a follow-up prompt to an existing active agent. The new<br/>
-        /// run uses the agent's current conversation and workspace state.<br/>
-        /// Only one run can be active per agent at a time.
+        /// Send a follow-up prompt to an existing active agent. Without<br/>
+        /// `delivery`, the prompt starts a new run that uses the agent's<br/>
+        /// current conversation and workspace state, and only one run can<br/>
+        /// be active per agent at a time. With `delivery: steer`, the<br/>
+        /// agent's running turn takes the prompt when it can, and otherwise<br/>
+        /// the prompt becomes the agent's next follow-up. On success, a<br/>
+        /// steer returns `202` without a run object or ID.
         /// </summary>
         /// <param name="id">
         /// Example: bc-00000000-0000-0000-0000-000000000001
@@ -75,9 +79,13 @@ namespace CursorAgents
         }
         /// <summary>
         /// Create a run<br/>
-        /// Send a follow-up prompt to an existing active agent. The new<br/>
-        /// run uses the agent's current conversation and workspace state.<br/>
-        /// Only one run can be active per agent at a time.
+        /// Send a follow-up prompt to an existing active agent. Without<br/>
+        /// `delivery`, the prompt starts a new run that uses the agent's<br/>
+        /// current conversation and workspace state, and only one run can<br/>
+        /// be active per agent at a time. With `delivery: steer`, the<br/>
+        /// agent's running turn takes the prompt when it can, and otherwise<br/>
+        /// the prompt becomes the agent's next follow-up. On success, a<br/>
+        /// steer returns `202` without a run object or ID.
         /// </summary>
         /// <param name="id">
         /// Example: bc-00000000-0000-0000-0000-000000000001
@@ -93,8 +101,6 @@ namespace CursorAgents
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default)
         {
-            request = request ?? throw new global::System.ArgumentNullException(nameof(request));
-
             PrepareArguments(
                 client: HttpClient);
             PrepareCreateRunArguments(
@@ -354,7 +360,7 @@ namespace CursorAgents
                                 retryReason: global::System.String.Empty,
                                 cancellationToken: __effectiveCancellationToken)).ConfigureAwait(false);
                 }
-                            // Validation error or malformed request body.
+                            // Validation error or malformed request body. Steering adds two `validation_error` cases, a steer body with any top-level field besides `prompt` and `delivery` or a `delivery` other than `steer`, and a steer that Cursor refuses. Cursor checks the body before it checks whether steering is available.
                             if ((int)__response.StatusCode == 400)
                             {
                                 string? __content_400 = null;
@@ -428,7 +434,7 @@ namespace CursorAgents
                                         h => h.Key,
                                         h => h.Value));
                             }
-                            // Authenticated but insufficient permissions, plan required, or feature unavailable.
+                            // Authenticated but insufficient permissions, plan required, or feature unavailable (`feature_unavailable`), including a steer when steering isn't available for your account.
                             if ((int)__response.StatusCode == 403)
                             {
                                 string? __content_403 = null;
@@ -502,7 +508,7 @@ namespace CursorAgents
                                         h => h.Key,
                                         h => h.Value));
                             }
-                            // Resource state conflict (`agent_busy`, `agent_archived`, `agent_id_conflict`, `run_not_cancellable`, or `environment_name_conflict`).
+                            // The agent already has an active run and the request has no `delivery` (`agent_busy`), or the agent is archived (`agent_archived`).
                             if ((int)__response.StatusCode == 409)
                             {
                                 string? __content_409 = null;
@@ -711,36 +717,27 @@ namespace CursorAgents
         }
         /// <summary>
         /// Create a run<br/>
-        /// Send a follow-up prompt to an existing active agent. The new<br/>
-        /// run uses the agent's current conversation and workspace state.<br/>
-        /// Only one run can be active per agent at a time.
+        /// Send a follow-up prompt to an existing active agent. Without<br/>
+        /// `delivery`, the prompt starts a new run that uses the agent's<br/>
+        /// current conversation and workspace state, and only one run can<br/>
+        /// be active per agent at a time. With `delivery: steer`, the<br/>
+        /// agent's running turn takes the prompt when it can, and otherwise<br/>
+        /// the prompt becomes the agent's next follow-up. On success, a<br/>
+        /// steer returns `202` without a run object or ID.
         /// </summary>
         /// <param name="id">
         /// Example: bc-00000000-0000-0000-0000-000000000001
-        /// </param>
-        /// <param name="prompt"></param>
-        /// <param name="mcpServers">
-        /// Inline MCP server definitions for this follow-up run. When provided, these definitions replace any create-time inline MCP servers for this run.
-        /// </param>
-        /// <param name="mode">
-        /// Conversation mode. `plan` explores and drafts a plan before coding; `agent` implements changes directly. On follow-up runs, omit to keep the conversation's current mode; set explicitly to switch modes for that run.
         /// </param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
         /// <param name="cancellationToken">The token to cancel the operation with</param>
         /// <exception cref="global::System.InvalidOperationException"></exception>
         public async global::System.Threading.Tasks.Task<global::CursorAgents.CreateRunResponse> CreateRunAsync(
             string id,
-            global::CursorAgents.CreateRunRequestPrompt prompt,
-            global::System.Collections.Generic.IList<global::CursorAgents.McpServer>? mcpServers = default,
-            global::CursorAgents.AgentMode? mode = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default)
         {
             var __request = new global::CursorAgents.CreateRunRequest
             {
-                Prompt = prompt,
-                McpServers = mcpServers,
-                Mode = mode,
             };
 
             return await CreateRunAsync(

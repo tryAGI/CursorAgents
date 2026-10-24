@@ -3,10 +3,10 @@
 namespace CursorAgents.JsonConverters
 {
     /// <inheritdoc />
-    public sealed class SteerRunResponseDeliveryNullableJsonConverter : global::System.Text.Json.Serialization.JsonConverter<global::CursorAgents.SteerRunResponseDelivery?>
+    public sealed class SteeredRunResponseDeliveryJsonConverter : global::System.Text.Json.Serialization.JsonConverter<global::CursorAgents.SteeredRunResponseDelivery>
     {
         /// <inheritdoc />
-        public override global::CursorAgents.SteerRunResponseDelivery? Read(
+        public override global::CursorAgents.SteeredRunResponseDelivery Read(
             ref global::System.Text.Json.Utf8JsonReader reader,
             global::System.Type typeToConvert,
             global::System.Text.Json.JsonSerializerOptions options)
@@ -18,7 +18,7 @@ namespace CursorAgents.JsonConverters
                     var stringValue = reader.GetString();
                     if (stringValue != null)
                     {
-                        return global::CursorAgents.SteerRunResponseDeliveryExtensions.ToEnum(stringValue);
+                        return global::CursorAgents.SteeredRunResponseDeliveryExtensions.ToEnum(stringValue) ?? default;
                     }
 
                     break;
@@ -26,11 +26,11 @@ namespace CursorAgents.JsonConverters
                 case global::System.Text.Json.JsonTokenType.Number:
                 {
                     var numValue = reader.GetInt32();
-                    return (global::CursorAgents.SteerRunResponseDelivery)numValue;
+                    return (global::CursorAgents.SteeredRunResponseDelivery)numValue;
                 }
                 case global::System.Text.Json.JsonTokenType.Null:
                 {
-                    return default(global::CursorAgents.SteerRunResponseDelivery?);
+                    return default(global::CursorAgents.SteeredRunResponseDelivery);
                 }
                 default:
                     throw new global::System.ArgumentOutOfRangeException(nameof(reader));
@@ -42,19 +42,12 @@ namespace CursorAgents.JsonConverters
         /// <inheritdoc />
         public override void Write(
             global::System.Text.Json.Utf8JsonWriter writer,
-            global::CursorAgents.SteerRunResponseDelivery? value,
+            global::CursorAgents.SteeredRunResponseDelivery value,
             global::System.Text.Json.JsonSerializerOptions options)
         {
             writer = writer ?? throw new global::System.ArgumentNullException(nameof(writer));
 
-            if (value == null)
-            {
-                writer.WriteNullValue();
-            }
-            else
-            {
-                writer.WriteStringValue(global::CursorAgents.SteerRunResponseDeliveryExtensions.ToValueString(value.Value));
-            }
+            writer.WriteStringValue(global::CursorAgents.SteeredRunResponseDeliveryExtensions.ToValueString(value));
         }
     }
 }

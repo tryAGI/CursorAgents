@@ -4,7 +4,7 @@
 namespace CursorAgents
 {
     /// <summary>
-    /// Current run status.
+    /// Current run status. `CREATING`, `RUNNING`, and `WAITING_FOR_BACKGROUND_WORK` mean the run is active, and `FINISHED`, `ERROR`, `CANCELLED`, and `EXPIRED` mean it has ended.
     /// </summary>
     public enum RunStatus
     {
@@ -32,6 +32,10 @@ namespace CursorAgents
         ///
         /// </summary>
         Running,
+        /// <summary>
+        ///
+        /// </summary>
+        WaitingForBackgroundWork,
     }
 
     /// <summary>
@@ -52,6 +56,7 @@ namespace CursorAgents
                 RunStatus.Expired => "EXPIRED",
                 RunStatus.Finished => "FINISHED",
                 RunStatus.Running => "RUNNING",
+                RunStatus.WaitingForBackgroundWork => "WAITING_FOR_BACKGROUND_WORK",
                 _ => throw new global::System.ArgumentOutOfRangeException(nameof(value), value, null),
             };
         }
@@ -68,6 +73,7 @@ namespace CursorAgents
                 "EXPIRED" => RunStatus.Expired,
                 "FINISHED" => RunStatus.Finished,
                 "RUNNING" => RunStatus.Running,
+                "WAITING_FOR_BACKGROUND_WORK" => RunStatus.WaitingForBackgroundWork,
                 _ => null,
             };
         }

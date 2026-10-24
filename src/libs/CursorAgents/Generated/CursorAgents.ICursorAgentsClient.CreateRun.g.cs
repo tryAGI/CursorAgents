@@ -5,14 +5,15 @@ namespace CursorAgents
     public partial interface ICursorAgentsClient
     {
         /// <summary>
-        /// Create a run<br/>
+        /// Send a follow-up or steer<br/>
         /// Send a follow-up prompt to an existing active agent. Without<br/>
         /// `delivery`, the prompt starts a new run that uses the agent's<br/>
         /// current conversation and workspace state, and only one run can<br/>
         /// be active per agent at a time. With `delivery: steer`, the<br/>
         /// agent's running turn takes the prompt when it can, and otherwise<br/>
         /// the prompt becomes the agent's next follow-up. On success, a<br/>
-        /// steer returns `202` without a run object or ID.
+        /// steer returns `202` with no run object. `delivery` says what<br/>
+        /// happened, and a `steered` response can include `runId`.
         /// </summary>
         /// <param name="id">
         /// Example: bc-00000000-0000-0000-0000-000000000001
@@ -28,14 +29,15 @@ namespace CursorAgents
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default);
         /// <summary>
-        /// Create a run<br/>
+        /// Send a follow-up or steer<br/>
         /// Send a follow-up prompt to an existing active agent. Without<br/>
         /// `delivery`, the prompt starts a new run that uses the agent's<br/>
         /// current conversation and workspace state, and only one run can<br/>
         /// be active per agent at a time. With `delivery: steer`, the<br/>
         /// agent's running turn takes the prompt when it can, and otherwise<br/>
         /// the prompt becomes the agent's next follow-up. On success, a<br/>
-        /// steer returns `202` without a run object or ID.
+        /// steer returns `202` with no run object. `delivery` says what<br/>
+        /// happened, and a `steered` response can include `runId`.
         /// </summary>
         /// <param name="id">
         /// Example: bc-00000000-0000-0000-0000-000000000001
@@ -51,14 +53,15 @@ namespace CursorAgents
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default);
         /// <summary>
-        /// Create a run<br/>
+        /// Send a follow-up or steer<br/>
         /// Send a follow-up prompt to an existing active agent. Without<br/>
         /// `delivery`, the prompt starts a new run that uses the agent's<br/>
         /// current conversation and workspace state, and only one run can<br/>
         /// be active per agent at a time. With `delivery: steer`, the<br/>
         /// agent's running turn takes the prompt when it can, and otherwise<br/>
         /// the prompt becomes the agent's next follow-up. On success, a<br/>
-        /// steer returns `202` without a run object or ID.
+        /// steer returns `202` with no run object. `delivery` says what<br/>
+        /// happened, and a `steered` response can include `runId`.
         /// </summary>
         /// <param name="id">
         /// Example: bc-00000000-0000-0000-0000-000000000001

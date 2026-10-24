@@ -373,8 +373,8 @@ components:
         status:
           type: string
           enum:
-            ['CREATING', 'RUNNING', 'FINISHED', 'ERROR', 'CANCELLED', 'EXPIRED']
-          description: "Current run status."
+            ['CREATING', 'RUNNING', 'WAITING_FOR_BACKGROUND_WORK', 'FINISHED', 'ERROR', 'CANCELLED', 'EXPIRED']
+          description: "Current run status. `CREATING`, `RUNNING`, and `WAITING_FOR_BACKGROUND_WORK` mean the run is active, and `FINISHED`, `ERROR`, `CANCELLED`, and `EXPIRED` mean it has ended."
         createdAt:
           type: string
           format: date-time
@@ -578,25 +578,20 @@ components:
           description: "Whether to skip requesting the user as a reviewer when Cursor opens a PR. Only applies when `autoCreatePR` is true."
           default: false
         envVars:
-          type: object
-          maxProperties: 50
+          allOf:
+            - $ref: '#/components/schemas/EnvVars'
           description: |
             Session-scoped environment variables for the cloud agent.
             Values are encrypted at rest, injected into the agent's
-            shell, and deleted with the agent. Names must be non-empty,
-            255 bytes or less, and cannot start with `CURSOR_`. Values
-            must be non-empty and 4096 bytes or less. Cannot be
-            combined with a client-supplied `agentId`.
+            shell, and deleted with the agent. Names and values follow
+            the `EnvVars` rules. Cannot be combined with a
+            client-supplied `agentId`.
 
             Beta: `envVars` is rolling out. If it isn't enabled for
             your account yet, the field is silently ignored on create
             rather than failing the request — verify the values are
             present on a first run before relying on them in
             production.
-          additionalProperties:
-            type: string
-            minLength: 1
-            maxLength: 4096
         mcpServers:
           type: array
           maxItems: 50
@@ -614,6 +609,21 @@ components:
             - $ref: '#/components/schemas/AgentMode'
           default: agent
           description: "Initial conversation mode for the agent's first run."
+
+    EnvVars:
+      type: object
+      maxProperties: 50
+      description: |
+        Environment variables, at most 50. Each name is 1 to 255
+        characters of ASCII letters, digits, and underscores, doesn't
+        start with a digit, can't start with `CURSOR_`, and can't
+        contain `CURSOR_SANDBOX` in any letter case. Each value is
+        non-empty and at most 4096 UTF-8 bytes. `maxLength` counts
+        characters, so it's only an upper bound on the byte limit.
+      additionalProperties:
+        type: string
+        minLength: 1
+        maxLength: 4096
 
     CreateRunRequest:
       description: |
@@ -660,16 +670,12 @@ components:
           items:
             $ref: '#/components/schemas/McpServer'
         envVars:
-          type: object
-          maxProperties: 50
+          allOf:
+            - $ref: '#/components/schemas/EnvVars'
           description: |
             Environment variables for this follow-up run only, applied
-            while it executes. Names and values follow the same rules as
-            `envVars` in `CreateAgentRequest`.
-          additionalProperties:
-            type: string
-            minLength: 1
-            maxLength: 4096
+            while it executes. Names and values follow the `EnvVars`
+            rules.
         mode:
           $ref: '#/components/schemas/AgentMode'
 
@@ -680,8 +686,11 @@ components:
         A steer sends the prompt into the agent's running turn instead of
         starting a new run, and returns `202` with a `SteerRunResponse`.
         It requires `prompt` and `delivery` and accepts no other top-level
-        fields, so `model`, `mcpServers`, `envVars`, or `mode` returns
-        `400 validation_error`.
+        fields. Any other field, such as `model`, `mcpServers`, `envVars`,
+        or `mode`, returns `400 validation_error` with a message that
+        names the fields, such as
+        `"model" is not allowed with delivery "steer"` or
+        `"model", "mode" are not allowed with delivery "steer"`.
       required:
         - prompt
         - delivery
@@ -724,6 +733,19 @@ components:
           $ref: '#/components/schemas/Run'
 
     SteerRunResponse:
+      description: |
+        What happened to a steered prompt. `delivery` is `steered` or
+        `queued`, and only a `steered` response can include `runId`.
+      oneOf:
+        - $ref: '#/components/schemas/SteeredRunResponse'
+        - $ref: '#/components/schemas/QueuedRunResponse'
+      discriminator:
+        propertyName: delivery
+        mapping:
+          steered: '#/components/schemas/SteeredRunResponse'
+          queued: '#/components/schemas/QueuedRunResponse'
+
+    SteeredRunResponse:
       type: object
       additionalProperties: false
       required:
@@ -733,15 +755,32 @@ components:
           type: string
           enum:
             - steered
+          description: "The agent's running turn accepted the prompt."
+        runId:
+          type: string
+          pattern: '^run-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+          description: |
+            The run that accepted the steer, which was running when the API
+            got it. The prompt reaches that run at its next safe step unless
+            the run ends first, in which case the prompt starts the agent's
+            next run. Omitted when the agent had no active run.
+          example: 'run-00000000-0000-0000-0000-000000000002'
+
+    QueuedRunResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - delivery
+      properties:
+        delivery:
+          type: string
+          enum:
             - queued
           description: |
-            `steered`: the agent's running turn accepted the prompt and
-            takes it at its next safe step. If that turn ends first, the
-            prompt starts the agent's next run instead. `queued`: no
-            running turn could take the prompt, so it becomes the agent's
-            next follow-up. Neither response includes a run ID or any
-            other ID to match the prompt to a run.
-          example: steered
+            No running turn could take the prompt, so it becomes the
+            agent's next follow-up. That includes a steer that lands just
+            after the agent's run changed. A `queued` response never
+            includes `runId`.
 
     ListAgentsResponse:
       type: object
@@ -2235,7 +2274,7 @@ paths:
 
   /v1/agents/{id}/runs:
     post:
-      summary: Create a run
+      summary: Send a follow-up or steer
       description: |
         Send a follow-up prompt to an existing active agent. Without
         `delivery`, the prompt starts a new run that uses the agent's
@@ -2243,7 +2282,8 @@ paths:
         be active per agent at a time. With `delivery: steer`, the
         agent's running turn takes the prompt when it can, and otherwise
         the prompt becomes the agent's next follow-up. On success, a
-        steer returns `202` without a run object or ID.
+        steer returns `202` with no run object. `delivery` says what
+        happened, and a `steered` response can include `runId`.
       operationId: createRun
       parameters:
         - $ref: '#/components/parameters/AgentId'
@@ -2271,12 +2311,13 @@ paths:
                   summary: The running turn accepted the prompt
                   value:
                     delivery: steered
+                    runId: run-00000000-0000-0000-0000-000000000002
                 queued:
                   summary: The prompt becomes the next follow-up
                   value:
                     delivery: queued
         '400':
-          description: "Validation error or malformed request body. Steering adds two `validation_error` cases, a steer body with any top-level field besides `prompt` and `delivery` or a `delivery` other than `steer`, and a steer that Cursor refuses. Cursor checks the body before it checks whether steering is available."
+          description: "Validation error or malformed request body. Steering adds two `validation_error` cases, a steer body with any top-level field besides `prompt` and `delivery` or a `delivery` other than `steer`, and a steer that Cursor refuses. For extra fields on a steer, the message names them, such as `\"model\" is not allowed with delivery \"steer\"` or `\"model\", \"mode\" are not allowed with delivery \"steer\"`. Cursor checks the body before it checks whether steering is available."
           content:
             application/json:
               schema:

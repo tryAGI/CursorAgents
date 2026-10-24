@@ -44,14 +44,15 @@ namespace CursorAgents
             ref string content);
 
         /// <summary>
-        /// Create a run<br/>
+        /// Send a follow-up or steer<br/>
         /// Send a follow-up prompt to an existing active agent. Without<br/>
         /// `delivery`, the prompt starts a new run that uses the agent's<br/>
         /// current conversation and workspace state, and only one run can<br/>
         /// be active per agent at a time. With `delivery: steer`, the<br/>
         /// agent's running turn takes the prompt when it can, and otherwise<br/>
         /// the prompt becomes the agent's next follow-up. On success, a<br/>
-        /// steer returns `202` without a run object or ID.
+        /// steer returns `202` with no run object. `delivery` says what<br/>
+        /// happened, and a `steered` response can include `runId`.
         /// </summary>
         /// <param name="id">
         /// Example: bc-00000000-0000-0000-0000-000000000001
@@ -78,14 +79,15 @@ namespace CursorAgents
             return __response.Body;
         }
         /// <summary>
-        /// Create a run<br/>
+        /// Send a follow-up or steer<br/>
         /// Send a follow-up prompt to an existing active agent. Without<br/>
         /// `delivery`, the prompt starts a new run that uses the agent's<br/>
         /// current conversation and workspace state, and only one run can<br/>
         /// be active per agent at a time. With `delivery: steer`, the<br/>
         /// agent's running turn takes the prompt when it can, and otherwise<br/>
         /// the prompt becomes the agent's next follow-up. On success, a<br/>
-        /// steer returns `202` without a run object or ID.
+        /// steer returns `202` with no run object. `delivery` says what<br/>
+        /// happened, and a `steered` response can include `runId`.
         /// </summary>
         /// <param name="id">
         /// Example: bc-00000000-0000-0000-0000-000000000001
@@ -360,7 +362,7 @@ namespace CursorAgents
                                 retryReason: global::System.String.Empty,
                                 cancellationToken: __effectiveCancellationToken)).ConfigureAwait(false);
                 }
-                            // Validation error or malformed request body. Steering adds two `validation_error` cases, a steer body with any top-level field besides `prompt` and `delivery` or a `delivery` other than `steer`, and a steer that Cursor refuses. Cursor checks the body before it checks whether steering is available.
+                            // Validation error or malformed request body. Steering adds two `validation_error` cases, a steer body with any top-level field besides `prompt` and `delivery` or a `delivery` other than `steer`, and a steer that Cursor refuses. For extra fields on a steer, the message names them, such as `"model" is not allowed with delivery "steer"` or `"model", "mode" are not allowed with delivery "steer"`. Cursor checks the body before it checks whether steering is available.
                             if ((int)__response.StatusCode == 400)
                             {
                                 string? __content_400 = null;
@@ -716,14 +718,15 @@ namespace CursorAgents
             }
         }
         /// <summary>
-        /// Create a run<br/>
+        /// Send a follow-up or steer<br/>
         /// Send a follow-up prompt to an existing active agent. Without<br/>
         /// `delivery`, the prompt starts a new run that uses the agent's<br/>
         /// current conversation and workspace state, and only one run can<br/>
         /// be active per agent at a time. With `delivery: steer`, the<br/>
         /// agent's running turn takes the prompt when it can, and otherwise<br/>
         /// the prompt becomes the agent's next follow-up. On success, a<br/>
-        /// steer returns `202` without a run object or ID.
+        /// steer returns `202` with no run object. `delivery` says what<br/>
+        /// happened, and a `steered` response can include `runId`.
         /// </summary>
         /// <param name="id">
         /// Example: bc-00000000-0000-0000-0000-000000000001

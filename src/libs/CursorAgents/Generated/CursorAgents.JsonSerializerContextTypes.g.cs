@@ -257,439 +257,459 @@ namespace CursorAgents
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.SteerRunResponseDelivery? Type56 { get; set; }
+        public global::CursorAgents.SteeredRunResponse? Type56 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ListAgentsResponse? Type57 { get; set; }
+        public global::CursorAgents.QueuedRunResponse? Type57 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.AgentSummary>? Type58 { get; set; }
+        public global::CursorAgents.SteerRunResponseDiscriminator? Type58 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ListRunsResponse? Type59 { get; set; }
+        public global::CursorAgents.SteerRunResponseDiscriminatorDelivery? Type59 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.Run>? Type60 { get; set; }
+        public global::CursorAgents.SteeredRunResponseDelivery? Type60 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.IdResponse? Type61 { get; set; }
+        public global::CursorAgents.QueuedRunResponseDelivery? Type61 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.Artifact? Type62 { get; set; }
+        public global::CursorAgents.ListAgentsResponse? Type62 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public long? Type63 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.AgentSummary>? Type63 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ListArtifactsResponse? Type64 { get; set; }
+        public global::CursorAgents.ListRunsResponse? Type64 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.Artifact>? Type65 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.Run>? Type65 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.DownloadArtifactResponse? Type66 { get; set; }
+        public global::CursorAgents.IdResponse? Type66 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.UsageTokenUsage? Type67 { get; set; }
+        public global::CursorAgents.Artifact? Type67 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.RunUsage? Type68 { get; set; }
+        public long? Type68 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.AgentUsageResponse? Type69 { get; set; }
+        public global::CursorAgents.ListArtifactsResponse? Type69 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.RunUsage>? Type70 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.Artifact>? Type70 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentRepo? Type71 { get; set; }
+        public global::CursorAgents.DownloadArtifactResponse? Type71 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentRepoFile? Type72 { get; set; }
+        public global::CursorAgents.UsageTokenUsage? Type72 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentBuildSettings? Type73 { get; set; }
+        public global::CursorAgents.RunUsage? Type73 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentBuildSettingsPullLatestCode? Type74 { get; set; }
+        public global::CursorAgents.AgentUsageResponse? Type74 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.UpdateEnvironmentBuildSettings? Type75 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.RunUsage>? Type75 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.UpdateEnvironmentBuildSettingsPullLatestCode? Type76 { get; set; }
+        public global::CursorAgents.EnvironmentRepo? Type76 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.Environment? Type77 { get; set; }
+        public global::CursorAgents.EnvironmentRepoFile? Type77 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Guid? Type78 { get; set; }
+        public global::CursorAgents.EnvironmentBuildSettings? Type78 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentOwner? Type79 { get; set; }
+        public global::CursorAgents.EnvironmentBuildSettingsPullLatestCode? Type79 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentRepo>? Type80 { get; set; }
+        public global::CursorAgents.UpdateEnvironmentBuildSettings? Type80 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.CreateEnvironmentResponse? Type81 { get; set; }
+        public global::CursorAgents.UpdateEnvironmentBuildSettingsPullLatestCode? Type81 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.GetEnvironmentResponse? Type82 { get; set; }
+        public global::CursorAgents.Environment? Type82 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.GetEnvironmentResponseVariant2? Type83 { get; set; }
+        public global::System.Guid? Type83 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ListEnvironmentsResponse? Type84 { get; set; }
+        public global::CursorAgents.EnvironmentOwner? Type84 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.AllOf<global::CursorAgents.Environment, global::CursorAgents.ListEnvironmentsResponseItem>>? Type85 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentRepo>? Type85 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.AllOf<global::CursorAgents.Environment, global::CursorAgents.ListEnvironmentsResponseItem>? Type86 { get; set; }
+        public global::CursorAgents.CreateEnvironmentResponse? Type86 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ListEnvironmentsResponseItem? Type87 { get; set; }
+        public global::CursorAgents.GetEnvironmentResponse? Type87 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.CreateEnvironmentRequest? Type88 { get; set; }
+        public global::CursorAgents.GetEnvironmentResponseVariant2? Type88 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.CreateEnvironmentRequestOwner? Type89 { get; set; }
+        public global::CursorAgents.ListEnvironmentsResponse? Type89 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.UpdateEnvironmentRequest? Type90 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.AllOf<global::CursorAgents.Environment, global::CursorAgents.ListEnvironmentsResponseItem>>? Type90 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.StartEnvironmentBuildRequest? Type91 { get; set; }
+        public global::CursorAgents.AllOf<global::CursorAgents.Environment, global::CursorAgents.ListEnvironmentsResponseItem>? Type91 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.StartEnvironmentBuildRef>? Type92 { get; set; }
+        public global::CursorAgents.ListEnvironmentsResponseItem? Type92 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.StartEnvironmentBuildRef? Type93 { get; set; }
+        public global::CursorAgents.CreateEnvironmentRequest? Type93 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.StartEnvironmentBuildResponse? Type94 { get; set; }
+        public global::CursorAgents.CreateEnvironmentRequestOwner? Type94 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentBuildFailure? Type95 { get; set; }
+        public global::CursorAgents.UpdateEnvironmentRequest? Type95 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentBuildFailureType? Type96 { get; set; }
+        public global::CursorAgents.StartEnvironmentBuildRequest? Type96 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentBuildRequestedRef? Type97 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.StartEnvironmentBuildRef>? Type97 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentBuildRepoCommit? Type98 { get; set; }
+        public global::CursorAgents.StartEnvironmentBuildRef? Type98 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentBuild? Type99 { get; set; }
+        public global::CursorAgents.StartEnvironmentBuildResponse? Type99 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentBuildStatus? Type100 { get; set; }
+        public global::CursorAgents.EnvironmentBuildFailure? Type100 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentBuildTrigger? Type101 { get; set; }
+        public global::CursorAgents.EnvironmentBuildFailureType? Type101 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentBuildSource? Type102 { get; set; }
+        public global::CursorAgents.EnvironmentBuildRequestedRef? Type102 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentBuildRequestedRef>? Type103 { get; set; }
+        public global::CursorAgents.EnvironmentBuildRepoCommit? Type103 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentBuildRepoCommit>? Type104 { get; set; }
+        public global::CursorAgents.EnvironmentBuild? Type104 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentBuildSnapshotState? Type105 { get; set; }
+        public global::CursorAgents.EnvironmentBuildStatus? Type105 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ListEnvironmentBuildsResponse? Type106 { get; set; }
+        public global::CursorAgents.EnvironmentBuildTrigger? Type106 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentBuild>? Type107 { get; set; }
+        public global::CursorAgents.EnvironmentBuildSource? Type107 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentActiveBuild? Type108 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentBuildRequestedRef>? Type108 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentActiveBuildFromBuild? Type109 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentBuildRepoCommit>? Type109 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentActiveBuildFromUniversalImage? Type110 { get; set; }
+        public global::CursorAgents.EnvironmentBuildSnapshotState? Type110 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentActiveBuildDiscriminator? Type111 { get; set; }
+        public global::CursorAgents.ListEnvironmentBuildsResponse? Type111 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentActiveBuildDiscriminatorType? Type112 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentBuild>? Type112 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentActiveBuildFromBuildType? Type113 { get; set; }
+        public global::CursorAgents.EnvironmentActiveBuild? Type113 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentActiveBuildFromUniversalImageType? Type114 { get; set; }
+        public global::CursorAgents.EnvironmentActiveBuildFromBuild? Type114 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentHistoryEvent? Type115 { get; set; }
+        public global::CursorAgents.EnvironmentActiveBuildFromUniversalImage? Type115 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentHistoryEventKind? Type116 { get; set; }
+        public global::CursorAgents.EnvironmentActiveBuildDiscriminator? Type116 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.EnvironmentHistoryEventSource? Type117 { get; set; }
+        public global::CursorAgents.EnvironmentActiveBuildDiscriminatorType? Type117 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ListEnvironmentHistoryResponse? Type118 { get; set; }
+        public global::CursorAgents.EnvironmentActiveBuildFromBuildType? Type118 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentHistoryEvent>? Type119 { get; set; }
+        public global::CursorAgents.EnvironmentActiveBuildFromUniversalImageType? Type119 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ApiKeyInfo? Type120 { get; set; }
+        public global::CursorAgents.EnvironmentHistoryEvent? Type120 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ModelParameterValueDefinition? Type121 { get; set; }
+        public global::CursorAgents.EnvironmentHistoryEventKind? Type121 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ModelParameterDefinition? Type122 { get; set; }
+        public global::CursorAgents.EnvironmentHistoryEventSource? Type122 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.ModelParameterValueDefinition>? Type123 { get; set; }
+        public global::CursorAgents.ListEnvironmentHistoryResponse? Type123 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ModelVariant? Type124 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.EnvironmentHistoryEvent>? Type124 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.ModelVariantParam>? Type125 { get; set; }
+        public global::CursorAgents.ApiKeyInfo? Type125 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ModelVariantParam? Type126 { get; set; }
+        public global::CursorAgents.ModelParameterValueDefinition? Type126 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ModelListItem? Type127 { get; set; }
+        public global::CursorAgents.ModelParameterDefinition? Type127 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.ModelParameterDefinition>? Type128 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.ModelParameterValueDefinition>? Type128 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.ModelVariant>? Type129 { get; set; }
+        public global::CursorAgents.ModelVariant? Type129 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ListModelsResponse? Type130 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.ModelVariantParam>? Type130 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.ModelListItem>? Type131 { get; set; }
+        public global::CursorAgents.ModelVariantParam? Type131 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.SecretVersion? Type132 { get; set; }
+        public global::CursorAgents.ModelListItem? Type132 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.SecretVersionType? Type133 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.ModelParameterDefinition>? Type133 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.Repository? Type134 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.ModelVariant>? Type134 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ListSecretsResponse? Type135 { get; set; }
+        public global::CursorAgents.ListModelsResponse? Type135 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.AllOf<global::CursorAgents.SecretVersion, object>>? Type136 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.ModelListItem>? Type136 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.AllOf<global::CursorAgents.SecretVersion, object>? Type137 { get; set; }
+        public global::CursorAgents.SecretVersion? Type137 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.SecretInventoryOwner? Type138 { get; set; }
+        public global::CursorAgents.SecretVersionType? Type138 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.SecretInventoryOwnerType? Type139 { get; set; }
+        public global::CursorAgents.Repository? Type139 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.SecretInventoryOwnerUser? Type140 { get; set; }
+        public global::CursorAgents.ListSecretsResponse? Type140 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.InventorySecretVersion? Type141 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.AllOf<global::CursorAgents.SecretVersion, object>>? Type141 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.InventorySecretVersionType? Type142 { get; set; }
+        public global::CursorAgents.AllOf<global::CursorAgents.SecretVersion, object>? Type142 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ListSecretInventoryResponse? Type143 { get; set; }
+        public global::CursorAgents.SecretInventoryOwner? Type143 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.InventorySecretVersion>? Type144 { get; set; }
+        public global::CursorAgents.SecretInventoryOwnerType? Type144 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ListRepositoriesResponse? Type145 { get; set; }
+        public global::CursorAgents.SecretInventoryOwnerUser? Type145 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.Repository>? Type146 { get; set; }
+        public global::CursorAgents.InventorySecretVersion? Type146 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.SetSecretRequest? Type147 { get; set; }
+        public global::CursorAgents.InventorySecretVersionType? Type147 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.SetSecretRequestType? Type148 { get; set; }
+        public global::CursorAgents.ListSecretInventoryResponse? Type148 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.SecretVersionSummary? Type149 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.InventorySecretVersion>? Type149 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.SecretNameAmbiguousError? Type150 { get; set; }
+        public global::CursorAgents.ListRepositoriesResponse? Type150 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.SecretNameAmbiguousErrorError? Type151 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.Repository>? Type151 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.SecretNameAmbiguousErrorErrorCode? Type152 { get; set; }
+        public global::CursorAgents.SetSecretRequest? Type152 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::System.Collections.Generic.IList<global::CursorAgents.SecretVersionSummary>? Type153 { get; set; }
+        public global::CursorAgents.SetSecretRequestType? Type153 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.CreateSubTokenRequest? Type154 { get; set; }
+        public global::CursorAgents.SecretVersionSummary? Type154 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.DeleteSecretResponse? Type155 { get; set; }
+        public global::CursorAgents.SecretNameAmbiguousError? Type155 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.CreateSubTokenResponse? Type156 { get; set; }
+        public global::CursorAgents.SecretNameAmbiguousErrorError? Type156 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.AuthenticationError? Type157 { get; set; }
+        public global::CursorAgents.SecretNameAmbiguousErrorErrorCode? Type157 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.Error? Type158 { get; set; }
+        public global::System.Collections.Generic.IList<global::CursorAgents.SecretVersionSummary>? Type158 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ErrorError1? Type159 { get; set; }
+        public global::CursorAgents.CreateSubTokenRequest? Type159 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ListEnvironmentsOwner? Type160 { get; set; }
+        public global::CursorAgents.DeleteSecretResponse? Type160 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ListEnvironmentBuildsStatus? Type161 { get; set; }
+        public global::CursorAgents.CreateSubTokenResponse? Type161 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.ListSecretsScope? Type162 { get; set; }
+        public global::CursorAgents.AuthenticationError? Type162 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.OneOf<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>? Type163 { get; set; }
+        public global::CursorAgents.Error? Type163 { get; set; }
         /// <summary>
         ///
         /// </summary>
-        public global::CursorAgents.OneOf<global::CursorAgents.SecretNameAmbiguousError, global::CursorAgents.Error>? Type164 { get; set; }
+        public global::CursorAgents.ErrorError1? Type164 { get; set; }
+        /// <summary>
+        ///
+        /// </summary>
+        public global::CursorAgents.ListEnvironmentsOwner? Type165 { get; set; }
+        /// <summary>
+        ///
+        /// </summary>
+        public global::CursorAgents.ListEnvironmentBuildsStatus? Type166 { get; set; }
+        /// <summary>
+        ///
+        /// </summary>
+        public global::CursorAgents.ListSecretsScope? Type167 { get; set; }
+        /// <summary>
+        ///
+        /// </summary>
+        public global::CursorAgents.OneOf<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>? Type168 { get; set; }
+        /// <summary>
+        ///
+        /// </summary>
+        public global::CursorAgents.OneOf<global::CursorAgents.SecretNameAmbiguousError, global::CursorAgents.Error>? Type169 { get; set; }
 
         /// <summary>
         ///

@@ -27,7 +27,7 @@ namespace CursorAgents
         public required string AgentId { get; set; }
 
         /// <summary>
-        /// Current run status.
+        /// Current run status. `CREATING`, `RUNNING`, and `WAITING_FOR_BACKGROUND_WORK` mean the run is active, and `FINISHED`, `ERROR`, `CANCELLED`, and `EXPIRED` mean it has ended.
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("status")]
         [global::System.Text.Json.Serialization.JsonConverter(typeof(global::CursorAgents.JsonConverters.RunStatusJsonConverter))]
@@ -88,7 +88,7 @@ namespace CursorAgents
         /// Example: bc-00000000-0000-0000-0000-000000000001
         /// </param>
         /// <param name="status">
-        /// Current run status.
+        /// Current run status. `CREATING`, `RUNNING`, and `WAITING_FOR_BACKGROUND_WORK` mean the run is active, and `FINISHED`, `ERROR`, `CANCELLED`, and `EXPIRED` mean it has ended.
         /// </param>
         /// <param name="createdAt"></param>
         /// <param name="updatedAt"></param>

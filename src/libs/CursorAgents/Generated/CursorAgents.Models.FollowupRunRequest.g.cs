@@ -30,8 +30,8 @@ namespace CursorAgents
 
         /// <summary>
         /// Environment variables for this follow-up run only, applied<br/>
-        /// while it executes. Names and values follow the same rules as<br/>
-        /// `envVars` in `CreateAgentRequest`.
+        /// while it executes. Names and values follow the `EnvVars`<br/>
+        /// rules.
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("envVars")]
         public global::System.Collections.Generic.Dictionary<string, string>? EnvVars { get; set; }
@@ -59,8 +59,8 @@ namespace CursorAgents
         /// </param>
         /// <param name="envVars">
         /// Environment variables for this follow-up run only, applied<br/>
-        /// while it executes. Names and values follow the same rules as<br/>
-        /// `envVars` in `CreateAgentRequest`.
+        /// while it executes. Names and values follow the `EnvVars`<br/>
+        /// rules.
         /// </param>
         /// <param name="mode">
         /// Conversation mode. `plan` explores and drafts a plan before coding; `agent` implements changes directly. On follow-up runs, omit to keep the conversation's current mode; set explicitly to switch modes for that run.

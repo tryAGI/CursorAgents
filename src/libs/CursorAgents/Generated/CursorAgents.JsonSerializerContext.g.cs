@@ -51,9 +51,17 @@ namespace CursorAgents
 
             typeof(global::CursorAgents.JsonConverters.AgentModeNullableJsonConverter),
 
-            typeof(global::CursorAgents.JsonConverters.SteerRunResponseDeliveryJsonConverter),
+            typeof(global::CursorAgents.JsonConverters.SteerRunResponseDiscriminatorDeliveryJsonConverter),
 
-            typeof(global::CursorAgents.JsonConverters.SteerRunResponseDeliveryNullableJsonConverter),
+            typeof(global::CursorAgents.JsonConverters.SteerRunResponseDiscriminatorDeliveryNullableJsonConverter),
+
+            typeof(global::CursorAgents.JsonConverters.SteeredRunResponseDeliveryJsonConverter),
+
+            typeof(global::CursorAgents.JsonConverters.SteeredRunResponseDeliveryNullableJsonConverter),
+
+            typeof(global::CursorAgents.JsonConverters.QueuedRunResponseDeliveryJsonConverter),
+
+            typeof(global::CursorAgents.JsonConverters.QueuedRunResponseDeliveryNullableJsonConverter),
 
             typeof(global::CursorAgents.JsonConverters.EnvironmentBuildSettingsPullLatestCodeJsonConverter),
 
@@ -150,6 +158,8 @@ namespace CursorAgents
             typeof(global::CursorAgents.JsonConverters.JsonValueJsonConverter),
 
             typeof(global::CursorAgents.JsonConverters.CreateRunRequestJsonConverter),
+
+            typeof(global::CursorAgents.JsonConverters.SteerRunResponseJsonConverter),
 
             typeof(global::CursorAgents.JsonConverters.CreateEnvironmentResponseJsonConverter),
 
@@ -303,8 +313,13 @@ namespace CursorAgents
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.SteerRunRequestDelivery), TypeInfoPropertyName = "SteerRunRequestDelivery2")]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.CreateAgentResponse))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.CreateRunResponse))]
-    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.SteerRunResponse))]
-    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.SteerRunResponseDelivery), TypeInfoPropertyName = "SteerRunResponseDelivery2")]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.SteerRunResponse), TypeInfoPropertyName = "SteerRunResponse2")]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.SteeredRunResponse))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.QueuedRunResponse))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.SteerRunResponseDiscriminator))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.SteerRunResponseDiscriminatorDelivery), TypeInfoPropertyName = "SteerRunResponseDiscriminatorDelivery2")]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.SteeredRunResponseDelivery), TypeInfoPropertyName = "SteeredRunResponseDelivery2")]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.QueuedRunResponseDelivery), TypeInfoPropertyName = "QueuedRunResponseDelivery2")]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ListAgentsResponse))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.AgentSummary>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ListRunsResponse))]

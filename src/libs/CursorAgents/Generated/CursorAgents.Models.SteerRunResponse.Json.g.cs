@@ -2,7 +2,7 @@
 
 namespace CursorAgents
 {
-    public sealed partial class SteerRunResponse
+    public readonly partial struct SteerRunResponse
     {
         /// <summary>
         /// Serializes the current instance to a JSON string using the provided JsonSerializerContext.
@@ -54,7 +54,7 @@ namespace CursorAgents
             return global::System.Text.Json.JsonSerializer.Deserialize(
                 json,
                 typeof(global::CursorAgents.SteerRunResponse),
-                jsonSerializerContext) as global::CursorAgents.SteerRunResponse;
+                jsonSerializerContext) as global::CursorAgents.SteerRunResponse?;
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace CursorAgents
             return (await global::System.Text.Json.JsonSerializer.DeserializeAsync(
                 jsonStream,
                 typeof(global::CursorAgents.SteerRunResponse),
-                jsonSerializerContext).ConfigureAwait(false)) as global::CursorAgents.SteerRunResponse;
+                jsonSerializerContext).ConfigureAwait(false)) as global::CursorAgents.SteerRunResponse?;
         }
 
         /// <summary>

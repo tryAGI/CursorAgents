@@ -52,8 +52,11 @@ namespace CursorAgents
         /// A steer sends the prompt into the agent's running turn instead of<br/>
         /// starting a new run, and returns `202` with a `SteerRunResponse`.<br/>
         /// It requires `prompt` and `delivery` and accepts no other top-level<br/>
-        /// fields, so `model`, `mcpServers`, `envVars`, or `mode` returns<br/>
-        /// `400 validation_error`.
+        /// fields. Any other field, such as `model`, `mcpServers`, `envVars`,<br/>
+        /// or `mode`, returns `400 validation_error` with a message that<br/>
+        /// names the fields, such as<br/>
+        /// `"model" is not allowed with delivery "steer"` or<br/>
+        /// `"model", "mode" are not allowed with delivery "steer"`.
         /// </summary>
 #if NET6_0_OR_GREATER
         public global::CursorAgents.SteerRunRequest? Steer { get; init; }

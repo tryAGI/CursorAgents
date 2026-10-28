@@ -1731,6 +1731,35 @@ components:
             list isn't paginated yet.
           example: null
 
+    ListTeamSecretsResponse:
+      type: object
+      required:
+        - items
+        - nextCursor
+      properties:
+        items:
+          type: array
+          description: |
+            The team's secret versions on this page. Without `limit` or
+            `cursor`, every version, sorted by name, then repos, then
+            creation time. Paged requests return versions in secret-version
+            creation order. A name with versions for different repositories
+            appears once per version.
+          items:
+            allOf:
+              - $ref: '#/components/schemas/SecretVersion'
+              - type: object
+                required:
+                  - id
+                  - createdAt
+        nextCursor:
+          type: string
+          nullable: true
+          description: |
+            Cursor for the next page, or `null` after the last page. Always
+            `null` without `limit` or `cursor`.
+          example: 'Tg9xR2pLbW5vcFFyc3R1dnd4eXo0NTY3ODkwYWJjZGVmZ2hp'
+
     SecretInventoryOwner:
       type: object
       description: |
@@ -2317,7 +2346,7 @@ paths:
                   value:
                     delivery: queued
         '400':
-          description: "Validation error or malformed request body. Steering adds two `validation_error` cases, a steer body with any top-level field besides `prompt` and `delivery` or a `delivery` other than `steer`, and a steer that Cursor refuses. For extra fields on a steer, the message names them, such as `\"model\" is not allowed with delivery \"steer\"` or `\"model\", \"mode\" are not allowed with delivery \"steer\"`. Cursor checks the body before it checks whether steering is available."
+          description: "Validation error or malformed request body. Steering adds two `validation_error` cases, a steer body with any top-level field besides `prompt` and `delivery` or a `delivery` other than `steer`, and a steer that Cursor refuses. For extra fields on a steer, the message names them, such as `\"model\" is not allowed with delivery \"steer\"` or `\"model\", \"mode\" are not allowed with delivery \"steer\"`. Cursor checks the body before it checks whether steering is available. A follow-up or steer to a subagent that only its parent agent can drive also returns `validation_error`, with the message \"Follow-ups and steers to subagents are not supported. Send them to the parent agent.\""
           content:
             application/json:
               schema:
@@ -3044,7 +3073,7 @@ paths:
           $ref: '#/components/responses/InternalError'
     post:
       summary: Start an environment build
-      description: "Start a build of the environment. Access follows PATCH /v1/environments/{id}, except that a draft build on a team environment needs only read access, and service account API keys and repository-limited tokens are refused. Service account API keys get `403 key_not_supported`. A user-scoped token minted by an API key limited to certain repositories gets `404 environment_not_found` when the environment has no repositories or any repository outside the limit, and `403 key_not_supported` otherwise. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`. Reading the new build right away can briefly return `404`."
+      description: "Start a build of the environment. Access follows PATCH /v1/environments/{id}, except that a draft build on a team environment needs only read access, and API keys limited to certain repositories are refused. Such a key, or a user-scoped token it minted, gets `404 environment_not_found` when the environment has no repositories or any repository outside the limit, and `403 key_not_supported` otherwise. A team service account API key with no repository limit can start builds of its own team's environments. It needs the `agent` scope, and the team setting that limits environment edits to admins doesn't limit it. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`. Reading the new build right away can briefly return `404`."
       operationId: startEnvironmentBuild
       parameters:
         - $ref: '#/components/parameters/EnvironmentId'
@@ -3070,7 +3099,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
-          description: "Plan or role not allowed, Cloud Agents API access isn't available for your account (`feature_unavailable`), a service account API key (`key_not_supported`), a user-scoped token minted by an API key limited to certain repositories on an environment whose repositories are all inside that limit (`key_not_supported`), or a non-draft build on a team environment when the team lets only admins edit environments (`team_admin_required`)."
+          description: "Plan or role not allowed, Cloud Agents API access isn't available for your account (`feature_unavailable`), an API key limited to certain repositories, or a user-scoped token it minted, on an environment whose repositories are all inside that limit (`key_not_supported`), or a non-draft build on a team environment from a member who isn't an admin when the team lets only admins edit environments (`team_admin_required`)."
           content:
             application/json:
               schema:
@@ -3678,8 +3707,18 @@ paths:
       summary: List team secrets
       description: |
         List the Cloud Agents secrets of the team the API key works in, one
-        item per version, sorted by name. No item includes a value. The
-        list isn't paginated yet, so `nextCursor` is always `null`.
+        item per version. No item includes a value.
+
+        Without `limit` or `cursor`, the response holds every version,
+        sorted by name, then repos, then creation time, and `nextCursor`
+        is `null`. Send either parameter to page through the versions in
+        secret-version creation order, and pass each page's `nextCursor`
+        back as `cursor` until it's `null`. Cursors use the same format as
+        GET /v1/secrets, so for the same team, a cursor from
+        `GET /v1/secrets?scope=team` continues here, and the reverse. Pass
+        `nextCursor` back only to the same team's list: cursors aren't tied
+        to a team, caller, scope, or filters, so another list's cursor can
+        silently skip versions or end the list early.
 
         Any team member can list, as can the team's service account API
         keys. An API key limited to certain repositories gets
@@ -3688,15 +3727,40 @@ paths:
 
         See https://cursor.com/docs/cloud-agent/api/endpoints#list-team-secrets.
       operationId: listTeamSecrets
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          description: "Maximum items per page. Defaults to 100 when only `cursor` is sent."
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+        - name: cursor
+          in: query
+          required: false
+          description: '`nextCursor` from the previous page.'
+          schema:
+            type: string
+            minLength: 1
       responses:
         '200':
           description: "The team's secret versions."
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListSecretsResponse'
+                $ref: '#/components/schemas/ListTeamSecretsResponse'
         '400':
-          $ref: '#/components/responses/BadRequest'
+          description: |
+            Invalid paging (`validation_error`): a `limit` that isn't a
+            whole number from 1 to 100, a repeated `limit` or `cursor`, a
+            cursor the API didn't return or one from the part of a team
+            admin's GET /v1/secrets walk that lists other members' secrets,
+            or any other query parameter.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':

@@ -45,7 +45,7 @@ namespace CursorAgents
 
         /// <summary>
         /// Start an environment build<br/>
-        /// Start a build of the environment. Access follows PATCH /v1/environments/{id}, except that a draft build on a team environment needs only read access, and service account API keys and repository-limited tokens are refused. Service account API keys get `403 key_not_supported`. A user-scoped token minted by an API key limited to certain repositories gets `404 environment_not_found` when the environment has no repositories or any repository outside the limit, and `403 key_not_supported` otherwise. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`. Reading the new build right away can briefly return `404`.
+        /// Start a build of the environment. Access follows PATCH /v1/environments/{id}, except that a draft build on a team environment needs only read access, and API keys limited to certain repositories are refused. Such a key, or a user-scoped token it minted, gets `404 environment_not_found` when the environment has no repositories or any repository outside the limit, and `403 key_not_supported` otherwise. A team service account API key with no repository limit can start builds of its own team's environments. It needs the `agent` scope, and the team setting that limits environment edits to admins doesn't limit it. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`. Reading the new build right away can briefly return `404`.
         /// </summary>
         /// <param name="id">
         /// Example: 8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c
@@ -73,7 +73,7 @@ namespace CursorAgents
         }
         /// <summary>
         /// Start an environment build<br/>
-        /// Start a build of the environment. Access follows PATCH /v1/environments/{id}, except that a draft build on a team environment needs only read access, and service account API keys and repository-limited tokens are refused. Service account API keys get `403 key_not_supported`. A user-scoped token minted by an API key limited to certain repositories gets `404 environment_not_found` when the environment has no repositories or any repository outside the limit, and `403 key_not_supported` otherwise. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`. Reading the new build right away can briefly return `404`.
+        /// Start a build of the environment. Access follows PATCH /v1/environments/{id}, except that a draft build on a team environment needs only read access, and API keys limited to certain repositories are refused. Such a key, or a user-scoped token it minted, gets `404 environment_not_found` when the environment has no repositories or any repository outside the limit, and `403 key_not_supported` otherwise. A team service account API key with no repository limit can start builds of its own team's environments. It needs the `agent` scope, and the team setting that limits environment edits to admins doesn't limit it. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`. Reading the new build right away can briefly return `404`.
         /// </summary>
         /// <param name="id">
         /// Example: 8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c
@@ -424,7 +424,7 @@ namespace CursorAgents
                                         h => h.Key,
                                         h => h.Value));
                             }
-                            // Plan or role not allowed, Cloud Agents API access isn't available for your account (`feature_unavailable`), a service account API key (`key_not_supported`), a user-scoped token minted by an API key limited to certain repositories on an environment whose repositories are all inside that limit (`key_not_supported`), or a non-draft build on a team environment when the team lets only admins edit environments (`team_admin_required`).
+                            // Plan or role not allowed, Cloud Agents API access isn't available for your account (`feature_unavailable`), an API key limited to certain repositories, or a user-scoped token it minted, on an environment whose repositories are all inside that limit (`key_not_supported`), or a non-draft build on a team environment from a member who isn't an admin when the team lets only admins edit environments (`team_admin_required`).
                             if ((int)__response.StatusCode == 403)
                             {
                                 string? __content_403 = null;
@@ -707,7 +707,7 @@ namespace CursorAgents
         }
         /// <summary>
         /// Start an environment build<br/>
-        /// Start a build of the environment. Access follows PATCH /v1/environments/{id}, except that a draft build on a team environment needs only read access, and service account API keys and repository-limited tokens are refused. Service account API keys get `403 key_not_supported`. A user-scoped token minted by an API key limited to certain repositories gets `404 environment_not_found` when the environment has no repositories or any repository outside the limit, and `403 key_not_supported` otherwise. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`. Reading the new build right away can briefly return `404`.
+        /// Start a build of the environment. Access follows PATCH /v1/environments/{id}, except that a draft build on a team environment needs only read access, and API keys limited to certain repositories are refused. Such a key, or a user-scoped token it minted, gets `404 environment_not_found` when the environment has no repositories or any repository outside the limit, and `403 key_not_supported` otherwise. A team service account API key with no repository limit can start builds of its own team's environments. It needs the `agent` scope, and the team setting that limits environment edits to admins doesn't limit it. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`. Reading the new build right away can briefly return `404`.
         /// </summary>
         /// <param name="id">
         /// Example: 8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c

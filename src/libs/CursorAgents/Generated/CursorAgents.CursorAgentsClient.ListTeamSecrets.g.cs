@@ -26,10 +26,14 @@ namespace CursorAgents
             {                s_ListTeamSecretsSecurityRequirement0,
             };
         partial void PrepareListTeamSecretsArguments(
-            global::System.Net.Http.HttpClient httpClient);
+            global::System.Net.Http.HttpClient httpClient,
+            ref int? limit,
+            ref string? cursor);
         partial void PrepareListTeamSecretsRequest(
             global::System.Net.Http.HttpClient httpClient,
-            global::System.Net.Http.HttpRequestMessage httpRequestMessage);
+            global::System.Net.Http.HttpRequestMessage httpRequestMessage,
+            int? limit,
+            string? cursor);
         partial void ProcessListTeamSecretsResponse(
             global::System.Net.Http.HttpClient httpClient,
             global::System.Net.Http.HttpResponseMessage httpResponseMessage);
@@ -42,22 +46,37 @@ namespace CursorAgents
         /// <summary>
         /// List team secrets<br/>
         /// List the Cloud Agents secrets of the team the API key works in, one<br/>
-        /// item per version, sorted by name. No item includes a value. The<br/>
-        /// list isn't paginated yet, so `nextCursor` is always `null`.<br/>
+        /// item per version. No item includes a value.<br/>
+        /// Without `limit` or `cursor`, the response holds every version,<br/>
+        /// sorted by name, then repos, then creation time, and `nextCursor`<br/>
+        /// is `null`. Send either parameter to page through the versions in<br/>
+        /// secret-version creation order, and pass each page's `nextCursor`<br/>
+        /// back as `cursor` until it's `null`. Cursors use the same format as<br/>
+        /// GET /v1/secrets, so for the same team, a cursor from<br/>
+        /// `GET /v1/secrets?scope=team` continues here, and the reverse. Pass<br/>
+        /// `nextCursor` back only to the same team's list: cursors aren't tied<br/>
+        /// to a team, caller, scope, or filters, so another list's cursor can<br/>
+        /// silently skip versions or end the list early.<br/>
         /// Any team member can list, as can the team's service account API<br/>
         /// keys. An API key limited to certain repositories gets<br/>
         /// `403 repository_access`, because team secrets reach every<br/>
         /// repository.<br/>
         /// See https://cursor.com/docs/cloud-agent/api/endpoints#list-team-secrets.
         /// </summary>
+        /// <param name="limit"></param>
+        /// <param name="cursor"></param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
         /// <param name="cancellationToken">The token to cancel the operation with</param>
         /// <exception cref="global::CursorAgents.ApiException"></exception>
-        public async global::System.Threading.Tasks.Task<global::CursorAgents.ListSecretsResponse> ListTeamSecretsAsync(
+        public async global::System.Threading.Tasks.Task<global::CursorAgents.ListTeamSecretsResponse> ListTeamSecretsAsync(
+            int? limit = default,
+            string? cursor = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default)
         {
             var __response = await ListTeamSecretsAsResponseAsync(
+                limit: limit,
+                cursor: cursor,
                 requestOptions: requestOptions,
                 cancellationToken: cancellationToken
             ).ConfigureAwait(false);
@@ -67,25 +86,40 @@ namespace CursorAgents
         /// <summary>
         /// List team secrets<br/>
         /// List the Cloud Agents secrets of the team the API key works in, one<br/>
-        /// item per version, sorted by name. No item includes a value. The<br/>
-        /// list isn't paginated yet, so `nextCursor` is always `null`.<br/>
+        /// item per version. No item includes a value.<br/>
+        /// Without `limit` or `cursor`, the response holds every version,<br/>
+        /// sorted by name, then repos, then creation time, and `nextCursor`<br/>
+        /// is `null`. Send either parameter to page through the versions in<br/>
+        /// secret-version creation order, and pass each page's `nextCursor`<br/>
+        /// back as `cursor` until it's `null`. Cursors use the same format as<br/>
+        /// GET /v1/secrets, so for the same team, a cursor from<br/>
+        /// `GET /v1/secrets?scope=team` continues here, and the reverse. Pass<br/>
+        /// `nextCursor` back only to the same team's list: cursors aren't tied<br/>
+        /// to a team, caller, scope, or filters, so another list's cursor can<br/>
+        /// silently skip versions or end the list early.<br/>
         /// Any team member can list, as can the team's service account API<br/>
         /// keys. An API key limited to certain repositories gets<br/>
         /// `403 repository_access`, because team secrets reach every<br/>
         /// repository.<br/>
         /// See https://cursor.com/docs/cloud-agent/api/endpoints#list-team-secrets.
         /// </summary>
+        /// <param name="limit"></param>
+        /// <param name="cursor"></param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
         /// <param name="cancellationToken">The token to cancel the operation with</param>
         /// <exception cref="global::CursorAgents.ApiException"></exception>
-        public async global::System.Threading.Tasks.Task<global::CursorAgents.AutoSDKHttpResponse<global::CursorAgents.ListSecretsResponse>> ListTeamSecretsAsResponseAsync(
+        public async global::System.Threading.Tasks.Task<global::CursorAgents.AutoSDKHttpResponse<global::CursorAgents.ListTeamSecretsResponse>> ListTeamSecretsAsResponseAsync(
+            int? limit = default,
+            string? cursor = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default)
         {
             PrepareArguments(
                 client: HttpClient);
             PrepareListTeamSecretsArguments(
-                httpClient: HttpClient);
+                httpClient: HttpClient,
+                limit: ref limit,
+                cursor: ref cursor);
 
 
             var __authorizations = global::CursorAgents.EndPointSecurityResolver.ResolveAuthorizations(
@@ -113,6 +147,10 @@ namespace CursorAgents
                             var __pathBuilder = new global::CursorAgents.PathBuilder(
                                 path: "/v1/team/secrets",
                                 baseUri: HttpClient.BaseAddress);
+                            __pathBuilder
+                                .AddOptionalParameter("limit", limit?.ToString())
+                                .AddOptionalParameter("cursor", cursor)
+                                ;
                             var __path = __pathBuilder.ToString();
                 __path = global::CursorAgents.AutoSDKRequestOptionsSupport.AppendQueryParameters(
                     path: __path,
@@ -152,7 +190,9 @@ namespace CursorAgents
                     request: __httpRequest);
                 PrepareListTeamSecretsRequest(
                     httpClient: HttpClient,
-                    httpRequestMessage: __httpRequest);
+                    httpRequestMessage: __httpRequest,
+                    limit: limit,
+                    cursor: cursor);
 
                 return __httpRequest;
             }
@@ -331,7 +371,7 @@ namespace CursorAgents
                                 retryReason: global::System.String.Empty,
                                 cancellationToken: __effectiveCancellationToken)).ConfigureAwait(false);
                 }
-                            // Validation error or malformed request body.
+                            // Invalid paging (`validation_error`): a `limit` that isn't a whole number from 1 to 100, a repeated `limit` or `cursor`, a cursor the API didn't return or one from the part of a team admin's GET /v1/secrets walk that lists other members' secrets, or any other query parameter.
                             if ((int)__response.StatusCode == 400)
                             {
                                 string? __content_400 = null;
@@ -538,9 +578,9 @@ namespace CursorAgents
                                 {
                                     __response.EnsureSuccessStatusCode();
 
-                                    var __value = global::CursorAgents.ListSecretsResponse.FromJson(__content, JsonSerializerContext) ??
+                                    var __value = global::CursorAgents.ListTeamSecretsResponse.FromJson(__content, JsonSerializerContext) ??
                                         throw new global::System.InvalidOperationException($"Response deserialization failed for \"{__content}\" ");
-                                    return new global::CursorAgents.AutoSDKHttpResponse<global::CursorAgents.ListSecretsResponse>(
+                                    return new global::CursorAgents.AutoSDKHttpResponse<global::CursorAgents.ListTeamSecretsResponse>(
                                         statusCode: __response.StatusCode,
                                         headers: global::CursorAgents.AutoSDKHttpResponse.CreateHeaders(__response),
                                         requestUri: __response.RequestMessage?.RequestUri,
@@ -570,9 +610,9 @@ namespace CursorAgents
                 #endif
                                     ).ConfigureAwait(false);
 
-                                    var __value = await global::CursorAgents.ListSecretsResponse.FromJsonStreamAsync(__content, JsonSerializerContext).ConfigureAwait(false) ??
+                                    var __value = await global::CursorAgents.ListTeamSecretsResponse.FromJsonStreamAsync(__content, JsonSerializerContext).ConfigureAwait(false) ??
                                         throw new global::System.InvalidOperationException("Response deserialization failed.");
-                                    return new global::CursorAgents.AutoSDKHttpResponse<global::CursorAgents.ListSecretsResponse>(
+                                    return new global::CursorAgents.AutoSDKHttpResponse<global::CursorAgents.ListTeamSecretsResponse>(
                                         statusCode: __response.StatusCode,
                                         headers: global::CursorAgents.AutoSDKHttpResponse.CreateHeaders(__response),
                                         requestUri: __response.RequestMessage?.RequestUri,

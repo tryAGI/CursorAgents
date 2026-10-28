@@ -362,7 +362,7 @@ namespace CursorAgents
                                 retryReason: global::System.String.Empty,
                                 cancellationToken: __effectiveCancellationToken)).ConfigureAwait(false);
                 }
-                            // Validation error or malformed request body. Steering adds two `validation_error` cases, a steer body with any top-level field besides `prompt` and `delivery` or a `delivery` other than `steer`, and a steer that Cursor refuses. For extra fields on a steer, the message names them, such as `"model" is not allowed with delivery "steer"` or `"model", "mode" are not allowed with delivery "steer"`. Cursor checks the body before it checks whether steering is available.
+                            // Validation error or malformed request body. Steering adds two `validation_error` cases, a steer body with any top-level field besides `prompt` and `delivery` or a `delivery` other than `steer`, and a steer that Cursor refuses. For extra fields on a steer, the message names them, such as `"model" is not allowed with delivery "steer"` or `"model", "mode" are not allowed with delivery "steer"`. Cursor checks the body before it checks whether steering is available. A follow-up or steer to a subagent that only its parent agent can drive also returns `validation_error`, with the message "Follow-ups and steers to subagents are not supported. Send them to the parent agent."
                             if ((int)__response.StatusCode == 400)
                             {
                                 string? __content_400 = null;

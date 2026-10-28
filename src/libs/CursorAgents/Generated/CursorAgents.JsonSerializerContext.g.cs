@@ -173,6 +173,8 @@ namespace CursorAgents
 
             typeof(global::CursorAgents.JsonConverters.AllOfJsonConverter<global::CursorAgents.SecretVersion, object>),
 
+            typeof(global::CursorAgents.JsonConverters.AllOfJsonConverter<global::CursorAgents.SecretVersion, object>),
+
             typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>),
 
             typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>),
@@ -402,6 +404,7 @@ namespace CursorAgents
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ListSecretsResponse))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.AllOf<global::CursorAgents.SecretVersion, object>>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.AllOf<global::CursorAgents.SecretVersion, object>), TypeInfoPropertyName = "AllOfSecretVersionObject2")]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ListTeamSecretsResponse))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.SecretInventoryOwner))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.SecretInventoryOwnerType), TypeInfoPropertyName = "SecretInventoryOwnerType2")]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.SecretInventoryOwnerUser))]

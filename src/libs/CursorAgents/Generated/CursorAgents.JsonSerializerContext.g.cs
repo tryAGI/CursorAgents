@@ -63,6 +63,14 @@ namespace CursorAgents
 
             typeof(global::CursorAgents.JsonConverters.QueuedRunResponseDeliveryNullableJsonConverter),
 
+            typeof(global::CursorAgents.JsonConverters.ProjectAppearanceColorJsonConverter),
+
+            typeof(global::CursorAgents.JsonConverters.ProjectAppearanceColorNullableJsonConverter),
+
+            typeof(global::CursorAgents.JsonConverters.ProjectStatusJsonConverter),
+
+            typeof(global::CursorAgents.JsonConverters.ProjectStatusNullableJsonConverter),
+
             typeof(global::CursorAgents.JsonConverters.EnvironmentBuildSettingsPullLatestCodeJsonConverter),
 
             typeof(global::CursorAgents.JsonConverters.EnvironmentBuildSettingsPullLatestCodeNullableJsonConverter),
@@ -231,6 +239,22 @@ namespace CursorAgents
 
             typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>),
 
+            typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>),
+
+            typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>),
+
+            typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>),
+
+            typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>),
+
+            typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>),
+
+            typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>),
+
+            typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>),
+
+            typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>),
+
             typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.SecretNameAmbiguousError, global::CursorAgents.Error>),
 
             typeof(global::CursorAgents.JsonConverters.OneOfJsonConverter<global::CursorAgents.AuthenticationError, global::CursorAgents.Error>),
@@ -337,6 +361,17 @@ namespace CursorAgents
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.RunUsage))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.AgentUsageResponse))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.RunUsage>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ProjectAppearance))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ProjectAppearanceColor), TypeInfoPropertyName = "ProjectAppearanceColor2")]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.Project))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ProjectStatus), TypeInfoPropertyName = "ProjectStatus2")]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.CreateProjectRequest))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.CreateProjectResponse))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.UpdateProjectRequest))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ListProjectsResponse))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.Project>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ListProjectAgentsResponse))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.IList<global::CursorAgents.Agent>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentRepo))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentRepoFile))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.EnvironmentBuildSettings))]
@@ -443,6 +478,8 @@ namespace CursorAgents
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.Run>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.Artifact>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.RunUsage>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.Project>))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.Agent>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.EnvironmentRepo>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.AllOf<global::CursorAgents.Environment, global::CursorAgents.ListEnvironmentsResponseItem>>))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::System.Collections.Generic.List<global::CursorAgents.StartEnvironmentBuildRef>))]

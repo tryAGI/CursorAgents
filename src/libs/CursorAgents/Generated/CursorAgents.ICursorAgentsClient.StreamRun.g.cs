@@ -20,6 +20,10 @@ namespace CursorAgents
         ///   simplified events that share the same event id. Use this if<br/>
         ///   you want the full SDK stream; otherwise handle the simplified<br/>
         ///   events and ignore it.<br/>
+        /// For a Project coordinator, each message it sends is one<br/>
+        /// `assistant` event with the whole message, its working notes and<br/>
+        /// `send_message` tool calls are left out, and `result.text` is the<br/>
+        /// last message it sent in the run.<br/>
         /// Reconnect with the `Last-Event-ID` header to resume after a<br/>
         /// disconnect; the event ID must belong to the requested run<br/>
         /// otherwise the endpoint returns `400 invalid_last_event_id`.<br/>

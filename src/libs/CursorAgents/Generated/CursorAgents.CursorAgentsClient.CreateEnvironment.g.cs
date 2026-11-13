@@ -448,7 +448,7 @@ namespace CursorAgents
                                         h => h.Key,
                                         h => h.Value));
                             }
-                            // Resource state conflict (`agent_busy`, `agent_archived`, `agent_id_conflict`, `run_not_cancellable`, or `environment_name_conflict`).
+                            // Resource state conflict (`agent_busy`, `agent_archived`, `agent_id_conflict`, `project_id_conflict`, `project_archived`, `run_not_cancellable`, or `environment_name_conflict`).
                             if ((int)__response.StatusCode == 409)
                             {
                                 string? __content_409 = null;

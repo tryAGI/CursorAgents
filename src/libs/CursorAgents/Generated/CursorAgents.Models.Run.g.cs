@@ -57,7 +57,7 @@ namespace CursorAgents
         public int? DurationMs { get; set; }
 
         /// <summary>
-        /// Final assistant reply text. Populated once the run terminates.<br/>
+        /// Final assistant reply text. Populated once the run terminates. For a Project coordinator, the last message the coordinator sent in the run.<br/>
         /// Example: Added README.md with installation instructions.
         /// </summary>
         /// <example>Added README.md with installation instructions.</example>
@@ -97,7 +97,7 @@ namespace CursorAgents
         /// Example: 12357
         /// </param>
         /// <param name="result">
-        /// Final assistant reply text. Populated once the run terminates.<br/>
+        /// Final assistant reply text. Populated once the run terminates. For a Project coordinator, the last message the coordinator sent in the run.<br/>
         /// Example: Added README.md with installation instructions.
         /// </param>
         /// <param name="git">

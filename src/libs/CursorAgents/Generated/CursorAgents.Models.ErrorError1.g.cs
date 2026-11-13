@@ -12,18 +12,22 @@ namespace CursorAgents
         /// Machine-readable error code. Possible values include<br/>
         /// `unauthorized`, `api_key_not_found`, `plan_required`,<br/>
         /// `role_forbidden`, `feature_unavailable`, `key_not_supported`,<br/>
+        /// `user_required`, `owner_required`, `projects_disabled`,<br/>
         /// `integration_not_connected`, `validation_error`,<br/>
         /// `missing_body`, `invalid_model`, `invalid_branch_name`,<br/>
         /// `repository_required`, `repository_access`,<br/>
         /// `pr_resolution_failed`, `artifact_not_found`,<br/>
         /// `service_account_required`, `agent_not_found`,<br/>
+        /// `project_not_found`,<br/>
         /// `run_not_found`, `environment_not_found`, `build_not_found`,<br/>
         /// `team_admin_required`, `environment_name_conflict`,<br/>
         /// `environment_repo_edit_blocked`, `repo_file_repo_removed`,<br/>
         /// `repo_file_environment_locked`, `stored_repos_unreadable`,<br/>
         /// `duplicate_json_key`, `agent_busy`, `agent_archived`,<br/>
-        /// `agent_id_conflict`, `run_not_cancellable`,<br/>
-        /// `rate_limit_exceeded`, `usage_limit_exceeded`,<br/>
+        /// `agent_id_conflict`, `project_id_conflict`,<br/>
+        /// `project_archived`, `run_not_cancellable`,<br/>
+        /// `rate_limit_exceeded`, `too_many_open_streams`,<br/>
+        /// `usage_limit_exceeded`,<br/>
         /// `stream_expired`, `stream_unavailable`,<br/>
         /// `invalid_last_event_id`, `client_cancelled`,<br/>
         /// `not_implemented`, `upstream_error`, and<br/>
@@ -73,18 +77,22 @@ namespace CursorAgents
         /// Machine-readable error code. Possible values include<br/>
         /// `unauthorized`, `api_key_not_found`, `plan_required`,<br/>
         /// `role_forbidden`, `feature_unavailable`, `key_not_supported`,<br/>
+        /// `user_required`, `owner_required`, `projects_disabled`,<br/>
         /// `integration_not_connected`, `validation_error`,<br/>
         /// `missing_body`, `invalid_model`, `invalid_branch_name`,<br/>
         /// `repository_required`, `repository_access`,<br/>
         /// `pr_resolution_failed`, `artifact_not_found`,<br/>
         /// `service_account_required`, `agent_not_found`,<br/>
+        /// `project_not_found`,<br/>
         /// `run_not_found`, `environment_not_found`, `build_not_found`,<br/>
         /// `team_admin_required`, `environment_name_conflict`,<br/>
         /// `environment_repo_edit_blocked`, `repo_file_repo_removed`,<br/>
         /// `repo_file_environment_locked`, `stored_repos_unreadable`,<br/>
         /// `duplicate_json_key`, `agent_busy`, `agent_archived`,<br/>
-        /// `agent_id_conflict`, `run_not_cancellable`,<br/>
-        /// `rate_limit_exceeded`, `usage_limit_exceeded`,<br/>
+        /// `agent_id_conflict`, `project_id_conflict`,<br/>
+        /// `project_archived`, `run_not_cancellable`,<br/>
+        /// `rate_limit_exceeded`, `too_many_open_streams`,<br/>
+        /// `usage_limit_exceeded`,<br/>
         /// `stream_expired`, `stream_unavailable`,<br/>
         /// `invalid_last_event_id`, `client_cancelled`,<br/>
         /// `not_implemented`, `upstream_error`, and<br/>

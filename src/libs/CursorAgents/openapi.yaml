@@ -389,7 +389,7 @@ components:
         result:
           type: string
           minLength: 1
-          description: "Final assistant reply text. Populated once the run terminates."
+          description: "Final assistant reply text. Populated once the run terminates. For a Project coordinator, the last message the coordinator sent in the run."
           example: 'Added README.md with installation instructions.'
         git:
           allOf:
@@ -942,6 +942,155 @@ components:
           description: "Per-run usage, one entry per run (or a single entry when `runId` is set)."
           items:
             $ref: '#/components/schemas/RunUsage'
+
+    ProjectAppearance:
+      type: object
+      additionalProperties: false
+      properties:
+        icon:
+          type: string
+          minLength: 1
+          maxLength: 64
+          pattern: '^[a-zA-Z0-9-]+$'
+          description: "Icon name of 1 to 64 letters, numbers, or hyphens."
+          example: 'rocket'
+        color:
+          type: string
+          enum: ['default', 'green', 'cyan', 'blue', 'purple', 'magenta', 'orange', 'yellow', 'red', 'brand']
+          description: "Icon color."
+          example: 'blue'
+
+    Project:
+      type: object
+      required:
+        - id
+        - status
+        - createdAt
+        - updatedAt
+        - url
+      properties:
+        id:
+          type: string
+          description: "Unique Project identifier. It's also the ID of the owner's coordinator agent."
+          example: 'bc-00000000-0000-0000-0000-000000000001'
+        name:
+          type: string
+          description: "Display name. Omitted when no name has been set."
+          example: 'Payments migration'
+        status:
+          type: string
+          enum: ['ACTIVE', 'ARCHIVED']
+          description: "Project lifecycle state. `ARCHIVED` when the Project was archived or its owner's coordinator was stopped."
+        appearance:
+          allOf:
+            - $ref: '#/components/schemas/ProjectAppearance'
+          description: "The Project's icon and color. Omitted when the Project has none."
+        coordinatorAgentId:
+          type: string
+          description: "Your own coordinator agent in the Project. The Project's `id` when you own it, or the coordinator Cursor started when you joined. Omitted when you joined the Project and your coordinator there was archived or stopped."
+          example: 'bc-00000000-0000-0000-0000-000000000001'
+        createdAt:
+          type: string
+          format: date-time
+          description: "When the Project was created."
+        updatedAt:
+          type: string
+          format: date-time
+          description: "When the Project was last updated."
+        url:
+          type: string
+          format: uri
+          description: "URL to view the Project in Cursor Web."
+          example: 'https://cursor.com/agents/bc-00000000-0000-0000-0000-000000000001'
+
+    CreateProjectRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        model:
+          $ref: '#/components/schemas/ModelRef'
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: "Display name for the Project."
+          example: 'Payments migration'
+        projectId:
+          type: string
+          minLength: 1
+          pattern: '^bc-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+          description: "Optional client-supplied Project identifier in `bc-<uuid>` form. Re-POSTing the same `projectId` returns `409 project_id_conflict` instead of creating a duplicate. A Project's ID is also its coordinator agent's ID, so an ID that any agent already uses returns the same error."
+          example: 'bc-00000000-0000-0000-0000-000000000001'
+        env:
+          $ref: '#/components/schemas/AgentEnv'
+        repos:
+          type: array
+          maxItems: 500
+          description: 'Repository configuration, with the same rules as in `CreateAgentRequest`. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` (or pass `repos: []`) to start a no-repo Project.'
+          items:
+            $ref: '#/components/schemas/RepoConfig'
+        appearance:
+          allOf:
+            - $ref: '#/components/schemas/ProjectAppearance'
+          description: "The Project's icon and color. Send both `icon` and `color`, or leave `appearance` out."
+
+    CreateProjectResponse:
+      type: object
+      required:
+        - project
+        - run
+      properties:
+        project:
+          $ref: '#/components/schemas/Project'
+        run:
+          $ref: '#/components/schemas/Run'
+
+    UpdateProjectRequest:
+      type: object
+      additionalProperties: false
+      description: "Send at least one of `name` or `appearance`."
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: "New display name."
+          example: 'Payments migration, phase 2'
+        appearance:
+          allOf:
+            - $ref: '#/components/schemas/ProjectAppearance'
+          description: "New `icon`, `color`, or both. Send one field to change it and keep the other. A Project without an appearance needs both."
+
+    ListProjectsResponse:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          description: "Projects you own or have joined, newest first by when your own coordinator in each one started. A page can hold fewer than `limit` Projects, or none, while `nextCursor` is still set."
+          items:
+            $ref: '#/components/schemas/Project'
+        nextCursor:
+          type: string
+          minLength: 1
+          description: "Cursor for fetching the next page of results. Omitted (not `null`) when there are no more pages."
+
+    ListProjectAgentsResponse:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          description: "Agents your coordinator in the Project started, newest first, up to its 1,000 newest. Agents you can't read are left out."
+          items:
+            $ref: '#/components/schemas/Agent'
+        nextCursor:
+          type: string
+          minLength: 1
+          description: "Cursor for fetching the next page of results. Omitted (not `null`) when there are no more pages."
+          example: 'bc-00000000-0000-0000-0000-000000000002'
 
     EnvironmentRepo:
       type: object
@@ -2047,18 +2196,22 @@ components:
                 Machine-readable error code. Possible values include
                 `unauthorized`, `api_key_not_found`, `plan_required`,
                 `role_forbidden`, `feature_unavailable`, `key_not_supported`,
+                `user_required`, `owner_required`, `projects_disabled`,
                 `integration_not_connected`, `validation_error`,
                 `missing_body`, `invalid_model`, `invalid_branch_name`,
                 `repository_required`, `repository_access`,
                 `pr_resolution_failed`, `artifact_not_found`,
                 `service_account_required`, `agent_not_found`,
+                `project_not_found`,
                 `run_not_found`, `environment_not_found`, `build_not_found`,
                 `team_admin_required`, `environment_name_conflict`,
                 `environment_repo_edit_blocked`, `repo_file_repo_removed`,
                 `repo_file_environment_locked`, `stored_repos_unreadable`,
                 `duplicate_json_key`, `agent_busy`, `agent_archived`,
-                `agent_id_conflict`, `run_not_cancellable`,
-                `rate_limit_exceeded`, `usage_limit_exceeded`,
+                `agent_id_conflict`, `project_id_conflict`,
+                `project_archived`, `run_not_cancellable`,
+                `rate_limit_exceeded`, `too_many_open_streams`,
+                `usage_limit_exceeded`,
                 `stream_expired`, `stream_unavailable`,
                 `invalid_last_event_id`, `client_cancelled`,
                 `not_implemented`, `upstream_error`, and
@@ -2097,6 +2250,15 @@ components:
       schema:
         type: string
         example: 'run-00000000-0000-0000-0000-000000000001'
+    ProjectId:
+      name: id
+      in: path
+      required: true
+      description: "Unique identifier for the Project."
+      schema:
+        type: string
+        pattern: '^bc-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+        example: 'bc-00000000-0000-0000-0000-000000000001'
     EnvironmentId:
       name: id
       in: path
@@ -2142,7 +2304,7 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
     Conflict:
-      description: "Resource state conflict (`agent_busy`, `agent_archived`, `agent_id_conflict`, `run_not_cancellable`, or `environment_name_conflict`)."
+      description: "Resource state conflict (`agent_busy`, `agent_archived`, `agent_id_conflict`, `project_id_conflict`, `project_archived`, `run_not_cancellable`, or `environment_name_conflict`)."
       content:
         application/json:
           schema:
@@ -2456,6 +2618,11 @@ paths:
           you want the full SDK stream; otherwise handle the simplified
           events and ignore it.
 
+        For a Project coordinator, each message it sends is one
+        `assistant` event with the whole message, its working notes and
+        `send_message` tool calls are left out, and `result.text` is the
+        last message it sent in the run.
+
         Reconnect with the `Last-Event-ID` header to resume after a
         disconnect; the event ID must belong to the requested run
         otherwise the endpoint returns `400 invalid_last_event_id`.
@@ -2508,6 +2675,95 @@ paths:
           $ref: '#/components/responses/Gone'
         '429':
           $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/agents/{id}/stream:
+    get:
+      summary: Stream an agent
+      description: |
+        Stream Server-Sent Events for an agent across all of its runs.
+        Unlike the run stream, the stream stays open when a run ends and
+        carries runs the caller didn't start. It closes when the client
+        disconnects or the agent is archived. Event types are the run
+        stream's, except:
+
+        - `status` carries `{ agentId, status }`: the status of the
+          agent's current run. A status change, including `FINISHED`,
+          doesn't close the stream.
+        - There is no `result` event.
+
+        For a Project coordinator, each message it sends is one
+        `assistant` event with the whole message, and its working notes
+        and `send_message` tool calls are left out.
+
+        Without a cursor, the stream starts where the agent's newest run
+        started. Resume with the `Last-Event-ID` header, or the
+        `lastEventId` query parameter for clients that can't set headers;
+        an ID this agent's stream didn't send returns
+        `400 invalid_last_event_id`. Cursor closes open streams when it
+        deploys, with no final event; reconnect with `Last-Event-ID`.
+        When the agent is archived, the stream sends `status` with
+        `CANCELLED`, then `done`. Responses include the
+        `X-Cursor-Stream-Retention-Seconds` header; a `Last-Event-ID`
+        older than the retention window returns `410 stream_expired`.
+      operationId: streamAgent
+      parameters:
+        - $ref: '#/components/parameters/AgentId'
+        - name: lastEventId
+          in: query
+          required: false
+          description: "The same value as the `Last-Event-ID` header, for clients that can't set headers. The header wins when both are sent."
+          schema:
+            type: string
+            minLength: 1
+        - name: Last-Event-ID
+          in: header
+          required: false
+          description: "Resume after a previously received event ID from this agent's stream."
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "SSE stream of agent events."
+          headers:
+            X-Cursor-Stream-Retention-Seconds:
+              description: "Server-side stream retention window in seconds."
+              schema:
+                type: integer
+          content:
+            text/event-stream:
+              schema:
+                type: string
+              examples:
+                runEnds:
+                  summary: A run ends and the next one starts on the same stream
+                  value: |
+                    id: 1713033010000-0
+                    event: status
+                    data: {"agentId":"bc-00000000-0000-0000-0000-000000000001","status":"FINISHED"}
+
+                    id: 1713033300000-0
+                    event: status
+                    data: {"agentId":"bc-00000000-0000-0000-0000-000000000001","status":"RUNNING"}
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '410':
+          $ref: '#/components/responses/Gone'
+        '429':
+          description: "Rate limit exceeded (`rate_limit_exceeded`), or the caller already holds the most agent streams one caller can keep open, 50 by default (`too_many_open_streams`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '500':
           $ref: '#/components/responses/InternalError'
 
@@ -2691,6 +2947,247 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DownloadArtifactResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/projects:
+    post:
+      summary: Create a Project
+      description: |
+        Create a Project and immediately enqueue its initial run, which
+        starts the Project's coordinator agent. The response contains
+        both the durable `project` and the initial `run`. Requires a
+        user API key; a service account API key returns
+        `403 user_required`. To message the coordinator, send a
+        follow-up to `project.coordinatorAgentId` with
+        POST /v1/agents/{id}/runs, and read its replies with
+        GET /v1/agents/{id}/stream.
+      operationId: createProject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProjectRequest'
+      responses:
+        '201':
+          description: "Project created and initial run enqueued."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateProjectResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: "Authenticated but insufficient permissions, plan required, or feature unavailable. Also a service account API key (`user_required`) or a team that turned Projects off (`projects_disabled`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    get:
+      summary: List Projects
+      description: "List the Projects you own or have joined, newest first. A service account API key gets an empty list."
+      operationId: listProjects
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          description: "Number of Projects to return."
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: cursor
+          in: query
+          required: false
+          description: "Pagination cursor from the previous response."
+          schema:
+            type: string
+            minLength: 1
+        - name: includeArchived
+          in: query
+          required: false
+          description: "Whether to include archived Projects."
+          schema:
+            type: boolean
+            default: true
+      responses:
+        '200':
+          description: "Projects retrieved successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListProjectsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/projects/{id}:
+    get:
+      summary: Get a Project
+      description: "Retrieve durable metadata for a Project. The ID of your own coordinator in a Project you joined also works as `id`. A Project you can't see returns `404 project_not_found`."
+      operationId: getProject
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      responses:
+        '200':
+          description: "Project retrieved successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    patch:
+      summary: Update a Project
+      description: "Rename a Project, change its appearance, or both. Only the Project's owner can update it; anyone else gets `403 owner_required`. An archived Project returns `409 project_archived`."
+      operationId: updateProject
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProjectRequest'
+      responses:
+        '204':
+          description: "Project updated. The response has no body."
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/projects/{id}/agents:
+    get:
+      summary: List Project agents
+      description: "List the agents your coordinator in a Project started, newest first. The list is empty when you joined the Project and your coordinator there was archived or stopped."
+      operationId: listProjectAgents
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+        - name: limit
+          in: query
+          required: false
+          description: "Number of agents to return."
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: cursor
+          in: query
+          required: false
+          description: "Pagination cursor from the previous response."
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        '200':
+          description: "Agents retrieved successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListProjectAgentsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/projects/{id}/archive:
+    post:
+      summary: Archive a Project
+      description: "Archive a Project. Archived Projects remain readable but cannot be updated until unarchived. Only the Project's owner can archive it; anyone else gets `403 owner_required`."
+      operationId: archiveProject
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      responses:
+        '200':
+          description: "Project archived successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/projects/{id}/unarchive:
+    post:
+      summary: Unarchive a Project
+      description: "Unarchive a Project so it can be updated again. Only the Project's owner can unarchive it; anyone else gets `403 owner_required`."
+      operationId: unarchiveProject
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      responses:
+        '200':
+          description: "Project unarchived successfully."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':

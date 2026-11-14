@@ -366,6 +366,7 @@ namespace CursorAgents
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.Project))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ProjectStatus), TypeInfoPropertyName = "ProjectStatus2")]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.CreateProjectRequest))]
+    [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.CreateProjectRequestPrompt))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.CreateProjectResponse))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.UpdateProjectRequest))]
     [global::System.Text.Json.Serialization.JsonSerializable(typeof(global::CursorAgents.ListProjectsResponse))]

@@ -9,6 +9,12 @@ namespace CursorAgents
     public sealed partial class CreateProjectRequest
     {
         /// <summary>
+        /// The coordinator's first message. When omitted, the coordinator opens the Project with a greeting and waits for your first message.
+        /// </summary>
+        [global::System.Text.Json.Serialization.JsonPropertyName("prompt")]
+        public global::CursorAgents.CreateProjectRequestPrompt? Prompt { get; set; }
+
+        /// <summary>
         ///
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("model")]
@@ -57,6 +63,9 @@ namespace CursorAgents
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateProjectRequest" /> class.
         /// </summary>
+        /// <param name="prompt">
+        /// The coordinator's first message. When omitted, the coordinator opens the Project with a greeting and waits for your first message.
+        /// </param>
         /// <param name="model"></param>
         /// <param name="name">
         /// Display name for the Project.<br/>
@@ -77,6 +86,7 @@ namespace CursorAgents
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
 #endif
         public CreateProjectRequest(
+            global::CursorAgents.CreateProjectRequestPrompt? prompt,
             global::CursorAgents.ModelRef? model,
             string? name,
             string? projectId,
@@ -84,6 +94,7 @@ namespace CursorAgents
             global::System.Collections.Generic.IList<global::CursorAgents.RepoConfig>? repos,
             global::CursorAgents.ProjectAppearance? appearance)
         {
+            this.Prompt = prompt;
             this.Model = model;
             this.Name = name;
             this.ProjectId = projectId;

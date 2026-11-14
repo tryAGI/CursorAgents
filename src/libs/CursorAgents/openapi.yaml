@@ -1007,6 +1007,23 @@ components:
       type: object
       additionalProperties: false
       properties:
+        prompt:
+          type: object
+          required:
+            - text
+          description: "The coordinator's first message. When omitted, the coordinator opens the Project with a greeting and waits for your first message."
+          properties:
+            text:
+              type: string
+              minLength: 1
+              description: "Task instruction for the coordinator."
+              example: 'Move checkout from the legacy payments client to the new one'
+            images:
+              type: array
+              maxItems: 5
+              items:
+                $ref: '#/components/schemas/Image'
+              description: "Image inputs. Each entry must provide either `data` (with required `mimeType`) or `url`. Maximum 5 images, 15 MB each."
         model:
           $ref: '#/components/schemas/ModelRef'
         name:
@@ -2965,7 +2982,8 @@ paths:
       summary: Create a Project
       description: |
         Create a Project and immediately enqueue its initial run, which
-        starts the Project's coordinator agent. The response contains
+        starts the Project's coordinator agent. With a `prompt`, that run
+        works on your prompt. The response contains
         both the durable `project` and the initial `run`. Requires a
         user API key; a service account API key returns
         `403 user_required`. To message the coordinator, send a

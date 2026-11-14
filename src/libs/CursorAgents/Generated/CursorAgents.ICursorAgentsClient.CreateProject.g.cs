@@ -7,7 +7,8 @@ namespace CursorAgents
         /// <summary>
         /// Create a Project<br/>
         /// Create a Project and immediately enqueue its initial run, which<br/>
-        /// starts the Project's coordinator agent. The response contains<br/>
+        /// starts the Project's coordinator agent. With a `prompt`, that run<br/>
+        /// works on your prompt. The response contains<br/>
         /// both the durable `project` and the initial `run`. Requires a<br/>
         /// user API key; a service account API key returns<br/>
         /// `403 user_required`. To message the coordinator, send a<br/>
@@ -27,7 +28,8 @@ namespace CursorAgents
         /// <summary>
         /// Create a Project<br/>
         /// Create a Project and immediately enqueue its initial run, which<br/>
-        /// starts the Project's coordinator agent. The response contains<br/>
+        /// starts the Project's coordinator agent. With a `prompt`, that run<br/>
+        /// works on your prompt. The response contains<br/>
         /// both the durable `project` and the initial `run`. Requires a<br/>
         /// user API key; a service account API key returns<br/>
         /// `403 user_required`. To message the coordinator, send a<br/>
@@ -47,7 +49,8 @@ namespace CursorAgents
         /// <summary>
         /// Create a Project<br/>
         /// Create a Project and immediately enqueue its initial run, which<br/>
-        /// starts the Project's coordinator agent. The response contains<br/>
+        /// starts the Project's coordinator agent. With a `prompt`, that run<br/>
+        /// works on your prompt. The response contains<br/>
         /// both the durable `project` and the initial `run`. Requires a<br/>
         /// user API key; a service account API key returns<br/>
         /// `403 user_required`. To message the coordinator, send a<br/>
@@ -55,6 +58,9 @@ namespace CursorAgents
         /// POST /v1/agents/{id}/runs, and read its replies with<br/>
         /// GET /v1/agents/{id}/stream.
         /// </summary>
+        /// <param name="prompt">
+        /// The coordinator's first message. When omitted, the coordinator opens the Project with a greeting and waits for your first message.
+        /// </param>
         /// <param name="model"></param>
         /// <param name="name">
         /// Display name for the Project.<br/>
@@ -75,6 +81,7 @@ namespace CursorAgents
         /// <param name="cancellationToken">The token to cancel the operation with</param>
         /// <exception cref="global::System.InvalidOperationException"></exception>
         global::System.Threading.Tasks.Task<global::CursorAgents.CreateProjectResponse> CreateProjectAsync(
+            global::CursorAgents.CreateProjectRequestPrompt? prompt = default,
             global::CursorAgents.ModelRef? model = default,
             string? name = default,
             string? projectId = default,

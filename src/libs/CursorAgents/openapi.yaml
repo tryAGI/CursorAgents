@@ -1036,7 +1036,7 @@ components:
           type: string
           minLength: 1
           pattern: '^bc-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
-          description: "Optional client-supplied Project identifier in `bc-<uuid>` form. Re-POSTing the same `projectId` returns `409 project_id_conflict` instead of creating a duplicate. A Project's ID is also its coordinator agent's ID, so an ID that any agent already uses returns the same error."
+          description: "Optional client-supplied Project identifier in `bc-<uuid>` form. Re-POSTing the same `projectId` returns `409 project_id_conflict` instead of creating a duplicate. A Project's ID is also its coordinator agent's ID, so an ID that any agent already uses returns the same error. Cannot be combined with `files`; omit `projectId` so the server mints one when you send files."
           example: 'bc-00000000-0000-0000-0000-000000000001'
         env:
           $ref: '#/components/schemas/AgentEnv'
@@ -1050,6 +1050,43 @@ components:
           allOf:
             - $ref: '#/components/schemas/ProjectAppearance'
           description: "The Project's icon and color. Send both `icon` and `color`, or leave `appearance` out."
+        files:
+          type: array
+          maxItems: 50
+          description: |
+            Files to write into the Project's shared context before the
+            coordinator's first run. The coordinator and every other agent
+            in the Project can read them. At most 256 KiB each and 2 MiB in
+            total. Cannot be combined with a client-supplied `projectId`;
+            omit `projectId` so the server mints one when you send files.
+
+            Beta: `files` is rolling out. If it isn't enabled for your
+            account yet, a request with `files` returns
+            `400 files_not_supported`.
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - path
+            description: "Send exactly one of `content` and `contentBase64`."
+            properties:
+              path:
+                type: string
+                minLength: 1
+                description: "Where the file goes in the store. At most 512 UTF-8 bytes, and unique within the request. Blank paths (empty or only whitespace) are refused, as are paths that start or end with `/`, have an empty, `.`, or `..` segment, or contain a backslash or control character. Cursor reserves the top-level `inbox/` and `artifacts/` folders and any folder or file name starting with `.cursor`, so paths there are refused too."
+                example: 'docs/brief.md'
+              content:
+                type: string
+                description: "The file's text, stored as UTF-8."
+              contentBase64:
+                type: string
+                format: byte
+                description: "The file's bytes, base64-encoded."
+              mimeType:
+                type: string
+                maxLength: 255
+                description: "The file's media type. Defaults to `text/plain; charset=utf-8` for `content` and `application/octet-stream` for `contentBase64`."
+                example: 'text/markdown'
 
     CreateProjectResponse:
       type: object
@@ -1061,6 +1098,25 @@ components:
           $ref: '#/components/schemas/Project'
         run:
           $ref: '#/components/schemas/Run'
+        files:
+          type: array
+          description: "The files written to the Project's shared context. Present when the request sent `files`."
+          items:
+            type: object
+            required:
+              - path
+              - sizeBytes
+              - etag
+            properties:
+              path:
+                type: string
+                example: 'docs/brief.md'
+              sizeBytes:
+                type: integer
+                description: "The file's size in bytes."
+              etag:
+                type: string
+                description: "The stored file's ETag."
 
     UpdateProjectRequest:
       type: object
@@ -3005,11 +3061,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateProjectResponse'
         '400':
-          $ref: '#/components/responses/BadRequest'
+          description: "Validation error or malformed request body (`validation_error`), including `files` sent with a `projectId`, or `files` on an account where it isn't enabled yet (`files_not_supported`)."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
-          description: "Authenticated but insufficient permissions, plan required, or feature unavailable. Also a service account API key (`user_required`) or a team that turned Projects off (`projects_disabled`)."
+          description: "Authenticated but insufficient permissions, plan required, or feature unavailable. Also a service account API key (`user_required`), a team that turned Projects off (`projects_disabled`), or a request with `files` when your privacy settings don't let Cursor store data (`storage_not_allowed`)."
           content:
             application/json:
               schema:

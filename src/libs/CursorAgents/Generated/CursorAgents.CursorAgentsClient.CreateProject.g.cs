@@ -353,7 +353,7 @@ namespace CursorAgents
                                 retryReason: global::System.String.Empty,
                                 cancellationToken: __effectiveCancellationToken)).ConfigureAwait(false);
                 }
-                            // Validation error or malformed request body.
+                            // Validation error or malformed request body (`validation_error`), including `files` sent with a `projectId`, or `files` on an account where it isn't enabled yet (`files_not_supported`).
                             if ((int)__response.StatusCode == 400)
                             {
                                 string? __content_400 = null;
@@ -427,7 +427,7 @@ namespace CursorAgents
                                         h => h.Key,
                                         h => h.Value));
                             }
-                            // Authenticated but insufficient permissions, plan required, or feature unavailable. Also a service account API key (`user_required`) or a team that turned Projects off (`projects_disabled`).
+                            // Authenticated but insufficient permissions, plan required, or feature unavailable. Also a service account API key (`user_required`), a team that turned Projects off (`projects_disabled`), or a request with `files` when your privacy settings don't let Cursor store data (`storage_not_allowed`).
                             if ((int)__response.StatusCode == 403)
                             {
                                 string? __content_403 = null;
@@ -692,7 +692,7 @@ namespace CursorAgents
         /// Example: Payments migration
         /// </param>
         /// <param name="projectId">
-        /// Optional client-supplied Project identifier in `bc-&lt;uuid&gt;` form. Re-POSTing the same `projectId` returns `409 project_id_conflict` instead of creating a duplicate. A Project's ID is also its coordinator agent's ID, so an ID that any agent already uses returns the same error.<br/>
+        /// Optional client-supplied Project identifier in `bc-&lt;uuid&gt;` form. Re-POSTing the same `projectId` returns `409 project_id_conflict` instead of creating a duplicate. A Project's ID is also its coordinator agent's ID, so an ID that any agent already uses returns the same error. Cannot be combined with `files`; omit `projectId` so the server mints one when you send files.<br/>
         /// Example: bc-00000000-0000-0000-0000-000000000001
         /// </param>
         /// <param name="env"></param>
@@ -701,6 +701,16 @@ namespace CursorAgents
         /// </param>
         /// <param name="appearance">
         /// The Project's icon and color. Send both `icon` and `color`, or leave `appearance` out.
+        /// </param>
+        /// <param name="files">
+        /// Files to write into the Project's shared context before the<br/>
+        /// coordinator's first run. The coordinator and every other agent<br/>
+        /// in the Project can read them. At most 256 KiB each and 2 MiB in<br/>
+        /// total. Cannot be combined with a client-supplied `projectId`;<br/>
+        /// omit `projectId` so the server mints one when you send files.<br/>
+        /// Beta: `files` is rolling out. If it isn't enabled for your<br/>
+        /// account yet, a request with `files` returns<br/>
+        /// `400 files_not_supported`.
         /// </param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
         /// <param name="cancellationToken">The token to cancel the operation with</param>
@@ -713,6 +723,7 @@ namespace CursorAgents
             global::CursorAgents.AgentEnv? env = default,
             global::System.Collections.Generic.IList<global::CursorAgents.RepoConfig>? repos = default,
             global::CursorAgents.ProjectAppearance? appearance = default,
+            global::System.Collections.Generic.IList<global::CursorAgents.CreateProjectRequestFile>? files = default,
             global::CursorAgents.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default)
         {
@@ -725,6 +736,7 @@ namespace CursorAgents
                 Env = env,
                 Repos = repos,
                 Appearance = appearance,
+                Files = files,
             };
 
             return await CreateProjectAsync(

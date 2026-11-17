@@ -23,6 +23,12 @@ namespace CursorAgents
         public required global::CursorAgents.Run Run { get; set; }
 
         /// <summary>
+        /// The files written to the Project's shared context. Present when the request sent `files`.
+        /// </summary>
+        [global::System.Text.Json.Serialization.JsonPropertyName("files")]
+        public global::System.Collections.Generic.IList<global::CursorAgents.CreateProjectResponseFile>? Files { get; set; }
+
+        /// <summary>
         /// Additional properties that are not explicitly defined in the schema
         /// </summary>
         [global::System.Text.Json.Serialization.JsonExtensionData]
@@ -33,15 +39,20 @@ namespace CursorAgents
         /// </summary>
         /// <param name="project"></param>
         /// <param name="run"></param>
+        /// <param name="files">
+        /// The files written to the Project's shared context. Present when the request sent `files`.
+        /// </param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
 #endif
         public CreateProjectResponse(
             global::CursorAgents.Project project,
-            global::CursorAgents.Run run)
+            global::CursorAgents.Run run,
+            global::System.Collections.Generic.IList<global::CursorAgents.CreateProjectResponseFile>? files)
         {
             this.Project = project ?? throw new global::System.ArgumentNullException(nameof(project));
             this.Run = run ?? throw new global::System.ArgumentNullException(nameof(run));
+            this.Files = files;
         }
 
         /// <summary>

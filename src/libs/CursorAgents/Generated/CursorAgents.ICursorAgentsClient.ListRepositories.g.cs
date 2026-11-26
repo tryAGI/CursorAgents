@@ -8,8 +8,9 @@ namespace CursorAgents
         /// List GitHub repositories<br/>
         /// List GitHub repositories accessible to the authenticated user<br/>
         /// through Cursor's GitHub App installation. This endpoint has<br/>
-        /// very strict rate limits (1 request per user per minute, 30<br/>
-        /// per user per hour) and can take tens of seconds to respond<br/>
+        /// very strict rate limits (5 requests per minute and 30 per hour<br/>
+        /// for each caller; service account API keys count against the<br/>
+        /// service account) and can take tens of seconds to respond<br/>
         /// for users with access to many repositories. Cache responses<br/>
         /// aggressively and handle this information not being available<br/>
         /// gracefully.
@@ -24,8 +25,9 @@ namespace CursorAgents
         /// List GitHub repositories<br/>
         /// List GitHub repositories accessible to the authenticated user<br/>
         /// through Cursor's GitHub App installation. This endpoint has<br/>
-        /// very strict rate limits (1 request per user per minute, 30<br/>
-        /// per user per hour) and can take tens of seconds to respond<br/>
+        /// very strict rate limits (5 requests per minute and 30 per hour<br/>
+        /// for each caller; service account API keys count against the<br/>
+        /// service account) and can take tens of seconds to respond<br/>
         /// for users with access to many repositories. Cache responses<br/>
         /// aggressively and handle this information not being available<br/>
         /// gracefully.

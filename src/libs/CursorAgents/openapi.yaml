@@ -3978,8 +3978,9 @@ paths:
       description: |
         List GitHub repositories accessible to the authenticated user
         through Cursor's GitHub App installation. This endpoint has
-        very strict rate limits (1 request per user per minute, 30
-        per user per hour) and can take tens of seconds to respond
+        very strict rate limits (5 requests per minute and 30 per hour
+        for each caller; service account API keys count against the
+        service account) and can take tens of seconds to respond
         for users with access to many repositories. Cache responses
         aggressively and handle this information not being available
         gracefully.
